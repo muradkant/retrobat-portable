@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-04T00:00:00Z",
+  "entries": [
+    {
+      "id": "homebrew-hub/2048gb",
+      "title": "2048gb",
+      "developer": "Sanqui",
+      "system": "gb",
+      "description": "An open-source Game Boy implementation of 2048.",
+      "license": {
+        "name": "Zlib",
+        "url": "https://opensource.org/license/zlib"
+      },
+      "source": {
+        "name": "Homebrew Hub",
+        "homepage": "https://hh.gbdev.io",
+        "repository": "https://github.com/Sanqui/2048-gb",
+        "audit_note": "Artifact pinned to Homebrew Hub database commit 8a36461e5e2fada5c73484afd87b7e9a9d4e05df."
+      },
+      "artifact": {
+        "url": "https://raw.githubusercontent.com/gbdev/database/8a36461e5e2fada5c73484afd87b7e9a9d4e05df/entries/2048gb/2048.gb",
+        "filename": "2048.gb",
+        "size": 32768,
+        "sha256": "3ea2376b15b34bd26b10e6b31d2753bf8b086098dbdb5ee84d9c0f03d66d3d7f"
+      },
+      "artwork": [
+        {
+          "kind": "screenshot",
+          "url": "https://raw.githubusercontent.com/gbdev/database/8a36461e5e2fada5c73484afd87b7e9a9d4e05df/entries/2048gb/2.png",
+          "filename": "2.png",
+          "size": 2972,
+          "sha256": "83a6bfc3cb9f174657ea9a7a6016d7981114ff00c08f8a52e0b771146bb824dd",
+          "source_provided": true
+        }
+      ],
+      "trust": "verified"
+    }
+  ]
+}

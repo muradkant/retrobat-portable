@@ -1,0 +1,25 @@
+[package]
+name = "retrobat-portable"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.92"
+description = "A verified, portable catalog and launcher for RetroBat"
+license = "MIT"
+
+[dependencies]
+dirs = "6.0"
+eframe = { version = "0.35", default-features = false, features = ["default_fonts", "glow", "wayland", "x11"] }
+hex = "0.4"
+image = { version = "0.25", default-features = false, features = ["bmp", "gif", "jpeg", "png"] }
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "rustls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+thiserror = "2"
+url = "2"
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+strip = true

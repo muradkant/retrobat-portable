@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=RetroPort
+Comment=Verified visual retro-game library
+Exec=sh -c '"$(dirname "$1")/RetroPort-Linux"' launcher %k
+Icon=input-gaming
+Terminal=false
+Categories=Game;Emulator;
+
