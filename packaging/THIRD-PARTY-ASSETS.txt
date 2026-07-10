@@ -1,0 +1,134 @@
+RetroPort supplementary runtime assets
+======================================
+
+JAXE libretro core
+------------------
+Purpose: CHIP-8, S-CHIP, and XO-CHIP support.
+Project: https://github.com/kurtjd/jaxe
+Documentation: https://docs.libretro.com/library/jaxe/
+License: MIT
+Binary source:
+https://buildbot.libretro.com/nightly/windows/x86_64/latest/jaxe_libretro.dll.zip
+Retrieved: 2026-07-04
+Archive SHA-256:
+e45bc1e865269b259f72d1004fa3a691c343782cc6e405816ea22c888fd3b00c
+Extracted jaxe_libretro.dll SHA-256:
+b01439f4616ff24480104e26e3ecee6ee839fbdc8ecc640d2acbf10282162f94
+
+Xenia Canary
+------------
+Purpose: Xbox 360 emulation without external console firmware.
+Project: https://github.com/xenia-canary/xenia-canary
+Quickstart: https://github.com/xenia-project/xenia/wiki/quickstart
+License: BSD 3-Clause plus third-party notices retained by the project.
+Release: 6e5b832, published 2026-07-08
+Binary source:
+https://github.com/xenia-canary/xenia-canary/releases/download/6e5b832/xenia_canary_windows.7z
+Retrieved: 2026-07-10
+Archive SHA-256 (also published by GitHub's release API):
+fe43847b26b73140bdf131259f540b12ed7edcb2bf18dd846dc5bc1cf7e293dd
+Extracted xenia_canary.exe SHA-256:
+ac395b9ab2b6da69d25c1be284fa7ac85b116d32cbbf79db5d69ec444f1cd089
+The upstream quickstart explicitly states that Xenia does not require Xbox 360
+system files and documents Vulkan operation under Wine on Linux.
+
+Native Linux modern-console runtimes
+------------------------------------
+These official upstream builds are stored under Runtime/Linux so Linux PLAY
+does not need Wine for the newest systems. RetroPort supplies portable XDG
+directories inside the bundle for their configuration, data, and caches.
+
+Xenia Canary Linux AppImage, release 6e5b832:
+https://github.com/xenia-canary/xenia-canary/releases/download/6e5b832/xenia_canary_linux.AppImage
+SHA-256 (published by GitHub):
+6e0dba4e56fd5b48c0043be0879cb219c5dc9e2eed5e30f3df3cc0acb1177482
+
+RPCS3 Linux AppImage, build 700ca262f44fda57ba260283c3f0a4772db8a573:
+https://github.com/RPCS3/rpcs3-binaries-linux/releases/download/build-700ca262f44fda57ba260283c3f0a4772db8a573/rpcs3-v0.0.41-19564-700ca262_linux64.AppImage
+SHA-256 (published by GitHub):
+190cb796ffce3cfb61f56f03ae44efa7fd8331d49fb37412ba5e6d950a2bd59b
+
+Cemu 2.6 Linux AppImage:
+https://github.com/cemu-project/Cemu/releases/download/v2.6/Cemu-2.6-x86_64.AppImage
+SHA-256 (published by GitHub):
+0c20c4aeb800bb13d9bab9474ef45a6f8fcde6402cad9b32ac2a1bbd03186313
+
+shadPS4 0.16.0 Linux SDL AppImage archive:
+https://github.com/shadps4-emu/shadPS4/releases/download/v.0.16.0/shadps4-linux-sdl-0.16.0.zip
+Archive SHA-256 (published by GitHub):
+7cbb19fe8c909e04129d2431eef723d4710499b40d1aed0047681d14a1dfc79b
+
+Eden 0.2.1 Linux amd64 GCC AppImage:
+https://stable.eden-emu.dev/v0.2.1/Eden-Linux-v0.2.1-amd64-gcc-standard.AppImage
+SHA-256 recorded after retrieval from Eden's official release service:
+2fae658397daf13c118082a3eb65d61a6519967b5e22e6667756baecf6000c5a
+
+Additional Windows backends
+---------------------------
+RPCS3 0.0.38-18582, commit 65273dde (official Windows archive):
+SHA-256 cc6b555ed5f77a287199f780aa3f065f4c9eeee26771439b44236addaa579557
+
+Cemu 2.6 Windows archive:
+SHA-256 a6bcc2bc42a362d10213819948f3152fae7d47f70067f25939b51d3ddcfb0896
+
+shadPS4 0.16.0 Windows SDL archive:
+SHA-256 f6cdcca82f239fb69b2f820ad9dec07f2f00b423273851b67a0e24bc783acf46
+shadPS4 QtLauncher v224 Windows archive:
+SHA-256 021871249bae6867900f62efd728a6cbdbed9934b69c28488b41d413280e2e1d
+
+Eden 0.2.1 Windows amd64 MSVC archive:
+https://stable.eden-emu.dev/v0.2.1/Eden-Windows-v0.2.1-amd64-msvc-standard.zip
+SHA-256 ff498e5da9630216926ac3cbe9fb493b14930665c728a40a8f5b59507fdd7ebf
+
+Cxbx-Reloaded CI-585c49a:
+https://github.com/Cxbx-Reloaded/Cxbx-Reloaded/releases/download/CI-585c49a/CxbxReloaded-Release.zip
+Archive SHA-256 (published by GitHub):
+010d1e85bee9f82f05ae57ca483e7ae61fecba06c1637bf6b5a74ca09b03bf43
+This established Xbox HLE route is bundled as a firmware-free alternative to
+xemu. The original Xbox boot/flash ROMs remain relevant only when xemu is
+chosen.
+
+Play! 0.70 Windows x64:
+https://www.purei.org/downloads/play/stable/0.70/Play-x86-64.exe
+SHA-256 d4cd4583694d555771483526b87b7ff29ca42b0fab0693ae69d1189575a56883
+Play! is the installed PS2 HLE fallback. PCSX2 remains available after a user
+adds a console BIOS, but lack of that BIOS no longer blocks the one-click
+launch route.
+
+PS3 system software (private-machine installation)
+--------------------------------------------------
+Sony support page:
+https://www.playstation.com/en-nz/support/hardware/ps3/system-software/
+Publisher download, version 4.93:
+http://dau01.ps3.update.playstation.net/update/ps3/image/au/2026_0318_a2b60b6ac1d2e49e230144345616927c/PS3UPDAT.PUP
+Size: 206197916 bytes
+SHA-256: 158471fd834f8ea8036136b6aab43cd86c7ba73d79ca30e0af3c0fe0001cf365
+The publisher file and installed dev_flash are private bundle state and are not
+committed to the public source repository. The product's INSTALL FIRMWARE
+action fetches and verifies these exact publisher bytes on the user's machine.
+
+Progetto-SNAPS MAME snapshots
+-----------------------------
+Purpose: locally bundled gameplay imagery for 5,655 MAME catalogue records.
+Project: https://www.progettosnaps.net/
+Snapshot page: https://www.progettosnaps.net/snapshots/
+Recognition: linked by MAME's official resources page.
+Version: Snap Full-Set 0.287, 2026-05-15
+Retrieved: 2026-07-10
+Outer pS_snap_fullset_287.zip SHA-256:
+29891e4c84e6580029c709aa973f7c5ebf056a25727a107d413fa1524657f546
+Inner snap.7z SHA-256:
+95d922b00d8ff6a345381a2364d2a65adf8d0b1c77b90044dcc1f35421ddd68c
+The project states these are MAME emulator screenshots and describes their use
+as fair use; underlying game imagery remains owned by its respective companies.
+
+Catalogue artwork indexes
+--------------------------
+Libretro database commit:
+336b3480e4196f4976d9c26efcd4182fe2980aa9
+Libretro thumbnails: https://thumbnails.libretro.com/
+LaunchBox metadata: https://gamesdb.launchbox-app.com/Metadata.zip
+LaunchBox Metadata.zip SHA-256:
+48d9f38e8efc91eff851d18a1535989681b380f4c9a7f18350b5b9dc4655ee65
+LaunchBox-hosted images remain remote catalogue references until separately
+cached by the application; they are not included in the local artwork folder.

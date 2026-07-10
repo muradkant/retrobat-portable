@@ -1,0 +1,3602 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-10T00:00:00Z",
+  "sources": [
+    {
+      "id": "critical-consensus",
+      "name": "Critical Consensus",
+      "url": "https://en.wikipedia.org/wiki/List_of_video_games_listed_among_the_best",
+      "methodology": "Games appearing on at least six separate best-of lists from different established publications.",
+      "title_count": 357
+    },
+    {
+      "id": "world-video-game-hall-of-fame",
+      "name": "World Video Game Hall of Fame",
+      "url": "https://www.museumofplay.org/exhibits/world-video-game-hall-of-fame/inducted-games/",
+      "methodology": "Games recognized by The Strong for sustained popularity and influence on games, popular culture, or society.",
+      "title_count": 53
+    }
+  ],
+  "titles": [
+    {
+      "title": "A Mind Forever Voyaging",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/a-mind-forever-voyaging-b0f66dd88cfc"
+      ]
+    },
+    {
+      "title": "Advance Wars",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gba-advance-wars-a665f2122c4a",
+        "libretro-classics/wiiu-advance-wars-europe-gba-virtual-console-eshop-2b6cbdf97226"
+      ]
+    },
+    {
+      "title": "Adventure",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-adventure-803a8c16bb78",
+        "libretro-classics/gbc-adventure-ffa233762f8b",
+        "libretro-classics/intellivision-adventure-usa-europe-intellivision-lives-1355df8226e0",
+        "libretro-classics/nes-adventure-usa-atari-flashback-f1bdc3cf0b08"
+      ]
+    },
+    {
+      "title": "Age of Empires",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/age-of-empires-c2b783f8b190"
+      ]
+    },
+    {
+      "title": "Age of Empires II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/age-of-empires-ii-830ba9f1da1c"
+      ]
+    },
+    {
+      "title": "Alien: Isolation",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-alien-isolation-8e6295f97e22"
+      ]
+    },
+    {
+      "title": "Alone in the Dark",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/alone-in-the-dark",
+        "libretro-classics/3do-alone-in-the-dark-e8bd2a686316",
+        "libretro-classics/ps2-alone-in-the-dark-da65a65ce0da",
+        "libretro-classics/ps3-alone-in-the-dark-9b2fb165308a",
+        "libretro-classics/wii-alone-in-the-dark-15f9b72c89e2",
+        "libretro-classics/xbox360-alone-in-the-dark-usa-europe-ee40265f8b8d"
+      ]
+    },
+    {
+      "title": "Angry Birds",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/megadrive-angry-birds-f5082389e662"
+      ]
+    },
+    {
+      "title": "Animal Crossing",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-animal-crossing-c224e8b391a9"
+      ]
+    },
+    {
+      "title": "Animal Crossing: New Horizons",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/animal-crossing-new-horizons-29c2133ea113"
+      ]
+    },
+    {
+      "title": "Another World",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/3do-another-world-a658ab907730",
+        "libretro-classics/gba-another-world-0388ade8431c",
+        "libretro-classics/megadrive-another-world-e240efc48c83",
+        "libretro-classics/snes-another-world-dd0713bde7d0"
+      ]
+    },
+    {
+      "title": "Archon: The Light and the Dark",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/archon-the-light-and-the-dark-fd664959f393"
+      ]
+    },
+    {
+      "title": "Arkanoid",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/arkanoid-eclipse-goodies",
+        "libretro-classics/mame-arkanoid-a9751983851b",
+        "libretro-classics/nes-arkanoid-ba75104e5de4",
+        "libretro-classics/snes-arkanoid-2e58dea3e764"
+      ]
+    },
+    {
+      "title": "Assassin's Creed II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-assassin-s-creed-ii-4ef8807e0577",
+        "libretro-classics/xbox360-assassin-s-creed-ii-5e62118d5da2"
+      ]
+    },
+    {
+      "title": "Assassin's Creed IV: Black Flag",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-assassin-s-creed-iv-black-flag-f6d803fb1227",
+        "libretro-classics/xbox360-assassin-s-creed-iv-black-flag-e447060aee50"
+      ]
+    },
+    {
+      "title": "Asteroids",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-asteroids-cd425da8435a",
+        "libretro-classics/atari5200-asteroids-252ca6dec9c9",
+        "libretro-classics/atari7800-asteroids-86028cbca62d",
+        "libretro-classics/gb-asteroids-usa-europe-10f42110ab5d",
+        "libretro-classics/gbc-asteroids-usa-europe-gb-compatible-e6402d378fdd",
+        "libretro-classics/jaguar-asteroids-world-aftermarket-610dd871968f",
+        "libretro-classics/mame-asteroids-f04430916f70",
+        "libretro-classics/nes-asteroids-usa-atari-flashback-a8c96fd46dc0",
+        "libretro-classics/psx-asteroids-0c752c8c3be7",
+        "msxdev/2025-49-asteroids"
+      ]
+    },
+    {
+      "title": "Baldur's Gate",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/baldur-s-gate-948cc61995bc"
+      ]
+    },
+    {
+      "title": "Baldur's Gate 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/baldur-s-gate-3-9bd22984e238"
+      ]
+    },
+    {
+      "title": "Baldur's Gate II: Shadows of Amn",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/baldur-s-gate-ii-shadows-of-amn-ade55769884c"
+      ]
+    },
+    {
+      "title": "Banjo-Kazooie",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-banjo-kazooie-c1b57752f83d"
+      ]
+    },
+    {
+      "title": "Batman: Arkham Asylum",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nds-batman-arkham-asylum-ab04b29c294d",
+        "libretro-classics/ps3-batman-arkham-asylum-5fcab85eb5f6",
+        "libretro-classics/xbox360-batman-arkham-asylum-52b06cc8b878"
+      ]
+    },
+    {
+      "title": "Batman: Arkham City",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-batman-arkham-city-8d06250182e8",
+        "libretro-classics/xbox360-batman-arkham-city-307007af7cc0"
+      ]
+    },
+    {
+      "title": "Battlefield 1942",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/battlefield-1942-41690461292b"
+      ]
+    },
+    {
+      "title": "Battlefield 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/battlefield-2-fa2d6d00253b"
+      ]
+    },
+    {
+      "title": "Battlezone",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-battlezone-6f1b88b66e80",
+        "libretro-classics/atari5200-battlezone-1dcd276dd527",
+        "libretro-classics/mame-battle-zone-6c540755570e",
+        "libretro-classics/nes-battlezone-usa-atari-flashback-a95d3e8f3df4",
+        "libretro-classics/psp-battlezone-4329ef42eda1"
+      ]
+    },
+    {
+      "title": "Bayonetta",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-bayonetta-90d753d2f45f",
+        "libretro-classics/xbox360-bayonetta-7e2b470bc6de"
+      ]
+    },
+    {
+      "title": "Beyond Good & Evil",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-beyond-good-evil-416bea641093",
+        "libretro-classics/ps2-beyond-good-evil-6a1bb15d4ff7",
+        "libretro-classics/xbox-beyond-good-evil-339118870dff"
+      ]
+    },
+    {
+      "title": "BioShock",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-bioshock-b0d5567090bb",
+        "libretro-classics/xbox360-bioshock-21a402099002"
+      ]
+    },
+    {
+      "title": "BioShock Infinite",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-bioshock-infinite-9f81f20c0afc",
+        "libretro-classics/xbox360-bioshock-infinite-6adc34a276f8"
+      ]
+    },
+    {
+      "title": "Bloodborne",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/bloodborne-d5ad012f2ad0"
+      ]
+    },
+    {
+      "title": "Borderlands",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-borderlands-978e00f339aa",
+        "libretro-classics/xbox360-borderlands-140fb5928134"
+      ]
+    },
+    {
+      "title": "Borderlands 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-borderlands-2-19d2c4a08d72",
+        "libretro-classics/psvita-borderlands-2-a380f3d9a615",
+        "libretro-classics/xbox360-borderlands-2-2aa5ef541476"
+      ]
+    },
+    {
+      "title": "Braid",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/braid-c1554e2e2aa4"
+      ]
+    },
+    {
+      "title": "Bubble Bobble",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/fds-bubble-bobble-dea5543985c5",
+        "libretro-classics/gamegear-bubble-bobble-4de89f1c5f14",
+        "libretro-classics/gb-bubble-bobble-ff14b129ca55",
+        "libretro-classics/jaguar-bubble-bobble-world-aftermarket-8d6dda19cdb6",
+        "libretro-classics/mame-bubble-bobble-a0ca9a1091b7",
+        "libretro-classics/mastersystem-bubble-bobble-95cb287f5704",
+        "libretro-classics/nes-bubble-bobble-557e2688c6e9"
+      ]
+    },
+    {
+      "title": "Burnout 3: Takedown",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-burnout-3-takedown-2a977dc42627",
+        "libretro-classics/xbox-burnout-3-takedown-1c2913c003f5"
+      ]
+    },
+    {
+      "title": "Burnout Paradise",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-burnout-paradise-d0d776f96ddf",
+        "libretro-classics/xbox360-burnout-paradise-d4cd40eb833a"
+      ]
+    },
+    {
+      "title": "Call of Duty 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox360-call-of-duty-2-e17fc7625113"
+      ]
+    },
+    {
+      "title": "Call of Duty 4: Modern Warfare",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nds-call-of-duty-4-modern-warfare-037cbf310994",
+        "libretro-classics/ps3-call-of-duty-4-modern-warfare-debafecbaede",
+        "libretro-classics/xbox360-call-of-duty-4-modern-warfare-58e66489ba39"
+      ]
+    },
+    {
+      "title": "Castlevania: Symphony of the Night",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-castlevania-symphony-of-the-night-cb665e13e090"
+      ]
+    },
+    {
+      "title": "Celeste",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/celeste-2613326765c5"
+      ]
+    },
+    {
+      "title": "Centipede",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-centipede-6ffe41f20983",
+        "libretro-classics/atari5200-centipede-0c172d3d5258",
+        "libretro-classics/atari7800-centipede-65fed5d2b128",
+        "libretro-classics/colecovision-centipede-968894d26728",
+        "libretro-classics/dreamcast-centipede-108ae49cb4ed",
+        "libretro-classics/gb-centipede-usa-majesco-f6ffacc08906",
+        "libretro-classics/gbc-centipede-usa-gb-compatible-6fa49410a943",
+        "libretro-classics/intellivision-centipede-e321eec5dfed",
+        "libretro-classics/lynx-centipede-146b15399fcd",
+        "libretro-classics/mame-centipede-f16683c902cc",
+        "libretro-classics/nes-centipede-usa-atari-flashback-4b604860b1a2",
+        "libretro-classics/psx-centipede-864a3bae5c15"
+      ]
+    },
+    {
+      "title": "Chrono Trigger",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nds-chrono-trigger-f73703dbb94d",
+        "libretro-classics/psx-chrono-trigger-5a49118365b5",
+        "libretro-classics/snes-chrono-trigger-32bc12c6f6c1"
+      ]
+    },
+    {
+      "title": "Civilization",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/civilization-aa98e90127c6"
+      ]
+    },
+    {
+      "title": "Civilization II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-civilization-ii-8bbfa9f3efe6"
+      ]
+    },
+    {
+      "title": "Civilization IV",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/civilization-iv-7f8bb5ce7905"
+      ]
+    },
+    {
+      "title": "Civilization V",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/civilization-v-26556db036d0"
+      ]
+    },
+    {
+      "title": "Combat",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-combat-0046730d51c3",
+        "libretro-classics/mame-combat-297a22da141b"
+      ]
+    },
+    {
+      "title": "Command & Conquer",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/command-and-conquer",
+        "libretro-classics/n64-command-conquer-357aa7f021f8",
+        "libretro-classics/psx-command-conquer-usa-disc-1-gdi-6900ab50e0d7",
+        "libretro-classics/saturn-command-conquer-usa-disc-1-gdi-disc-fdd54921a6e9"
+      ]
+    },
+    {
+      "title": "Command & Conquer: Red Alert",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/command-and-conquer-red-alert"
+      ]
+    },
+    {
+      "title": "Company of Heroes",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/company-of-heroes-739251c88784"
+      ]
+    },
+    {
+      "title": "Contra",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gb-contra-209ed0a83e66",
+        "libretro-classics/mame-contra-2f77e1135474",
+        "libretro-classics/nes-contra-8c27307ea571",
+        "libretro-classics/snes-contra-world-en-rev-d-nes-conversion-787dca9fed78"
+      ]
+    },
+    {
+      "title": "Contra III: The Alien Wars",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-contra-iii-the-alien-wars-01a7777ab33e"
+      ]
+    },
+    {
+      "title": "Counter-Strike",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox-counter-strike-57fbc31c7d20"
+      ]
+    },
+    {
+      "title": "Counter-Strike: Global Offensive",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/counter-strike-global-offensive-2a8264bee94e"
+      ]
+    },
+    {
+      "title": "Crash Bandicoot: Warped",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-crash-bandicoot-warped-bfb6362d4bb5"
+      ]
+    },
+    {
+      "title": "Crazy Taxi",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-crazy-taxi-9ecbcc3a0f1b",
+        "libretro-classics/gamecube-crazy-taxi-bf697c69eedc",
+        "libretro-classics/mame-crazy-taxi-jpn-usa-exp-kor-aus-c18032ab3edd",
+        "libretro-classics/ps2-crazy-taxi-5d23437e8b88"
+      ]
+    },
+    {
+      "title": "Dance Dance Revolution",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-dance-dance-revolution-gn845-ver-aaa-03b2465741f4",
+        "libretro-classics/ps3-dance-dance-revolution-92604aeab076",
+        "libretro-classics/psx-dance-dance-revolution-3550d53f5b02",
+        "libretro-classics/wii-dance-dance-revolution-3e1815287ce2",
+        "libretro-classics/xbox360-dance-dance-revolution-449534b00954"
+      ]
+    },
+    {
+      "title": "Dark Souls",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-dark-souls-54d3da550486",
+        "libretro-classics/xbox360-dark-souls-f07700b3258c"
+      ]
+    },
+    {
+      "title": "Day of the Tentacle",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/maniac-mansion-day-of-the-tentacle"
+      ]
+    },
+    {
+      "title": "Daytona USA",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-daytona-usa-6b0332c55c9d",
+        "libretro-classics/mame-daytona-usa-japan-revision-a-d79dab5d14a8",
+        "libretro-classics/saturn-daytona-usa-aba782df9e99"
+      ]
+    },
+    {
+      "title": "Dead Space",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-dead-space-0269de830b82",
+        "libretro-classics/xbox360-dead-space-f8f570825c2a"
+      ]
+    },
+    {
+      "title": "Defender",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-defender-7b6d6104a6cf",
+        "libretro-classics/atari5200-defender-a65806241aa8",
+        "libretro-classics/colecovision-defender-2f922ca87c58",
+        "libretro-classics/gamecube-defender-92105ddf10ae",
+        "libretro-classics/gba-defender-a580277cf92d",
+        "libretro-classics/intellivision-defender-e9456541cc77",
+        "libretro-classics/mame-defender-red-label-886cb0ad48b2",
+        "libretro-classics/ps2-defender-4edbc2471243",
+        "libretro-classics/xbox-defender-d5abc6f14779"
+      ]
+    },
+    {
+      "title": "Demon's Souls",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-demon-s-souls-4dfc65ac941c"
+      ]
+    },
+    {
+      "title": "Destiny",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-destiny-ebfa7ad2a8b9",
+        "libretro-classics/xbox360-destiny-1d9e645d42ed"
+      ]
+    },
+    {
+      "title": "Deus Ex",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-deus-ex-4f7e0e1f0526",
+        "libretro-classics/ps3-deus-ex-3eb60c83edcb",
+        "libretro-classics/xbox360-deus-ex-6cf068e00231"
+      ]
+    },
+    {
+      "title": "Devil May Cry",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-devil-may-cry-42d7e1f248b6"
+      ]
+    },
+    {
+      "title": "Devil May Cry 3: Dante's Awakening",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-devil-may-cry-3-dante-s-awakening-b9e70501024d"
+      ]
+    },
+    {
+      "title": "Diablo",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gb-diablo-f3e2b9cf54a8",
+        "libretro-classics/psx-diablo-f8431dff2a68"
+      ]
+    },
+    {
+      "title": "Diablo II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/diablo-ii-b154e9b617f4"
+      ]
+    },
+    {
+      "title": "Disco Elysium",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/disco-elysium-c8dfc30d11c5"
+      ]
+    },
+    {
+      "title": "Dishonored",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-dishonored-f9eb177ca48d",
+        "libretro-classics/xbox360-dishonored-35507b714f28"
+      ]
+    },
+    {
+      "title": "Dishonored 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/dishonored-2-82685f9a32c3"
+      ]
+    },
+    {
+      "title": "Divinity: Original Sin II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/divinity-original-sin-ii-aa26cd500c58"
+      ]
+    },
+    {
+      "title": "Donkey Kong",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-donkey-kong-36b1054d134b",
+        "libretro-classics/atari7800-donkey-kong-e384587c3281",
+        "libretro-classics/colecovision-donkey-kong-b76fa51803f5",
+        "libretro-classics/fds-donkey-kong-japan-disk-writer-a1c1502d9f83",
+        "libretro-classics/gb-donkey-kong-world-rev-1-sgb-enhanced-fc290a60a630",
+        "libretro-classics/intellivision-donkey-kong-usa-europe-9153562ed940",
+        "libretro-classics/mame-donkey-kong-02e1f1b2df38",
+        "libretro-classics/nes-donkey-kong-4bbc939590e4",
+        "libretro-content/handheld-electronic-game-donkey-kong-coleco-zip"
+      ]
+    },
+    {
+      "title": "Donkey Kong Country",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gba-donkey-kong-country-8bbc95a53feb",
+        "libretro-classics/gbc-donkey-kong-country-usa-europe-4b296f3cff20",
+        "libretro-classics/snes-donkey-kong-country-089fa18c5cec",
+        "libretro-classics/wiiu-donkey-kong-country-europe-snes-virtual-console-eshop-2c3de5ac570f"
+      ]
+    },
+    {
+      "title": "Doom",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/doom",
+        "libretro-classics/3do-doom-usa-japan-56a52cb067c3",
+        "libretro-classics/gba-doom-usa-europe-0dcf4567e827",
+        "libretro-classics/jaguar-doom-62ad974aee41",
+        "libretro-classics/psx-doom-c178643951a3",
+        "libretro-classics/saturn-doom-ea12434fc23b",
+        "libretro-classics/sega32x-doom-9e74ec11ff2f",
+        "libretro-classics/snes-doom-bd783af2c3c4",
+        "libretro-content/doom-doom-shareware-zip"
+      ]
+    },
+    {
+      "title": "Doom II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/doom-ii",
+        "libretro-classics/gba-doom-ii-114dc19556bb"
+      ]
+    },
+    {
+      "title": "Dota 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/dota-2-27ac0e049d6d"
+      ]
+    },
+    {
+      "title": "Double Dragon",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-double-dragon-fa602f5c1def",
+        "libretro-classics/atari7800-double-dragon-6140aa8d4de6",
+        "libretro-classics/gamegear-double-dragon-usa-europe-a75c3e6bfd73",
+        "libretro-classics/gb-double-dragon-658d3c98a739",
+        "libretro-classics/lynx-double-dragon-usa-europe-619c0e299b10",
+        "libretro-classics/mame-double-dragon-99b6498c6496",
+        "libretro-classics/mastersystem-double-dragon-9b86b3983476",
+        "libretro-classics/megadrive-double-dragon-usa-europe-eedc9d8de1c4",
+        "libretro-classics/neogeocd-double-dragon-4c5ee2df0cd3",
+        "libretro-classics/nes-double-dragon-35fa11f22ac7",
+        "libretro-classics/psx-double-dragon-44313c51d5ce"
+      ]
+    },
+    {
+      "title": "Dragon Age: Origins",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-dragon-age-origins-fb13001e70c7",
+        "libretro-classics/xbox360-dragon-age-origins-d1ac14233560"
+      ]
+    },
+    {
+      "title": "Dragon Quest VIII",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/3ds-dragon-quest-viii-journey-of-the-cursed-king-7200e9a92377",
+        "libretro-classics/ps2-dragon-quest-viii-journey-of-the-cursed-king-a44ee0680609"
+      ]
+    },
+    {
+      "title": "Duke Nukem 3D",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/duke-nukem-3d",
+        "libretro-classics/megadrive-duke-nukem-3d-636978425d76",
+        "libretro-classics/saturn-duke-nukem-3d-c31d4cffbf9d"
+      ]
+    },
+    {
+      "title": "Dune II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/dune-ii-the-building-of-a-dynasty"
+      ]
+    },
+    {
+      "title": "Dungeon Master",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "homebrew-hub/dungeon-master",
+        "homebrew-hub/joaobapt__dungeon-master",
+        "libretro-classics/snes-dungeon-master-e57a0451d7ec"
+      ]
+    },
+    {
+      "title": "EarthBound",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-earthbound-835a8a0d7c29",
+        "libretro-classics/wiiu-earthbound-europe-snes-virtual-console-eshop-f7d6778e56f0"
+      ]
+    },
+    {
+      "title": "Elden Ring",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/elden-ring-7acd81369704"
+      ]
+    },
+    {
+      "title": "Elite",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nes-elite-f0213f2c64c9"
+      ]
+    },
+    {
+      "title": "Eternal Darkness: Sanity's Requiem",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-eternal-darkness-sanity-s-requiem-fe8e9f8967ed"
+      ]
+    },
+    {
+      "title": "EverQuest",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/everquest-dfaffd903cdc"
+      ]
+    },
+    {
+      "title": "F-Zero GX",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-f-zero-gx-fdb32df916be"
+      ]
+    },
+    {
+      "title": "Fable II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox360-fable-ii-4d1fee2a35c5"
+      ]
+    },
+    {
+      "title": "Fallout",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/fallout"
+      ]
+    },
+    {
+      "title": "Fallout 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/fallout-2-e852c9a2d637"
+      ]
+    },
+    {
+      "title": "Fallout 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-fallout-3-1357222e702f",
+        "libretro-classics/xbox360-fallout-3-fbc268e72877"
+      ]
+    },
+    {
+      "title": "Fallout: New Vegas",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-fallout-new-vegas-022a80a7e7f5",
+        "libretro-classics/xbox360-fallout-new-vegas-7fdf15e48a6f"
+      ]
+    },
+    {
+      "title": "Far Cry 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-far-cry-3-52824fce954e",
+        "libretro-classics/xbox360-far-cry-3-5921134aa9cd"
+      ]
+    },
+    {
+      "title": "Final Fantasy IV",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nds-final-fantasy-iv-8361a2f4b2cc",
+        "libretro-classics/psx-final-fantasy-iv-3adbeee897e1",
+        "libretro-classics/snes-final-fantasy-iv-c0c283c763bb"
+      ]
+    },
+    {
+      "title": "Final Fantasy IX",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-final-fantasy-ix-fb95902f26d0"
+      ]
+    },
+    {
+      "title": "Final Fantasy Tactics",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-final-fantasy-tactics-dc71026f62dd"
+      ]
+    },
+    {
+      "title": "Final Fantasy VI",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-final-fantasy-vi-europe-australia-5c6b0dd91302",
+        "libretro-classics/snes-final-fantasy-vi-fc9935b3617d"
+      ]
+    },
+    {
+      "title": "Final Fantasy VII",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-final-fantasy-vii-4a6589da4e28"
+      ]
+    },
+    {
+      "title": "Final Fantasy X",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-final-fantasy-x-2a0849b71f45"
+      ]
+    },
+    {
+      "title": "Final Fantasy XIV: A Realm Reborn",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/final-fantasy-xiv-a-realm-reborn-e4a9370aba5d"
+      ]
+    },
+    {
+      "title": "Final Fight",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-final-fight-ab81fd552b40",
+        "libretro-classics/snes-final-fight-924e5ab33189"
+      ]
+    },
+    {
+      "title": "Fire Emblem Awakening",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/3ds-fire-emblem-awakening-eb38b95f2234"
+      ]
+    },
+    {
+      "title": "Flashback",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/flashback",
+        "libretro-classics/3do-flashback-0d2631c7314c",
+        "libretro-classics/dreamcast-flashback-usa-japan-9f7b07faf15c",
+        "libretro-classics/megadrive-flashback-2c88cb20fded",
+        "libretro-classics/snes-flashback-8e12c383dc47"
+      ]
+    },
+    {
+      "title": "Fortnite",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/fortnite-6b499268038c"
+      ]
+    },
+    {
+      "title": "Freespace 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/freespace-2-501d5497380f"
+      ]
+    },
+    {
+      "title": "Frogger",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-frogger-40270fd8970e",
+        "libretro-classics/atari5200-frogger-ac3c60f6657a",
+        "libretro-classics/colecovision-frogger-75570ff94edf",
+        "libretro-classics/gamecube-frogger-162f9c3af20d",
+        "libretro-classics/gamegear-frogger-dbde3e373c98",
+        "libretro-classics/gb-frogger-508b31be64c9",
+        "libretro-classics/gbc-frogger-usa-gb-compatible-5641fd831f85",
+        "libretro-classics/intellivision-frogger-usa-europe-52d2720658a6",
+        "libretro-classics/mame-frogger-f58f0e4bf77a",
+        "libretro-classics/mastersystem-frogger-1231555a4063",
+        "libretro-classics/megadrive-frogger-c97897bdbb24",
+        "libretro-classics/ps2-frogger-3e89dc5fecc0",
+        "libretro-classics/psx-frogger-ee60e730d297",
+        "libretro-classics/snes-frogger-4869a5f9edfe"
+      ]
+    },
+    {
+      "title": "Galaga",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari7800-galaga-bd9538089ab4",
+        "libretro-classics/fds-galaga-japan-disk-writer-b59283e3bec2",
+        "libretro-classics/mame-galaga-namco-db9e7ab8e817",
+        "libretro-classics/nes-galaga-675cc12e00d0"
+      ]
+    },
+    {
+      "title": "Gauntlet",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-gauntlet-f650c614915d",
+        "libretro-classics/mame-gauntlet-b9d592c43413",
+        "libretro-classics/mastersystem-gauntlet-europe-brazil-87355f78b18e",
+        "libretro-classics/megadrive-gauntlet-5e743bb6a42e",
+        "libretro-classics/nds-gauntlet-cf76791e6dc7",
+        "libretro-classics/nes-gauntlet-f1392a0a2adc"
+      ]
+    },
+    {
+      "title": "Gears of War",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox360-gears-of-war-0cd1c93e33d4"
+      ]
+    },
+    {
+      "title": "Gears of War 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox360-gears-of-war-2-022504411ebe"
+      ]
+    },
+    {
+      "title": "Ghosts 'n Goblins",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-ghosts-n-goblins-c40482c7d02e",
+        "libretro-classics/nes-ghosts-n-goblins-50590cd4425d"
+      ]
+    },
+    {
+      "title": "God of War",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-god-of-war-6cf458043f8c"
+      ]
+    },
+    {
+      "title": "God of War II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-god-of-war-ii-a7830c4673e2"
+      ]
+    },
+    {
+      "title": "God of War III",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-god-of-war-iii-d9dd7205bdc6"
+      ]
+    },
+    {
+      "title": "GoldenEye 007",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-goldeneye-007-6030f4f8b5b6",
+        "libretro-classics/nds-goldeneye-007-16e8e75be5af",
+        "libretro-classics/wii-goldeneye-007-1862b6b7026a"
+      ]
+    },
+    {
+      "title": "Gran Turismo",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psp-gran-turismo-f7b80d752eb4",
+        "libretro-classics/psx-gran-turismo-04e2b78f409a"
+      ]
+    },
+    {
+      "title": "Gran Turismo 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-gran-turismo-2-usa-arcade-mode-d04fa9ed4ae1"
+      ]
+    },
+    {
+      "title": "Gran Turismo 3: A-Spec",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-gran-turismo-3-a-spec-51e6b23296a6"
+      ]
+    },
+    {
+      "title": "Gran Turismo 4",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-gran-turismo-4-3f28f37d9014"
+      ]
+    },
+    {
+      "title": "Grand Theft Auto",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/grand-theft-auto",
+        "libretro-classics/gba-grand-theft-auto-4e73e9e296c7",
+        "libretro-classics/gbc-grand-theft-auto-usa-gb-compatible-a1bcb757e073",
+        "libretro-classics/psx-grand-theft-auto-4126794458b5"
+      ]
+    },
+    {
+      "title": "Grand Theft Auto III",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-grand-theft-auto-iii-348c0a4ae34e",
+        "libretro-classics/xbox-grand-theft-auto-iii-2b3cc0768fde"
+      ]
+    },
+    {
+      "title": "Grand Theft Auto IV",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-grand-theft-auto-iv-151be685e62d",
+        "libretro-classics/xbox360-grand-theft-auto-iv-bace74edeae3"
+      ]
+    },
+    {
+      "title": "Grand Theft Auto V",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-grand-theft-auto-v-ecf60ca388e9",
+        "libretro-classics/xbox360-grand-theft-auto-v-world-en-fr-de-es-it-pt-zh-ko-pl-ru-disc-2-play-05cbbcff37a8"
+      ]
+    },
+    {
+      "title": "Grand Theft Auto: San Andreas",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-grand-theft-auto-san-andreas-bb880b83c607",
+        "libretro-classics/ps3-grand-theft-auto-san-andreas-10ba2ab0f6eb",
+        "libretro-classics/xbox-grand-theft-auto-san-andreas-97c449617550"
+      ]
+    },
+    {
+      "title": "Grand Theft Auto: Vice City",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-grand-theft-auto-vice-city-62e73bce4781",
+        "libretro-classics/xbox-grand-theft-auto-vice-city-8ceec4e743cc"
+      ]
+    },
+    {
+      "title": "Grim Fandango",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/grim-fandango-c951e84ecaee"
+      ]
+    },
+    {
+      "title": "Guitar Hero",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-guitar-hero-c23b888280a4"
+      ]
+    },
+    {
+      "title": "Gunstar Heroes",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamegear-gunstar-heroes-087578fc353a",
+        "libretro-classics/megadrive-gunstar-heroes-db9350e7d26d"
+      ]
+    },
+    {
+      "title": "Hades",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/hades-4a510f82b02e"
+      ]
+    },
+    {
+      "title": "Half-Life",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-half-life-407f137d473a"
+      ]
+    },
+    {
+      "title": "Half-Life 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox-half-life-2-usa-europe-a509d4a90603"
+      ]
+    },
+    {
+      "title": "Halo 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox-halo-2-4f3e10685470"
+      ]
+    },
+    {
+      "title": "Halo 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox360-halo-3-4752f440680f"
+      ]
+    },
+    {
+      "title": "Halo: Combat Evolved",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox-halo-combat-evolved-77dcd9f3d102"
+      ]
+    },
+    {
+      "title": "Head over Heels",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/head-over-heels-4e26c448fb98"
+      ]
+    },
+    {
+      "title": "Hearthstone",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/hearthstone-748dc92574d9"
+      ]
+    },
+    {
+      "title": "Heavy Rain",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-heavy-rain-8e0a124d7483"
+      ]
+    },
+    {
+      "title": "Heroes of Might and Magic III",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/heroes-of-might-and-magic-iii-3cb6f0862986"
+      ]
+    },
+    {
+      "title": "Hitman: Blood Money",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-hitman-blood-money-d27ecc9b5519",
+        "libretro-classics/xbox-hitman-blood-money-3941a78c0be4",
+        "libretro-classics/xbox360-hitman-blood-money-273f037efbf8"
+      ]
+    },
+    {
+      "title": "Hollow Knight",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/hollow-knight-2adfa8794c4e"
+      ]
+    },
+    {
+      "title": "Homeworld",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/homeworld-e7977f099b85"
+      ]
+    },
+    {
+      "title": "Horizon Zero Dawn",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/horizon-zero-dawn-caec6f9103ac"
+      ]
+    },
+    {
+      "title": "Hotline Miami",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/hotline-miami-85cffcb05097"
+      ]
+    },
+    {
+      "title": "Ico",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-ico-4952a0d2d5b3",
+        "libretro-classics/ps3-ico-4e8dbed114ce"
+      ]
+    },
+    {
+      "title": "Ikaruga",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-ikaruga-28043b451685",
+        "libretro-classics/gamecube-ikaruga-34c58fc86f72",
+        "libretro-classics/mame-ikaruga-gdl-0010-57cef7a6f4be"
+      ]
+    },
+    {
+      "title": "Indiana Jones and the Fate of Atlantis",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/indiana-jones-and-the-fate-of-atlantis"
+      ]
+    },
+    {
+      "title": "Inside",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/inside-8deed4efac89"
+      ]
+    },
+    {
+      "title": "Jet Set Radio",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-jet-set-radio-c0b67868aff7",
+        "libretro-classics/gba-jet-set-radio-77a4eccc537f"
+      ]
+    },
+    {
+      "title": "Journey",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-journey-5ad2eff8404c",
+        "libretro-classics/nes-journey-7f5863483be0"
+      ]
+    },
+    {
+      "title": "Joust",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-joust-91866f2f2f02",
+        "libretro-classics/atari5200-joust-f850bd04f985",
+        "libretro-classics/atari7800-joust-fe8b0ecbfe88",
+        "libretro-classics/colecovision-joust-841378587070",
+        "libretro-classics/jaguar-joust-world-aftermarket-138057ebd9bd",
+        "libretro-classics/lynx-joust-usa-europe-53a780d7ea84",
+        "libretro-classics/mame-joust-solid-red-label-243eafde83d6",
+        "libretro-classics/mastersystem-joust-c2d514e1a25a",
+        "libretro-classics/nes-joust-761aa5df0f3d"
+      ]
+    },
+    {
+      "title": "Katamari Damacy",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-katamari-damacy-363bef4a26ca"
+      ]
+    },
+    {
+      "title": "Kingdom Hearts",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-kingdom-hearts-06e952d9813c"
+      ]
+    },
+    {
+      "title": "Kingdom Hearts II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-kingdom-hearts-ii-5d680e335d0e"
+      ]
+    },
+    {
+      "title": "League of Legends",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/league-of-legends-969fca84cb5d"
+      ]
+    },
+    {
+      "title": "Left 4 Dead",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox360-left-4-dead-af324d9599e4"
+      ]
+    },
+    {
+      "title": "Left 4 Dead 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox360-left-4-dead-2-f7825a9270f8"
+      ]
+    },
+    {
+      "title": "Lemmings",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/lemmings",
+        "libretro-classics/3do-lemmings-69fa84a3c784",
+        "libretro-classics/gamegear-lemmings-2267791738a9",
+        "libretro-classics/gb-lemmings-6eb0ca4f83e0",
+        "libretro-classics/gbc-lemmings-d49d6632adfb",
+        "libretro-classics/lynx-lemmings-usa-europe-d8646d817757",
+        "libretro-classics/mastersystem-lemmings-europe-brazil-7447678deb33",
+        "libretro-classics/megadrive-lemmings-aa3b2407bd2f",
+        "libretro-classics/nes-lemmings-baa3ab64e5b2",
+        "libretro-classics/pcenginecd-lemmings-07b87fd0125c",
+        "libretro-classics/ps2-lemmings-c5718f558945",
+        "libretro-classics/psp-lemmings-a05f043bad05",
+        "libretro-classics/snes-lemmings-ec4438429dd0"
+      ]
+    },
+    {
+      "title": "Life Is Strange",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/life-is-strange-565e35c1596b"
+      ]
+    },
+    {
+      "title": "Limbo",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/limbo-9728c9978b5f"
+      ]
+    },
+    {
+      "title": "LittleBigPlanet",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-littlebigplanet-16be3fd3d380",
+        "libretro-classics/psp-littlebigplanet-d3703561dc79"
+      ]
+    },
+    {
+      "title": "Lode Runner",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "homebrew-hub/loderunner",
+        "libretro-classics/gba-lode-runner-c3704bc2dc68",
+        "libretro-classics/intellivision-lode-runner-695c471aee81",
+        "libretro-classics/mame-lode-runner-set-1-25cd02031e60",
+        "libretro-classics/nds-lode-runner-66effb1e109c",
+        "libretro-classics/nes-lode-runner-0f2022ce4991",
+        "libretro-classics/psx-lode-runner-077f33df984a",
+        "libretro-classics/sg1000-lode-runner-e4d608339f7a"
+      ]
+    },
+    {
+      "title": "Lumines: Puzzle Fusion",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psp-lumines-puzzle-fusion-1a3a742ef2c8"
+      ]
+    },
+    {
+      "title": "M.U.L.E.",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/mule",
+        "libretro-classics/nes-m-u-l-e-8e393f4c3574"
+      ]
+    },
+    {
+      "title": "Marble Madness",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamegear-marble-madness-usa-europe-22b4b6ba4615",
+        "libretro-classics/gb-marble-madness-usa-europe-08aa492bacd4",
+        "libretro-classics/gbc-marble-madness-usa-europe-d640c87a84fd",
+        "libretro-classics/lynx-marble-madness-world-aftermarket-17164a31d36e",
+        "libretro-classics/mame-marble-madness-set-1-5852e1a32ef5",
+        "libretro-classics/mastersystem-marble-madness-00be904b493f",
+        "libretro-classics/megadrive-marble-madness-ea8a95315be2",
+        "libretro-classics/nes-marble-madness-02bb8e8a60cb"
+      ]
+    },
+    {
+      "title": "Mario Kart 64",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-mario-kart-64-713e1a02f16a",
+        "libretro-classics/wiiu-mario-kart-64-europe-n64-virtual-console-eshop-6d00ebfa8a08"
+      ]
+    },
+    {
+      "title": "Mario Kart 8",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/mario-kart-8-94710c081a4e"
+      ]
+    },
+    {
+      "title": "Marvel vs. Capcom 2: New Age of Heroes",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-marvel-vs-capcom-2-new-age-of-heroes-96e377358d47",
+        "libretro-classics/ps2-marvel-vs-capcom-2-new-age-of-heroes-f10a76a01eaa",
+        "libretro-classics/xbox-marvel-vs-capcom-2-new-age-of-heroes-afeed18237a4"
+      ]
+    },
+    {
+      "title": "Mass Effect",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-mass-effect-cfd69136606b",
+        "libretro-classics/xbox360-mass-effect-9c69bfd790a6"
+      ]
+    },
+    {
+      "title": "Mass Effect 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-mass-effect-2-220ab61ea897",
+        "libretro-classics/xbox360-mass-effect-2-ef2e4bab4eee"
+      ]
+    },
+    {
+      "title": "Max Payne",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gba-max-payne-a8820f963f41",
+        "libretro-classics/ps2-max-payne-ec06e41b6fe0",
+        "libretro-classics/xbox-max-payne-8cf8e2d9688c"
+      ]
+    },
+    {
+      "title": "Max Payne 2: The Fall of Max Payne",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-max-payne-2-the-fall-of-max-payne-5f8584962af0",
+        "libretro-classics/xbox-max-payne-2-the-fall-of-max-payne-e56278b5d7ac"
+      ]
+    },
+    {
+      "title": "MechWarrior 2: 31st Century Combat",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/mechwarrior-2-31st-century-combat"
+      ]
+    },
+    {
+      "title": "Mega Man 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nes-mega-man-2-9f7b75639560"
+      ]
+    },
+    {
+      "title": "Mega Man X",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/mega-man-x",
+        "libretro-classics/megadrive-mega-man-x-world-rom-2-47ce1633782c",
+        "libretro-classics/snes-mega-man-x-6d3a81cdb66c"
+      ]
+    },
+    {
+      "title": "Metal Gear Solid",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gbc-metal-gear-solid-0aeb39fb721d",
+        "libretro-classics/psx-metal-gear-solid-2553ea746250"
+      ]
+    },
+    {
+      "title": "Metal Gear Solid 2: Sons of Liberty",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-metal-gear-solid-2-sons-of-liberty-7ecf0644c4b0"
+      ]
+    },
+    {
+      "title": "Metal Gear Solid 3: Snake Eater",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-metal-gear-solid-3-snake-eater-111c9d1b7a2c"
+      ]
+    },
+    {
+      "title": "Metal Gear Solid V: The Phantom Pain",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-metal-gear-solid-v-the-phantom-pain-8f3d0f9a77b8"
+      ]
+    },
+    {
+      "title": "Metroid Prime",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-metroid-prime-20568c7149d4",
+        "libretro-classics/wii-metroid-prime-98cece61a42a"
+      ]
+    },
+    {
+      "title": "Micro Machines",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/micro-machines",
+        "libretro-classics/gamecube-micro-machines-d711a854ef30",
+        "libretro-classics/gamegear-micro-machines-usa-europe-1e026fc74181",
+        "libretro-classics/gb-micro-machines-usa-europe-e39f9909c128",
+        "libretro-classics/gba-micro-machines-aa9540b165a6",
+        "libretro-classics/mastersystem-micro-machines-fbc591281c8f",
+        "libretro-classics/megadrive-micro-machines-6d3d9ba3d837",
+        "libretro-classics/nes-micro-machines-f8b003004bf0",
+        "libretro-classics/ps2-micro-machines-241936b2d4f3",
+        "libretro-classics/psx-micro-machines-1a8ec6fb239c",
+        "libretro-classics/snes-micro-machines-8851bcda9683",
+        "libretro-classics/xbox-micro-machines-bc7e588f9bec"
+      ]
+    },
+    {
+      "title": "Mike Tyson's Punch-Out!!",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-mike-tyson-s-punch-out-playchoice-10-319cef7ac977",
+        "libretro-classics/nes-mike-tyson-s-punch-out-669876904724",
+        "libretro-classics/snes-mike-tyson-s-punch-out-world-rev-b-nes-conversion-eb8fa16cf9d8"
+      ]
+    },
+    {
+      "title": "Minecraft",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-minecraft-playstation-3-edition-c03217ecda71",
+        "libretro-classics/psvita-minecraft-playstation-vita-edition-70922b347c8d",
+        "libretro-classics/xbox360-minecraft-xbox-360-edition-e8553d4706a3"
+      ]
+    },
+    {
+      "title": "Missile Command",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-missile-command-abe8c1fa60c7",
+        "libretro-classics/atari5200-missile-command-13c26c47221a",
+        "libretro-classics/gb-missile-command-usa-europe-ef10570164ee",
+        "libretro-classics/gbc-missile-command-939755422a51",
+        "libretro-classics/mame-missile-command-54a344b18d2f",
+        "libretro-classics/psx-missile-command-af06a98d25b7"
+      ]
+    },
+    {
+      "title": "Monkey Island 2: LeChuck's Revenge",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/monkey-island-2-lechucks-revenge"
+      ]
+    },
+    {
+      "title": "Mortal Kombat",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamegear-mortal-kombat-usa-europe-c3d457c11ea2",
+        "libretro-classics/gb-mortal-kombat-usa-europe-8a91d3f50a71",
+        "libretro-classics/lynx-mortal-kombat-world-aftermarket-8b64b45354fb",
+        "libretro-classics/mame-mortal-kombat-42ade1f32af9",
+        "libretro-classics/mastersystem-mortal-kombat-europe-brazil-9589deec1fbb",
+        "libretro-classics/megacd-mortal-kombat-b4063049dd4c",
+        "libretro-classics/megadrive-mortal-kombat-eadeefddbb09",
+        "libretro-classics/ps3-mortal-kombat-6f43abd492d3",
+        "libretro-classics/psvita-mortal-kombat-27749a87907d",
+        "libretro-classics/snes-mortal-kombat-aa98c3003009",
+        "libretro-classics/xbox360-mortal-kombat-usa-europe-b1035559d83c"
+      ]
+    },
+    {
+      "title": "Mortal Kombat II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/mortal-kombat-ii",
+        "libretro-classics/3do-mortal-kombat-ii-e197c55a9de7",
+        "libretro-classics/gamegear-mortal-kombat-ii-0acecee0034d",
+        "libretro-classics/gb-mortal-kombat-ii-usa-europe-b49a83db44b9",
+        "libretro-classics/mame-mortal-kombat-ii-c97e30612ad7",
+        "libretro-classics/mastersystem-mortal-kombat-ii-europe-brazil-50b935006f6b",
+        "libretro-classics/megadrive-mortal-kombat-ii-18e7b2a6e9dd",
+        "libretro-classics/psx-mortal-kombat-ii-5d2166def2e7",
+        "libretro-classics/saturn-mortal-kombat-ii-0a6f367e52b6",
+        "libretro-classics/sega32x-mortal-kombat-ii-9ceeacd50fae",
+        "libretro-classics/snes-mortal-kombat-ii-5114428aa207"
+      ]
+    },
+    {
+      "title": "Ms. Pac-Man",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-ms-pac-man-a3ac13efdd49",
+        "libretro-classics/atari5200-ms-pac-man-be286305b3c1",
+        "libretro-classics/atari7800-ms-pac-man-00399536d608",
+        "libretro-classics/gamegear-ms-pac-man-5b17ca870ca0",
+        "libretro-classics/gb-ms-pac-man-fb851e956b24",
+        "libretro-classics/lynx-ms-pac-man-c121819ddb8f",
+        "libretro-classics/mame-ms-pac-man-408fe55e438d",
+        "libretro-classics/mastersystem-ms-pac-man-europe-brazil-b11e3ceee357",
+        "libretro-classics/megadrive-ms-pac-man-usa-europe-fadce570aacd",
+        "libretro-classics/nes-ms-pac-man-usa-namco-e3377ab0f137",
+        "libretro-classics/snes-ms-pac-man-8cf26279fa5e"
+      ]
+    },
+    {
+      "title": "Myst",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/3do-myst-baab75a6a5bc",
+        "libretro-classics/3ds-myst-00311552cc53",
+        "libretro-classics/jaguarcd-myst-879a861bc30e",
+        "libretro-classics/nds-myst-429f9a643d2b",
+        "libretro-classics/psp-myst-d639083acfcd",
+        "libretro-classics/psx-myst-3216e962dbb4",
+        "libretro-classics/saturn-myst-c807bb2d5fde"
+      ]
+    },
+    {
+      "title": "NBA Jam",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamegear-nba-jam-22480b50ceef",
+        "libretro-classics/gb-nba-jam-usa-europe-aacf2fcf13b0",
+        "libretro-classics/mame-nba-jam-6163c072a34f",
+        "libretro-classics/mastersystem-nba-jam-66b2870409e7",
+        "libretro-classics/megacd-nba-jam-8a6b8046ae0e",
+        "libretro-classics/megadrive-nba-jam-a45157ec5913",
+        "libretro-classics/ps2-nba-jam-4bfa8ca872cd",
+        "libretro-classics/ps3-nba-jam-d520f6b2a2ea",
+        "libretro-classics/snes-nba-jam-32698e34efea",
+        "libretro-classics/wii-nba-jam-a4f5a8f60797",
+        "libretro-classics/xbox-nba-jam-58e7d7035ef0",
+        "libretro-classics/xbox360-nba-jam-usa-europe-608dc88d3d9f"
+      ]
+    },
+    {
+      "title": "Nights into Dreams",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-nights-into-dreams-541cbb1c7bec",
+        "libretro-classics/saturn-nights-into-dreams-ca7fa0436bac"
+      ]
+    },
+    {
+      "title": "Ninja Gaiden",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamegear-ninja-gaiden-5c30e616b071",
+        "libretro-classics/lynx-ninja-gaiden-usa-europe-57e33f1fba57",
+        "libretro-classics/mame-ninja-gaiden-0dbbab2cb0ad",
+        "libretro-classics/mastersystem-ninja-gaiden-europe-brazil-a5f87b4b0273",
+        "libretro-classics/megadrive-ninja-gaiden-f43fb0191d61",
+        "libretro-classics/nes-ninja-gaiden-19259e4bf9ac",
+        "libretro-classics/xbox-ninja-gaiden-usa-asia-bbc0224be3e4"
+      ]
+    },
+    {
+      "title": "Out Run",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-out-run-japan-deluxe-sitdown-fd1089a-317-0019-26f266e0f8e9",
+        "libretro-classics/mastersystem-outrun-c1c2e9b6cdbf",
+        "libretro-classics/megadrive-outrun-ed5c92c3fa52",
+        "libretro-classics/pcengine-out-run-9b140b6e3bcd"
+      ]
+    },
+    {
+      "title": "Outer Wilds",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/outer-wilds-a9a19161c27f"
+      ]
+    },
+    {
+      "title": "Overwatch",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/overwatch-b1a7f7354fa1"
+      ]
+    },
+    {
+      "title": "PaRappa the Rapper",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psp-parappa-the-rapper-8e2a5c93bf4f",
+        "libretro-classics/psx-parappa-the-rapper-2659ef3fe03d"
+      ]
+    },
+    {
+      "title": "Pac-Man",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "homebrew-hub/pacman",
+        "libretro-classics/atari2600-pac-man-8a7a4de413c6",
+        "libretro-classics/atari5200-pac-man-7b52bb824000",
+        "libretro-classics/colecovision-pac-man-2c5d6146d556",
+        "libretro-classics/fds-pac-man-japan-disk-writer-25b29ecb4e4b",
+        "libretro-classics/gamegear-pac-man-e398797a63ba",
+        "libretro-classics/gb-pac-man-a6179a507d64",
+        "libretro-classics/intellivision-pac-man-usa-atarisoft-c5d70fde1183",
+        "libretro-classics/mame-pac-man-hearts-a67c1e676c1d",
+        "libretro-classics/mastersystem-pac-man-14afed1e4e9a",
+        "libretro-classics/nes-pac-man-ea52918c3fe6",
+        "libretro-classics/ngpc-pac-man-590427802fc3"
+      ]
+    },
+    {
+      "title": "Panzer Dragoon Saga",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/saturn-panzer-dragoon-saga-32c11b7aa9e9"
+      ]
+    },
+    {
+      "title": "Papers, Please",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/papers-please-29ce4dfbe374"
+      ]
+    },
+    {
+      "title": "Peggle",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-peggle-joystick-v1-0-3b41f611902d"
+      ]
+    },
+    {
+      "title": "Perfect Dark",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gbc-perfect-dark-usa-europe-en-fr-de-es-it-rumble-version-761a68db2de5",
+        "libretro-classics/n64-perfect-dark-01d4927e177d"
+      ]
+    },
+    {
+      "title": "Persona 4",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-persona-4-2159d2ce7518"
+      ]
+    },
+    {
+      "title": "Persona 5",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-persona-5-40cc118f35b2"
+      ]
+    },
+    {
+      "title": "Phantasy Star IV",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/megadrive-phantasy-star-iv-4f824f3249d4"
+      ]
+    },
+    {
+      "title": "Phoenix Wright: Ace Attorney",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nds-phoenix-wright-ace-attorney-4859e1f7ca93"
+      ]
+    },
+    {
+      "title": "Pitfall!",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari5200-pitfall-90fc5370ca46",
+        "libretro-classics/colecovision-pitfall-9a1f8ae66a25",
+        "libretro-classics/intellivision-pitfall-usa-europe-b91e336158ad"
+      ]
+    },
+    {
+      "title": "Planescape: Torment",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/planescape-torment-395fab2c3359"
+      ]
+    },
+    {
+      "title": "Plants vs. Zombies",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/megadrive-plants-vs-zombies-dde2d57daee7",
+        "libretro-classics/nds-plants-vs-zombies-19ebef4c0c42",
+        "libretro-classics/ps3-plants-vs-zombies-0e9b3a4196a5",
+        "libretro-classics/xbox360-plants-vs-zombies-4b65fcaf9585"
+      ]
+    },
+    {
+      "title": "Pokémon Gold and Silver",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gbc-pokemon-gold-version-usa-europe-sgb-enhanced-gb-compatible-17d1cad52641"
+      ]
+    },
+    {
+      "title": "Pokémon Red and Blue",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamegear-pokemon-red-version-0dc1647be507",
+        "libretro-classics/gb-pokemon-red-version-usa-europe-sgb-enhanced-a0abd0dc7b68"
+      ]
+    },
+    {
+      "title": "Pong",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/pong-pete-cooper",
+        "homebrew-hub/pong",
+        "libretro-classics/mastersystem-pong-aa563a74fc84",
+        "libretro-classics/psx-pong-b7e921a31951",
+        "libretro-content/lutro-pong-lutro",
+        "libretro-content/wasm-4-pong-zip",
+        "retrobat-store/mame-pong"
+      ]
+    },
+    {
+      "title": "Populous",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gb-populous-63d99692b006",
+        "libretro-classics/mastersystem-populous-europe-brazil-a0b113b3ea30",
+        "libretro-classics/megadrive-populous-b1863e71d7c6",
+        "libretro-classics/nes-populous-9776a64778b9",
+        "libretro-classics/pcengine-populous-045a04fa6080",
+        "libretro-classics/snes-populous-c2c053cfcab8"
+      ]
+    },
+    {
+      "title": "Portal",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nes-portal-bca4f9f43e8a"
+      ]
+    },
+    {
+      "title": "Portal 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-portal-2-517546f032b7",
+        "libretro-classics/xbox360-portal-2-c47169182faa"
+      ]
+    },
+    {
+      "title": "Prince of Persia",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/prince-of-persia",
+        "libretro-classics/gamegear-prince-of-persia-usa-europe-746fd8b5af1f",
+        "libretro-classics/gb-prince-of-persia-41e5e04961e8",
+        "libretro-classics/gbc-prince-of-persia-usa-europe-en-fr-de-es-it-gb-compatible-6864e1c7ae4d",
+        "libretro-classics/mastersystem-prince-of-persia-ec5e16c6a5cb",
+        "libretro-classics/megacd-prince-of-persia-2eabfb73d4ee",
+        "libretro-classics/megadrive-prince-of-persia-c129849f542f",
+        "libretro-classics/nes-prince-of-persia-2f0e19fe9696",
+        "libretro-classics/pcenginecd-prince-of-persia-857d99c19d6d",
+        "libretro-classics/ps3-prince-of-persia-b203a8ca3379",
+        "libretro-classics/snes-prince-of-persia-9bd5d3120af0",
+        "libretro-classics/xbox360-prince-of-persia-afe6ddc43b2f"
+      ]
+    },
+    {
+      "title": "Prince of Persia: The Sands of Time",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-prince-of-persia-the-sands-of-time-4b0c8b2d0c86",
+        "libretro-classics/gba-prince-of-persia-the-sands-of-time-a72557435f67",
+        "libretro-classics/ps2-prince-of-persia-the-sands-of-time-b3faa05db046",
+        "libretro-classics/xbox-prince-of-persia-the-sands-of-time-a3fefbb440d7"
+      ]
+    },
+    {
+      "title": "Psychonauts",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-psychonauts-a5a260bbd166",
+        "libretro-classics/xbox-psychonauts-5ca4d1eb6947"
+      ]
+    },
+    {
+      "title": "Quake",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/quake",
+        "libretro-classics/gba-quake-a117a454c143",
+        "libretro-classics/n64-quake-2f119474343e",
+        "libretro-classics/saturn-quake-0fa811d6cfde",
+        "libretro-content/quake-quake-shareware-zip"
+      ]
+    },
+    {
+      "title": "Quake II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-quake-ii-24546f44f14f",
+        "libretro-classics/psx-quake-ii-243888411670"
+      ]
+    },
+    {
+      "title": "Quake III Arena",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-quake-iii-arena-25e120d95aed"
+      ]
+    },
+    {
+      "title": "R-Type",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gb-r-type-cf60e5d1b5d2",
+        "libretro-classics/jaguar-r-type-world-aftermarket-fea38a7a2da7",
+        "libretro-classics/mame-r-type-9211917e4f53",
+        "libretro-classics/mastersystem-r-type-1f731c485d57",
+        "libretro-classics/pcengine-r-type-ac3689ea94e5"
+      ]
+    },
+    {
+      "title": "Red Dead Redemption",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-red-dead-redemption-c8c1572b5d68",
+        "libretro-classics/xbox360-red-dead-redemption-f11d55b7636f"
+      ]
+    },
+    {
+      "title": "Red Dead Redemption 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/red-dead-redemption-2-92904aa843fd"
+      ]
+    },
+    {
+      "title": "Resident Evil",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-resident-evil-a18acd16782e",
+        "libretro-classics/gbc-resident-evil-5558c5700884",
+        "libretro-classics/psx-resident-evil-11b380571bf8",
+        "libretro-classics/saturn-resident-evil-d2440f3e890a"
+      ]
+    },
+    {
+      "title": "Resident Evil 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-resident-evil-2-313f4f9b1458",
+        "libretro-classics/gamecube-resident-evil-2-d13b3126ac1e",
+        "libretro-classics/gba-resident-evil-2-unknown-4efcb662d014",
+        "libretro-classics/n64-resident-evil-2-ec657e5fceee",
+        "libretro-classics/psx-resident-evil-2-0cb7fcb18ed1"
+      ]
+    },
+    {
+      "title": "Resident Evil 4",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-resident-evil-4-40316b525289",
+        "libretro-classics/ps2-resident-evil-4-7f841469c503"
+      ]
+    },
+    {
+      "title": "Return of the Obra Dinn",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/return-of-the-obra-dinn-8ff1a67de478"
+      ]
+    },
+    {
+      "title": "Rez",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "homebrew-hub/rez",
+        "libretro-classics/dreamcast-rez-b293901b3c2e",
+        "libretro-classics/ps2-rez-d83d9c3d9134"
+      ]
+    },
+    {
+      "title": "Ridge Racer",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-ridge-racer-7be2266982e5",
+        "libretro-classics/psp-ridge-racer-387f215daba5",
+        "libretro-classics/psvita-ridge-racer-81e58f158ab9",
+        "libretro-classics/psx-ridge-racer-143b6464042a"
+      ]
+    },
+    {
+      "title": "Robotron: 2084",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/robotron-2084",
+        "libretro-classics/atari5200-robotron-2084-1b9cede72d41",
+        "libretro-classics/atari7800-robotron-2084-b2734b607bee"
+      ]
+    },
+    {
+      "title": "Rock Band",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-rock-band-a715f3708165",
+        "libretro-classics/ps3-rock-band-3074478aa0eb",
+        "libretro-classics/wii-rock-band-94920cb63788",
+        "libretro-classics/xbox360-rock-band-69fc712bf907"
+      ]
+    },
+    {
+      "title": "Rock Band 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-rock-band-2-08a23d6cc741",
+        "libretro-classics/ps3-rock-band-2-b84897e296e2",
+        "libretro-classics/wii-rock-band-2-350f3b019052",
+        "libretro-classics/xbox360-rock-band-2-ecf97cd05bf1"
+      ]
+    },
+    {
+      "title": "Rock Band 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nds-rock-band-3-8919d37bd09d",
+        "libretro-classics/ps3-rock-band-3-8e7cdd9c533f",
+        "libretro-classics/wii-rock-band-3-a7b3de1dc3b4",
+        "libretro-classics/xbox360-rock-band-3-17ddfa12e552"
+      ]
+    },
+    {
+      "title": "Rocket League",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/rocket-league-56d519676da5"
+      ]
+    },
+    {
+      "title": "Rome: Total War",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/rome-total-war-41d3941f7877"
+      ]
+    },
+    {
+      "title": "Sam & Max Hit the Road",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/sam-and-max-hit-the-road"
+      ]
+    },
+    {
+      "title": "Samurai Shodown",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/3do-samurai-shodown-9747f5703364",
+        "libretro-classics/gamegear-samurai-shodown-c2a95d5c95eb",
+        "libretro-classics/gb-samurai-shodown-usa-europe-sgb-enhanced-4a544f9cd7be",
+        "libretro-classics/megacd-samurai-shodown-8fa3b319b44a",
+        "libretro-classics/megadrive-samurai-shodown-c398a41600d9",
+        "libretro-classics/snes-samurai-shodown-c1e20d72c49d"
+      ]
+    },
+    {
+      "title": "Secret of Mana",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-secret-of-mana-93598b54bbb6"
+      ]
+    },
+    {
+      "title": "Sega Rally Championship",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gba-sega-rally-championship-43324da3694b",
+        "libretro-classics/mame-sega-rally-championship-ab14c69728ec",
+        "libretro-classics/ps2-sega-rally-championship-0801b6d1e009",
+        "libretro-classics/saturn-sega-rally-championship-efde38535220"
+      ]
+    },
+    {
+      "title": "Sensible Soccer",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/sensible-soccer",
+        "libretro-classics/mastersystem-sensible-soccer-e0116b364566",
+        "libretro-classics/megacd-sensible-soccer-016194927203",
+        "libretro-classics/megadrive-sensible-soccer-441931875482",
+        "libretro-classics/nes-sensible-soccer-dbb34eb2c1b5",
+        "libretro-classics/psx-sensible-soccer-876c9dab0bc2"
+      ]
+    },
+    {
+      "title": "Sensible World of Soccer",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/sensible-world-of-soccer"
+      ]
+    },
+    {
+      "title": "Shadow of the Colossus",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-shadow-of-the-colossus-92989a7b4468"
+      ]
+    },
+    {
+      "title": "Shenmue",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-shenmue-5839733014a0"
+      ]
+    },
+    {
+      "title": "Shovel Knight",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/3ds-shovel-knight-b9bb65318a75"
+      ]
+    },
+    {
+      "title": "Sid Meier's Pirates!",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/sid-meiers-pirates",
+        "libretro-classics/psp-sid-meier-s-pirates-0974d3f59eb1",
+        "libretro-classics/wii-sid-meier-s-pirates-47bd2e22bc6a",
+        "libretro-classics/xbox-sid-meier-s-pirates-usa-europe-cd762ff59731"
+      ]
+    },
+    {
+      "title": "Silent Hill",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-silent-hill-c120978257d7"
+      ]
+    },
+    {
+      "title": "Silent Hill 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-silent-hill-2-b5db33da2ec0"
+      ]
+    },
+    {
+      "title": "SimCity",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/simcity",
+        "libretro-classics/nes-simcity-27044ffef130",
+        "libretro-classics/snes-simcity-e22748eb1384"
+      ]
+    },
+    {
+      "title": "SimCity 2000",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/simcity-2000",
+        "libretro-classics/gba-simcity-2000-d0f42848b3bb",
+        "libretro-classics/n64-simcity-2000-2f43429b7ae1",
+        "libretro-classics/psx-simcity-2000-36ac1826904d",
+        "libretro-classics/saturn-simcity-2000-69088f410191"
+      ]
+    },
+    {
+      "title": "Sonic the Hedgehog",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/sonic-the-hedgehog-virtual-dreams",
+        "libretro-classics/gamegear-sonic-the-hedgehog-659635c364b5",
+        "libretro-classics/mame-sonic-the-hedgehog-mega-play-ccae366d7b5b",
+        "libretro-classics/mastersystem-sonic-the-hedgehog-usa-europe-brazil-3bcec7e5e7a8",
+        "libretro-classics/megadrive-sonic-the-hedgehog-usa-europe-10c93854a8c2",
+        "libretro-classics/ps3-sonic-the-hedgehog-844bf331a0cf",
+        "libretro-classics/xbox360-sonic-the-hedgehog-ae209d5994ff"
+      ]
+    },
+    {
+      "title": "Sonic the Hedgehog 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamegear-sonic-the-hedgehog-2-d0ed77407ad0",
+        "libretro-classics/mame-sonic-the-hedgehog-2-mega-play-6851447f9853",
+        "libretro-classics/mastersystem-sonic-the-hedgehog-2-europe-brazil-0388e4faa604",
+        "libretro-classics/megadrive-sonic-the-hedgehog-2-5ec6e0627bec"
+      ]
+    },
+    {
+      "title": "Soulcalibur",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-soulcalibur-c63fd5efb1f0"
+      ]
+    },
+    {
+      "title": "Soulcalibur II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-soulcalibur-ii-c615a5426eab",
+        "libretro-classics/ps2-soulcalibur-ii-3cbb5d400e9a",
+        "libretro-classics/xbox-soulcalibur-ii-f4549cf74fe8"
+      ]
+    },
+    {
+      "title": "Space Invaders",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-space-invaders-f84993b569e5",
+        "libretro-classics/atari5200-space-invaders-5eac4d12f6fd",
+        "libretro-classics/atari7800-space-invaders-world-v2-01-aftermarket-f3636a93102a",
+        "libretro-classics/gb-space-invaders-7c558d0aee65",
+        "libretro-classics/gba-space-invaders-e06c8c153eed",
+        "libretro-classics/gbc-space-invaders-usa-europe-gb-compatible-a7056567d0da",
+        "libretro-classics/mame-space-invaders-logitec-f01a69e99b49",
+        "libretro-classics/megadrive-space-invaders-e7a7426872e2",
+        "libretro-classics/n64-space-invaders-98f6ecee8837",
+        "libretro-classics/nes-space-invaders-c3717abcdc6c",
+        "libretro-classics/psx-space-invaders-42bf0efc5e4f",
+        "libretro-classics/saturn-space-invaders-c404bdd6869f",
+        "libretro-classics/sg1000-space-invaders-70303cf646ea",
+        "libretro-classics/snes-space-invaders-596f04967084"
+      ]
+    },
+    {
+      "title": "Speedball 2: Brutal Deluxe",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/megadrive-speedball-2-brutal-deluxe-d8465a587984"
+      ]
+    },
+    {
+      "title": "Spelunky",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/spelunky-8727bde32043"
+      ]
+    },
+    {
+      "title": "Star Control II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/star-control-ii",
+        "libretro-classics/3do-star-control-ii-usa-europe-625855830a79"
+      ]
+    },
+    {
+      "title": "Star Fox",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-star-fox-764232e4dc06",
+        "libretro-classics/snes-star-fox-46fb06adfcbd"
+      ]
+    },
+    {
+      "title": "Star Fox 64",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-star-fox-64-64b10026cd96",
+        "libretro-classics/wiiu-star-fox-64-europe-n64-virtual-console-eshop-4b8822968f0a"
+      ]
+    },
+    {
+      "title": "Star Wars",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/star-wars-alexander-rodin",
+        "libretro-classics/gamegear-star-wars-usa-europe-dc76a33f9b95",
+        "libretro-classics/gb-star-wars-9ad779b5902e",
+        "libretro-classics/jaguar-star-wars-world-aftermarket-a75f1ebc3003",
+        "libretro-classics/mame-star-wars-0ead0e04f71d",
+        "libretro-classics/mastersystem-star-wars-europe-brazil-c6a344c8e1f3",
+        "libretro-classics/megadrive-star-wars-5e251306699f",
+        "libretro-classics/nes-star-wars-8ae038746c86"
+      ]
+    },
+    {
+      "title": "Star Wars Jedi Knight: Dark Forces II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/star-wars-jedi-knight-dark-forces-ii-d950caecd2f7"
+      ]
+    },
+    {
+      "title": "Star Wars: Knights of the Old Republic",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox-star-wars-knights-of-the-old-republic-bb304739eeb6"
+      ]
+    },
+    {
+      "title": "Star Wars: TIE Fighter",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/star-wars-tie-fighter"
+      ]
+    },
+    {
+      "title": "StarCraft",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/starcraft-a409278d9d02"
+      ]
+    },
+    {
+      "title": "StarCraft II: Wings of Liberty",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/starcraft-ii-wings-of-liberty-89f681aa1fc5"
+      ]
+    },
+    {
+      "title": "Stardew Valley",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/stardew-valley-57e3e71a00f2"
+      ]
+    },
+    {
+      "title": "Street Fighter II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gb-street-fighter-ii-usa-europe-sgb-enhanced-c9bf7d57b7df",
+        "libretro-classics/mastersystem-street-fighter-ii-c11755cb4b65",
+        "libretro-classics/snes-street-fighter-ii-60ed51c94f14"
+      ]
+    },
+    {
+      "title": "Street Fighter IV",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-street-fighter-iv-c67696d4fd48",
+        "libretro-classics/xbox360-street-fighter-iv-c9aafac8ec62"
+      ]
+    },
+    {
+      "title": "Streets of Rage 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamegear-streets-of-rage-2-eb39bbaa7253",
+        "libretro-classics/megadrive-streets-of-rage-2-def294b911a2"
+      ]
+    },
+    {
+      "title": "Suikoden II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-suikoden-ii-da27de5b6db1"
+      ]
+    },
+    {
+      "title": "Super Castlevania IV",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-super-castlevania-iv-90ac525ec518"
+      ]
+    },
+    {
+      "title": "Super Mario 64",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-super-mario-64-f3f4522ff335",
+        "libretro-classics/wiiu-super-mario-64-europe-n64-virtual-console-eshop-93046d927f66"
+      ]
+    },
+    {
+      "title": "Super Mario Bros.",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/fds-super-mario-bros-fcccf09a669c",
+        "libretro-classics/gba-super-mario-bros-japan-hot-mario-campaign-52386dd2b7f3",
+        "libretro-classics/mame-super-mario-bros-playchoice-10-372461d86474",
+        "libretro-classics/megadrive-super-mario-bros-301da45b531e",
+        "libretro-classics/nes-super-mario-bros-0d2f48e6659c",
+        "libretro-classics/snes-super-mario-bros-world-rev-a-nes-conversion-4aac93d07e92"
+      ]
+    },
+    {
+      "title": "Super Mario Bros. 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-super-mario-bros-3-playchoice-10-59d8103daa62",
+        "libretro-classics/nes-super-mario-bros-3-09d235c9fb32"
+      ]
+    },
+    {
+      "title": "Super Mario Galaxy",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/wii-super-mario-galaxy-998e68ed1edf"
+      ]
+    },
+    {
+      "title": "Super Mario Galaxy 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/wii-super-mario-galaxy-2-bf69056df98b"
+      ]
+    },
+    {
+      "title": "Super Mario Kart",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-super-mario-kart-8801bfedc04a"
+      ]
+    },
+    {
+      "title": "Super Mario Odyssey",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/super-mario-odyssey-85345542507f"
+      ]
+    },
+    {
+      "title": "Super Mario World",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-super-mario-world-nintendo-super-system-2bf25a844d13",
+        "libretro-classics/megadrive-super-mario-world-05d1d8bd7117",
+        "libretro-classics/snes-super-mario-world-4b860d057bcb",
+        "libretro-classics/wiiu-super-mario-world-europe-snes-virtual-console-eshop-32da20aae257"
+      ]
+    },
+    {
+      "title": "Super Meat Boy",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/super-meat-boy-8cd343a84794"
+      ]
+    },
+    {
+      "title": "Super Metroid",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-super-metroid-0be86c8e29a1",
+        "libretro-classics/wiiu-super-metroid-europe-en-fr-de-snes-virtual-console-eshop-5fbe2ea1705c"
+      ]
+    },
+    {
+      "title": "Super Smash Bros. Brawl",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/wii-super-smash-bros-brawl-8165ee2d2651"
+      ]
+    },
+    {
+      "title": "Super Smash Bros. Melee",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-super-smash-bros-melee-2c2e68349e74"
+      ]
+    },
+    {
+      "title": "Super Smash Bros. Ultimate",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/super-smash-bros-ultimate-27d59cf28923"
+      ]
+    },
+    {
+      "title": "Syndicate",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/syndicate",
+        "libretro-classics/3do-syndicate-afab84d758b4",
+        "libretro-classics/jaguar-syndicate-6c85615ed238",
+        "libretro-classics/megacd-syndicate-17aa4598dd65",
+        "libretro-classics/megadrive-syndicate-usa-europe-87b1c563c7cc",
+        "libretro-classics/ps3-syndicate-0caf67dee955",
+        "libretro-classics/snes-syndicate-990f41dbefff",
+        "libretro-classics/xbox360-syndicate-4f670896a1f9"
+      ]
+    },
+    {
+      "title": "System Shock 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/system-shock-2-1ffdbbca2acc"
+      ]
+    },
+    {
+      "title": "Team Fortress 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/team-fortress-2-6af09f250c19"
+      ]
+    },
+    {
+      "title": "Tekken 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-tekken-3-japan-tet1-ver-a-39dd1066f51d",
+        "libretro-classics/psx-tekken-3-1ecd4117d076"
+      ]
+    },
+    {
+      "title": "Tempest",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/atari2600-tempest-7be5edb9a1e5",
+        "libretro-classics/atari5200-tempest-55a3539207ec",
+        "libretro-classics/mame-tempest-1ada7ad69eb2"
+      ]
+    },
+    {
+      "title": "Tempest 2000",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/jaguar-tempest-2000-291d3f8f11d3",
+        "libretro-classics/saturn-tempest-2000-e79c93be6971"
+      ]
+    },
+    {
+      "title": "Tetris",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/tetris",
+        "libretro-classics/3ds-tetris-699cd2c02f9b",
+        "libretro-classics/gb-tetris-f54cbd465abd",
+        "libretro-classics/mame-tetris-japan-system-e-97663b9f076b",
+        "libretro-classics/megadrive-tetris-usa-genesis-mini-c6c9c3b3edf1",
+        "libretro-classics/nes-tetris-018d503e1bd4",
+        "libretro-content/lutro-tetris-lutro"
+      ]
+    },
+    {
+      "title": "The Chronicles of Riddick: Escape from Butcher Bay",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox-chronicles-of-riddick-the-escape-from-butcher-bay-edf5f2a26ee8"
+      ]
+    },
+    {
+      "title": "The Elder Scrolls III: Morrowind",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/xbox-elder-scrolls-iii-the-morrowind-88073c7d06c9"
+      ]
+    },
+    {
+      "title": "The Elder Scrolls IV: Oblivion",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-elder-scrolls-iv-the-oblivion-2e723cf0f6bb",
+        "libretro-classics/xbox360-elder-scrolls-iv-the-oblivion-e8b6f055de14"
+      ]
+    },
+    {
+      "title": "The Elder Scrolls V: Skyrim",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-elder-scrolls-v-the-skyrim-c86e7d5b83bf",
+        "libretro-classics/xbox360-elder-scrolls-v-the-skyrim-9f128cda3823"
+      ]
+    },
+    {
+      "title": "The Last of Us",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-last-of-us-the-6783a811e3dd"
+      ]
+    },
+    {
+      "title": "The Last of Us Part II",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/the-last-of-us-part-ii-b36db4fe900d"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nes-legend-of-zelda-the-c7dbc0021afc"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda: A Link to the Past",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-legend-of-zelda-the-a-link-to-the-past-b42f1a03ddd7"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda: Breath of the Wild",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/the-legend-of-zelda-breath-of-the-wild-21c6ab27fe1b"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda: Link's Awakening",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gb-legend-of-zelda-the-link-s-awakening-2754067b025d"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda: Majora's Mask",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-legend-of-zelda-the-majora-s-mask-fc37d7360e34"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda: Ocarina of Time",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-legend-of-zelda-the-ocarina-of-time-750038990ce5"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda: The Wind Waker",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-legend-of-zelda-the-the-wind-waker-e766d90a1160"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda: Twilight Princess",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-legend-of-zelda-the-twilight-princess-b2e83ec92866",
+        "libretro-classics/wii-legend-of-zelda-the-twilight-princess-82b929b095ed"
+      ]
+    },
+    {
+      "title": "The Oregon Trail",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/3ds-oregon-trail-the-fbd4a9a4b47f",
+        "libretro-classics/wii-oregon-trail-the-0539db588e8c"
+      ]
+    },
+    {
+      "title": "The Secret of Monkey Island",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/the-secret-of-monkey-island",
+        "libretro-classics/megacd-secret-of-monkey-island-the-28ad6df31942"
+      ]
+    },
+    {
+      "title": "The Sims",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-sims-the-e1695be60b19",
+        "libretro-classics/gba-sims-the-5e90109e887f",
+        "libretro-classics/ps2-sims-the-7cf6b34bcf87",
+        "libretro-classics/xbox-sims-the-1273ff8af18f"
+      ]
+    },
+    {
+      "title": "The Sims 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-sims-2-the-8853afafd77c",
+        "libretro-classics/nds-sims-2-the-30b34607bbf4",
+        "libretro-classics/ps2-sims-2-the-deaa8c9e0521",
+        "libretro-classics/psp-sims-2-the-f1e434d37e85",
+        "libretro-classics/xbox-sims-2-the-593b780a96af"
+      ]
+    },
+    {
+      "title": "The Sims 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/3ds-sims-3-the-7eaa9976fdb2",
+        "libretro-classics/ps3-sims-3-the-8178c525d5d2",
+        "libretro-classics/wii-sims-3-the-b7c5cd386eee"
+      ]
+    },
+    {
+      "title": "The Stanley Parable",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/the-stanley-parable-fee0589986c6"
+      ]
+    },
+    {
+      "title": "The Walking Dead",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/the-walking-dead-0bce4e453361"
+      ]
+    },
+    {
+      "title": "The Witcher 3: Wild Hunt",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/the-witcher-3-wild-hunt-a5bf8ccdbf8f"
+      ]
+    },
+    {
+      "title": "The Witness",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/the-witness-5d2f86cf22c1"
+      ]
+    },
+    {
+      "title": "The World Ends with You",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nds-world-ends-with-you-the-7c3ad6fe3c62"
+      ]
+    },
+    {
+      "title": "Theme Park",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/theme-park",
+        "libretro-classics/3do-theme-park-c3105153c96d",
+        "libretro-classics/jaguar-theme-park-560d62388252",
+        "libretro-classics/megacd-theme-park-253fdffea330",
+        "libretro-classics/megadrive-theme-park-usa-europe-20bf135000ce",
+        "libretro-classics/nds-theme-park-a0a663b7dac7",
+        "libretro-classics/psx-theme-park-948d3356e033",
+        "libretro-classics/saturn-theme-park-4e9eca3a55c4",
+        "libretro-classics/snes-theme-park-278b4dc9ec39"
+      ]
+    },
+    {
+      "title": "Thief II: The Metal Age",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/thief-ii-the-metal-age-9e288c0f1f89"
+      ]
+    },
+    {
+      "title": "Thief: The Dark Project",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/thief-the-dark-project-5b06d190a604"
+      ]
+    },
+    {
+      "title": "Tom Clancy's Splinter Cell",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-tom-clancy-s-splinter-cell-df9a13668c6d",
+        "libretro-classics/gba-tom-clancy-s-splinter-cell-7dcf8b5f363b",
+        "libretro-classics/ps2-tom-clancy-s-splinter-cell-4bce55e4d22c",
+        "libretro-classics/xbox-tom-clancy-s-splinter-cell-6f18fa1d67bc"
+      ]
+    },
+    {
+      "title": "Tom Clancy's Splinter Cell: Chaos Theory",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-tom-clancy-s-splinter-cell-chaos-theory-65e07243fb27",
+        "libretro-classics/nds-tom-clancy-s-splinter-cell-chaos-theory-a41b4092481a",
+        "libretro-classics/ps2-tom-clancy-s-splinter-cell-chaos-theory-5df71582706b",
+        "libretro-classics/xbox-tom-clancy-s-splinter-cell-chaos-theory-70a369c93c27"
+      ]
+    },
+    {
+      "title": "Tomb Raider",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/tomb-raider",
+        "libretro-classics/gbc-tomb-raider-b26f3eb1f9a9",
+        "libretro-classics/ps3-tomb-raider-bb4b35e0451a",
+        "libretro-classics/psx-tomb-raider-931c07488fe1",
+        "libretro-classics/saturn-tomb-raider-d3de93fe5d91",
+        "libretro-classics/xbox360-tomb-raider-d8ee874ac006"
+      ]
+    },
+    {
+      "title": "Tony Hawk's Pro Skater",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-tony-hawk-s-pro-skater-3aa0f78e7048",
+        "libretro-classics/gbc-tony-hawk-s-pro-skater-28f76d6cc66b",
+        "libretro-classics/n64-tony-hawk-s-pro-skater-0c46d5520c94",
+        "libretro-classics/psx-tony-hawk-s-pro-skater-912ca505c2d1"
+      ]
+    },
+    {
+      "title": "Tony Hawk's Pro Skater 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-tony-hawk-s-pro-skater-2-cf25ad742694",
+        "libretro-classics/gba-tony-hawk-s-pro-skater-2-b5c9963e21fd",
+        "libretro-classics/gbc-tony-hawk-s-pro-skater-2-usa-europe-de15365509a0",
+        "libretro-classics/n64-tony-hawk-s-pro-skater-2-d4c7606e2166",
+        "libretro-classics/psx-tony-hawk-s-pro-skater-2-16c2fe7cbfb7"
+      ]
+    },
+    {
+      "title": "Tony Hawk's Pro Skater 3",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gamecube-tony-hawk-s-pro-skater-3-9092ff0d3e9a",
+        "libretro-classics/gba-tony-hawk-s-pro-skater-3-e2630427085c",
+        "libretro-classics/gbc-tony-hawk-s-pro-skater-3-usa-europe-b85bfc0278b2",
+        "libretro-classics/n64-tony-hawk-s-pro-skater-3-fb986e429080",
+        "libretro-classics/ps2-tony-hawk-s-pro-skater-3-fc8f7319b93f",
+        "libretro-classics/psx-tony-hawk-s-pro-skater-3-9f8085614f47",
+        "libretro-classics/xbox-tony-hawk-s-pro-skater-3-1ee625f830fa"
+      ]
+    },
+    {
+      "title": "Total Annihilation",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/total-annihilation-ea1ea4adcf87"
+      ]
+    },
+    {
+      "title": "Ultima IV: Quest of the Avatar",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/ultima-iv-quest-of-the-avatar-b37287fc034e"
+      ]
+    },
+    {
+      "title": "Ultima Online",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/ultima-online-fe77ab41bbb9"
+      ]
+    },
+    {
+      "title": "Ultima VII: The Black Gate",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-ultima-vii-the-black-gate-ff829714a4b4"
+      ]
+    },
+    {
+      "title": "Uncharted 2: Among Thieves",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-uncharted-2-among-thieves-bd17dc6dec8a"
+      ]
+    },
+    {
+      "title": "Uncharted 4: A Thief's End",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/uncharted-4-a-thief-s-end-9f38dccb4089"
+      ]
+    },
+    {
+      "title": "Undertale",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/undertale-ddb67982980d"
+      ]
+    },
+    {
+      "title": "Unreal Tournament",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/dreamcast-unreal-tournament-c166cbc59667",
+        "libretro-classics/ps2-unreal-tournament-3af652dd307f"
+      ]
+    },
+    {
+      "title": "Vagrant Story",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-vagrant-story-1c5397f21b02"
+      ]
+    },
+    {
+      "title": "Valkyria Chronicles",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-valkyria-chronicles-68abc314b35b"
+      ]
+    },
+    {
+      "title": "Virtua Fighter 2",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-virtua-fighter-2-8c3bbaca26d6",
+        "libretro-classics/megadrive-virtua-fighter-2-0165ee0343f2",
+        "libretro-classics/saturn-virtua-fighter-2-59b8043d7ca7"
+      ]
+    },
+    {
+      "title": "Virtua Racing",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-virtua-racing-3ab181f86fbc",
+        "libretro-classics/megadrive-virtua-racing-4d84e95b46bf",
+        "libretro-classics/saturn-virtua-racing-effddcf25999"
+      ]
+    },
+    {
+      "title": "Warcraft II: Tides of Darkness",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/warcraft-ii-tides-of-darkness"
+      ]
+    },
+    {
+      "title": "Warcraft III: Reign of Chaos",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/warcraft-iii-reign-of-chaos-c29c229c3268"
+      ]
+    },
+    {
+      "title": "WarioWare, Inc.: Mega Microgames!",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/gba-warioware-inc-mega-microgame-1c45df9aa780"
+      ]
+    },
+    {
+      "title": "Wave Race 64",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/n64-wave-race-64-kawasaki-jet-ski-f52a94f3eb02",
+        "libretro-classics/wiiu-wave-race-64-europe-n64-virtual-console-eshop-329a1dfe73ae"
+      ]
+    },
+    {
+      "title": "Wii Sports",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/wii-wii-sports-6eab498d7771"
+      ]
+    },
+    {
+      "title": "Wing Commander",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/wing-commander",
+        "libretro-classics/megacd-wing-commander-85ecf94f0372",
+        "libretro-classics/snes-wing-commander-ac89403a5e4e"
+      ]
+    },
+    {
+      "title": "Wipeout",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/mame-wipeout-ramtek-ttl-e20d723dbfeb",
+        "libretro-classics/psx-wipeout-5fcb0afa9cfb",
+        "libretro-classics/saturn-wipeout-c5ca3f27aae5"
+      ]
+    },
+    {
+      "title": "Wipeout 2097",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-wipeout-2097-851e07dffd5d",
+        "libretro-classics/saturn-wipeout-2097-c2998138bd55"
+      ]
+    },
+    {
+      "title": "Wizardry: Proving Grounds of the Mad Overlord",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/nes-wizardry-proving-grounds-of-the-mad-overlord-ff60007ea4ce"
+      ]
+    },
+    {
+      "title": "Wolfenstein 3D",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/wolfenstein-3d",
+        "libretro-classics/3do-wolfenstein-3d-e7512f5d8ff4",
+        "libretro-classics/gba-wolfenstein-3d-usa-europe-019728ffcb5a",
+        "libretro-classics/jaguar-wolfenstein-3d-2aebdfc0d5ae",
+        "libretro-classics/snes-wolfenstein-3d-870a10bd7e73"
+      ]
+    },
+    {
+      "title": "World of Warcraft",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/world-of-warcraft-a9352de88708"
+      ]
+    },
+    {
+      "title": "Worms",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/worms",
+        "libretro-classics/gb-worms-a70923138776",
+        "libretro-classics/jaguar-worms-world-aftermarket-4c9931b16d10",
+        "libretro-classics/megadrive-worms-5839054472a0",
+        "libretro-classics/psx-worms-6690c75c127b",
+        "libretro-classics/saturn-worms-1a9894ede153",
+        "libretro-classics/snes-worms-5d646e1ef47a"
+      ]
+    },
+    {
+      "title": "X-COM: UFO Defense",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "dos-games-archive/x-com-ufo-defense",
+        "libretro-classics/psx-x-com-ufo-defense-0f14489087d8"
+      ]
+    },
+    {
+      "title": "XCOM: Enemy Unknown",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps3-xcom-enemy-unknown-846d5d809491",
+        "libretro-classics/psx-x-com-enemy-unknown-13c95a1c7e0f",
+        "libretro-classics/xbox360-xcom-enemy-unknown-5d79a94629ae"
+      ]
+    },
+    {
+      "title": "Xenoblade Chronicles",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/wii-xenoblade-chronicles-0c34e949985f"
+      ]
+    },
+    {
+      "title": "Xenogears",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/psx-xenogears-4b044aad1749"
+      ]
+    },
+    {
+      "title": "Yoshi's Island",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/snes-super-mario-world-2-yoshi-s-island-135f72ba4f3a"
+      ]
+    },
+    {
+      "title": "Zork",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "iconic-evidence/zork-eb962e0ee6c8"
+      ]
+    },
+    {
+      "title": "Ōkami",
+      "source_id": "critical-consensus",
+      "matched_ids": [
+        "libretro-classics/ps2-ookami-c1038f848b3a",
+        "libretro-classics/wii-ookami-f147b7ecfae9"
+      ]
+    },
+    {
+      "title": "Angry Birds",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/megadrive-angry-birds-f5082389e662"
+      ]
+    },
+    {
+      "title": "Animal Crossing",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/gamecube-animal-crossing-c224e8b391a9"
+      ]
+    },
+    {
+      "title": "Asteroids",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/atari2600-asteroids-cd425da8435a",
+        "libretro-classics/atari5200-asteroids-252ca6dec9c9",
+        "libretro-classics/atari7800-asteroids-86028cbca62d",
+        "libretro-classics/gb-asteroids-usa-europe-10f42110ab5d",
+        "libretro-classics/gbc-asteroids-usa-europe-gb-compatible-e6402d378fdd",
+        "libretro-classics/jaguar-asteroids-world-aftermarket-610dd871968f",
+        "libretro-classics/mame-asteroids-f04430916f70",
+        "libretro-classics/nes-asteroids-usa-atari-flashback-a8c96fd46dc0",
+        "libretro-classics/psx-asteroids-0c752c8c3be7",
+        "msxdev/2025-49-asteroids"
+      ]
+    },
+    {
+      "title": "Barbie Fashion Designer",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/barbie-fashion-designer-6c0c0be15052"
+      ]
+    },
+    {
+      "title": "Bejeweled",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/bejeweled-bb7c93acea26"
+      ]
+    },
+    {
+      "title": "Centipede",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/atari2600-centipede-6ffe41f20983",
+        "libretro-classics/atari5200-centipede-0c172d3d5258",
+        "libretro-classics/atari7800-centipede-65fed5d2b128",
+        "libretro-classics/colecovision-centipede-968894d26728",
+        "libretro-classics/dreamcast-centipede-108ae49cb4ed",
+        "libretro-classics/gb-centipede-usa-majesco-f6ffacc08906",
+        "libretro-classics/gbc-centipede-usa-gb-compatible-6fa49410a943",
+        "libretro-classics/intellivision-centipede-e321eec5dfed",
+        "libretro-classics/lynx-centipede-146b15399fcd",
+        "libretro-classics/mame-centipede-f16683c902cc",
+        "libretro-classics/nes-centipede-usa-atari-flashback-4b604860b1a2",
+        "libretro-classics/psx-centipede-864a3bae5c15"
+      ]
+    },
+    {
+      "title": "Colossal Cave Adventure",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/colossal-cave-adventure-2163117abd7f"
+      ]
+    },
+    {
+      "title": "Computer Space",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/computer-space-2b27eb0f3cc5"
+      ]
+    },
+    {
+      "title": "DOOM",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/doom",
+        "libretro-classics/3do-doom-usa-japan-56a52cb067c3",
+        "libretro-classics/gba-doom-usa-europe-0dcf4567e827",
+        "libretro-classics/jaguar-doom-62ad974aee41",
+        "libretro-classics/psx-doom-c178643951a3",
+        "libretro-classics/saturn-doom-ea12434fc23b",
+        "libretro-classics/sega32x-doom-9e74ec11ff2f",
+        "libretro-classics/snes-doom-bd783af2c3c4",
+        "libretro-content/doom-doom-shareware-zip"
+      ]
+    },
+    {
+      "title": "Dance Dance Revolution",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/mame-dance-dance-revolution-gn845-ver-aaa-03b2465741f4",
+        "libretro-classics/ps3-dance-dance-revolution-92604aeab076",
+        "libretro-classics/psx-dance-dance-revolution-3550d53f5b02",
+        "libretro-classics/wii-dance-dance-revolution-3e1815287ce2",
+        "libretro-classics/xbox360-dance-dance-revolution-449534b00954"
+      ]
+    },
+    {
+      "title": "Defender",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/atari2600-defender-7b6d6104a6cf",
+        "libretro-classics/atari5200-defender-a65806241aa8",
+        "libretro-classics/colecovision-defender-2f922ca87c58",
+        "libretro-classics/gamecube-defender-92105ddf10ae",
+        "libretro-classics/gba-defender-a580277cf92d",
+        "libretro-classics/intellivision-defender-e9456541cc77",
+        "libretro-classics/mame-defender-red-label-886cb0ad48b2",
+        "libretro-classics/ps2-defender-4edbc2471243",
+        "libretro-classics/xbox-defender-d5abc6f14779"
+      ]
+    },
+    {
+      "title": "Donkey Kong",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/atari2600-donkey-kong-36b1054d134b",
+        "libretro-classics/atari7800-donkey-kong-e384587c3281",
+        "libretro-classics/colecovision-donkey-kong-b76fa51803f5",
+        "libretro-classics/fds-donkey-kong-japan-disk-writer-a1c1502d9f83",
+        "libretro-classics/gb-donkey-kong-world-rev-1-sgb-enhanced-fc290a60a630",
+        "libretro-classics/intellivision-donkey-kong-usa-europe-9153562ed940",
+        "libretro-classics/mame-donkey-kong-02e1f1b2df38",
+        "libretro-classics/nes-donkey-kong-4bbc939590e4",
+        "libretro-content/handheld-electronic-game-donkey-kong-coleco-zip"
+      ]
+    },
+    {
+      "title": "Dragon Quest",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/intellivision-dragon-quest-1b9e32fb33e9",
+        "libretro-classics/nes-dragon-quest-e7e6417ed417"
+      ]
+    },
+    {
+      "title": "EA Sports FIFA International Soccer",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/fifa-international-soccer",
+        "libretro-classics/3do-fifa-international-soccer-9a0a28df6c2b",
+        "libretro-classics/gamegear-fifa-international-soccer-1ca7c8119f57",
+        "libretro-classics/mastersystem-fifa-international-soccer-c920cc605cfc",
+        "libretro-classics/megacd-fifa-international-soccer-2acbcb1a18cd",
+        "libretro-classics/megadrive-fifa-international-soccer-ee3cf3f8d819",
+        "libretro-classics/snes-fifa-international-soccer-1e5069e778cd"
+      ]
+    },
+    {
+      "title": "Final Fantasy VII",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/psx-final-fantasy-vii-4a6589da4e28"
+      ]
+    },
+    {
+      "title": "Goldeneye 007",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/n64-goldeneye-007-6030f4f8b5b6",
+        "libretro-classics/nds-goldeneye-007-16e8e75be5af",
+        "libretro-classics/wii-goldeneye-007-1862b6b7026a"
+      ]
+    },
+    {
+      "title": "Grand Theft Auto III",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/ps2-grand-theft-auto-iii-348c0a4ae34e",
+        "libretro-classics/xbox-grand-theft-auto-iii-2b3cc0768fde"
+      ]
+    },
+    {
+      "title": "Halo: Combat Evolved",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/xbox-halo-combat-evolved-77dcd9f3d102"
+      ]
+    },
+    {
+      "title": "John Madden Football",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/3do-john-madden-football-4d72aade6bf7",
+        "libretro-classics/megadrive-john-madden-football-usa-europe-c6d71595fed2",
+        "libretro-classics/snes-john-madden-football-e04f885a6c70"
+      ]
+    },
+    {
+      "title": "King’s Quest",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/kings-quest-quest-for-the-crown",
+        "libretro-classics/mastersystem-king-s-quest-quest-for-the-crown-85d4a88db40b"
+      ]
+    },
+    {
+      "title": "Microsoft Flight Simulator",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/microsoft-flight-simulator-6b262b168d77"
+      ]
+    },
+    {
+      "title": "Microsoft Solitaire",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/microsoft-solitaire-03f4f86268eb"
+      ]
+    },
+    {
+      "title": "Minecraft",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/ps3-minecraft-playstation-3-edition-c03217ecda71",
+        "libretro-classics/psvita-minecraft-playstation-vita-edition-70922b347c8d",
+        "libretro-classics/xbox360-minecraft-xbox-360-edition-e8553d4706a3"
+      ]
+    },
+    {
+      "title": "Mortal Kombat",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/gamegear-mortal-kombat-usa-europe-c3d457c11ea2",
+        "libretro-classics/gb-mortal-kombat-usa-europe-8a91d3f50a71",
+        "libretro-classics/lynx-mortal-kombat-world-aftermarket-8b64b45354fb",
+        "libretro-classics/mame-mortal-kombat-42ade1f32af9",
+        "libretro-classics/mastersystem-mortal-kombat-europe-brazil-9589deec1fbb",
+        "libretro-classics/megacd-mortal-kombat-b4063049dd4c",
+        "libretro-classics/megadrive-mortal-kombat-eadeefddbb09",
+        "libretro-classics/ps3-mortal-kombat-6f43abd492d3",
+        "libretro-classics/psvita-mortal-kombat-27749a87907d",
+        "libretro-classics/snes-mortal-kombat-aa98c3003009",
+        "libretro-classics/xbox360-mortal-kombat-usa-europe-b1035559d83c"
+      ]
+    },
+    {
+      "title": "Ms. Pac-Man",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/atari2600-ms-pac-man-a3ac13efdd49",
+        "libretro-classics/atari5200-ms-pac-man-be286305b3c1",
+        "libretro-classics/atari7800-ms-pac-man-00399536d608",
+        "libretro-classics/gamegear-ms-pac-man-5b17ca870ca0",
+        "libretro-classics/gb-ms-pac-man-fb851e956b24",
+        "libretro-classics/lynx-ms-pac-man-c121819ddb8f",
+        "libretro-classics/mame-ms-pac-man-408fe55e438d",
+        "libretro-classics/mastersystem-ms-pac-man-europe-brazil-b11e3ceee357",
+        "libretro-classics/megadrive-ms-pac-man-usa-europe-fadce570aacd",
+        "libretro-classics/nes-ms-pac-man-usa-namco-e3377ab0f137",
+        "libretro-classics/snes-ms-pac-man-8cf26279fa5e"
+      ]
+    },
+    {
+      "title": "Myst",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/3do-myst-baab75a6a5bc",
+        "libretro-classics/3ds-myst-00311552cc53",
+        "libretro-classics/jaguarcd-myst-879a861bc30e",
+        "libretro-classics/nds-myst-429f9a643d2b",
+        "libretro-classics/psp-myst-d639083acfcd",
+        "libretro-classics/psx-myst-3216e962dbb4",
+        "libretro-classics/saturn-myst-c807bb2d5fde"
+      ]
+    },
+    {
+      "title": "Pac-Man",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "homebrew-hub/pacman",
+        "libretro-classics/atari2600-pac-man-8a7a4de413c6",
+        "libretro-classics/atari5200-pac-man-7b52bb824000",
+        "libretro-classics/colecovision-pac-man-2c5d6146d556",
+        "libretro-classics/fds-pac-man-japan-disk-writer-25b29ecb4e4b",
+        "libretro-classics/gamegear-pac-man-e398797a63ba",
+        "libretro-classics/gb-pac-man-a6179a507d64",
+        "libretro-classics/intellivision-pac-man-usa-atarisoft-c5d70fde1183",
+        "libretro-classics/mame-pac-man-hearts-a67c1e676c1d",
+        "libretro-classics/mastersystem-pac-man-14afed1e4e9a",
+        "libretro-classics/nes-pac-man-ea52918c3fe6",
+        "libretro-classics/ngpc-pac-man-590427802fc3"
+      ]
+    },
+    {
+      "title": "Pokémon Red and Green",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/gb-pocket-monsters-aka-japan-sgb-enhanced-1692c8c77028"
+      ]
+    },
+    {
+      "title": "Pong",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/pong-pete-cooper",
+        "homebrew-hub/pong",
+        "libretro-classics/mastersystem-pong-aa563a74fc84",
+        "libretro-classics/psx-pong-b7e921a31951",
+        "libretro-content/lutro-pong-lutro",
+        "libretro-content/wasm-4-pong-zip",
+        "retrobat-store/mame-pong"
+      ]
+    },
+    {
+      "title": "Quake",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/quake",
+        "libretro-classics/gba-quake-a117a454c143",
+        "libretro-classics/n64-quake-2f119474343e",
+        "libretro-classics/saturn-quake-0fa811d6cfde",
+        "libretro-content/quake-quake-shareware-zip"
+      ]
+    },
+    {
+      "title": "Resident Evil",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/gamecube-resident-evil-a18acd16782e",
+        "libretro-classics/gbc-resident-evil-5558c5700884",
+        "libretro-classics/psx-resident-evil-11b380571bf8",
+        "libretro-classics/saturn-resident-evil-d2440f3e890a"
+      ]
+    },
+    {
+      "title": "Sid Meier’s Civilization",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/snes-sid-meier-s-civilization-d15e513abf2a"
+      ]
+    },
+    {
+      "title": "Silent Hill",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/psx-silent-hill-c120978257d7"
+      ]
+    },
+    {
+      "title": "SimCity",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/simcity",
+        "libretro-classics/nes-simcity-27044ffef130",
+        "libretro-classics/snes-simcity-e22748eb1384"
+      ]
+    },
+    {
+      "title": "Sonic the Hedgehog",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/sonic-the-hedgehog-virtual-dreams",
+        "libretro-classics/gamegear-sonic-the-hedgehog-659635c364b5",
+        "libretro-classics/mame-sonic-the-hedgehog-mega-play-ccae366d7b5b",
+        "libretro-classics/mastersystem-sonic-the-hedgehog-usa-europe-brazil-3bcec7e5e7a8",
+        "libretro-classics/megadrive-sonic-the-hedgehog-usa-europe-10c93854a8c2",
+        "libretro-classics/ps3-sonic-the-hedgehog-844bf331a0cf",
+        "libretro-classics/xbox360-sonic-the-hedgehog-ae209d5994ff"
+      ]
+    },
+    {
+      "title": "Space Invaders",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/atari2600-space-invaders-f84993b569e5",
+        "libretro-classics/atari5200-space-invaders-5eac4d12f6fd",
+        "libretro-classics/atari7800-space-invaders-world-v2-01-aftermarket-f3636a93102a",
+        "libretro-classics/gb-space-invaders-7c558d0aee65",
+        "libretro-classics/gba-space-invaders-e06c8c153eed",
+        "libretro-classics/gbc-space-invaders-usa-europe-gb-compatible-a7056567d0da",
+        "libretro-classics/mame-space-invaders-logitec-f01a69e99b49",
+        "libretro-classics/megadrive-space-invaders-e7a7426872e2",
+        "libretro-classics/n64-space-invaders-98f6ecee8837",
+        "libretro-classics/nes-space-invaders-c3717abcdc6c",
+        "libretro-classics/psx-space-invaders-42bf0efc5e4f",
+        "libretro-classics/saturn-space-invaders-c404bdd6869f",
+        "libretro-classics/sg1000-space-invaders-70303cf646ea",
+        "libretro-classics/snes-space-invaders-596f04967084"
+      ]
+    },
+    {
+      "title": "Spacewar!",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/atari2600-space-war-f2ba6c1238f8"
+      ]
+    },
+    {
+      "title": "StarCraft",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/starcraft-a409278d9d02"
+      ]
+    },
+    {
+      "title": "Street Fighter II",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/gb-street-fighter-ii-usa-europe-sgb-enhanced-c9bf7d57b7df",
+        "libretro-classics/mastersystem-street-fighter-ii-c11755cb4b65",
+        "libretro-classics/snes-street-fighter-ii-60ed51c94f14"
+      ]
+    },
+    {
+      "title": "Super Mario Bros.",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/fds-super-mario-bros-fcccf09a669c",
+        "libretro-classics/gba-super-mario-bros-japan-hot-mario-campaign-52386dd2b7f3",
+        "libretro-classics/mame-super-mario-bros-playchoice-10-372461d86474",
+        "libretro-classics/megadrive-super-mario-bros-301da45b531e",
+        "libretro-classics/nes-super-mario-bros-0d2f48e6659c",
+        "libretro-classics/snes-super-mario-bros-world-rev-a-nes-conversion-4aac93d07e92"
+      ]
+    },
+    {
+      "title": "Super Mario Kart",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/snes-super-mario-kart-8801bfedc04a"
+      ]
+    },
+    {
+      "title": "Tamagotchi",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/gb-tamagotchi-usa-europe-sgb-enhanced-64131ed39cc6"
+      ]
+    },
+    {
+      "title": "Tetris",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/tetris",
+        "libretro-classics/3ds-tetris-699cd2c02f9b",
+        "libretro-classics/gb-tetris-f54cbd465abd",
+        "libretro-classics/mame-tetris-japan-system-e-97663b9f076b",
+        "libretro-classics/megadrive-tetris-usa-genesis-mini-c6c9c3b3edf1",
+        "libretro-classics/nes-tetris-018d503e1bd4",
+        "libretro-content/lutro-tetris-lutro"
+      ]
+    },
+    {
+      "title": "The Last of Us",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/ps3-last-of-us-the-6783a811e3dd"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/nes-legend-of-zelda-the-c7dbc0021afc"
+      ]
+    },
+    {
+      "title": "The Legend of Zelda: Ocarina of Time",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/n64-legend-of-zelda-the-ocarina-of-time-750038990ce5"
+      ]
+    },
+    {
+      "title": "The Oregon Trail",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/3ds-oregon-trail-the-fbd4a9a4b47f",
+        "libretro-classics/wii-oregon-trail-the-0539db588e8c"
+      ]
+    },
+    {
+      "title": "The Sims",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/gamecube-sims-the-e1695be60b19",
+        "libretro-classics/gba-sims-the-5e90109e887f",
+        "libretro-classics/ps2-sims-the-7cf6b34bcf87",
+        "libretro-classics/xbox-sims-the-1273ff8af18f"
+      ]
+    },
+    {
+      "title": "Tomb Raider",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "dos-games-archive/tomb-raider",
+        "libretro-classics/gbc-tomb-raider-b26f3eb1f9a9",
+        "libretro-classics/ps3-tomb-raider-bb4b35e0451a",
+        "libretro-classics/psx-tomb-raider-931c07488fe1",
+        "libretro-classics/saturn-tomb-raider-d3de93fe5d91",
+        "libretro-classics/xbox360-tomb-raider-d8ee874ac006"
+      ]
+    },
+    {
+      "title": "Ultima",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/ultima-11cd66d96097"
+      ]
+    },
+    {
+      "title": "Where in the World is Carmen Sandiego?",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/mastersystem-where-in-the-world-is-carmen-sandiego-f2e9c5513b75",
+        "libretro-classics/megadrive-where-in-the-world-is-carmen-sandiego-48c026418840",
+        "libretro-classics/pcenginecd-where-in-the-world-is-carmen-sandiego-6d7a4873ee39",
+        "libretro-classics/snes-where-in-the-world-is-carmen-sandiego-09a5832f5264"
+      ]
+    },
+    {
+      "title": "Wii Sports",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "libretro-classics/wii-wii-sports-6eab498d7771"
+      ]
+    },
+    {
+      "title": "World of Warcraft",
+      "source_id": "world-video-game-hall-of-fame",
+      "matched_ids": [
+        "iconic-evidence/world-of-warcraft-a9352de88708"
+      ]
+    }
+  ],
+  "matched_entry_count": 935,
+  "unmatched_title_count": 0
+}

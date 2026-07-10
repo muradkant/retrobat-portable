@@ -8,6 +8,7 @@ use serde::Serialize;
 use thiserror::Error;
 
 use crate::paths::PortableLayout;
+use crate::readiness::BackendRoute;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub enum HostPlatform {
@@ -50,6 +51,12 @@ pub enum LaunchError {
     Unsupported,
     #[error("cannot determine a local data directory for the Wine prefix")]
     NoDataDirectory,
+    #[error("game system name is invalid: {0}")]
+    InvalidSystem(String),
+    #[error("Wine cannot address a relative game path: {0}")]
+    RelativeWinePath(PathBuf),
+    #[error("Wine cannot address a non-Unicode game path: {0}")]
+    NonUnicodeWinePath(PathBuf),
     #[error("failed to launch RetroBat: {0}")]
     Io(#[from] io::Error),
 }
@@ -88,6 +95,208 @@ impl LaunchPlan {
         Self::for_host(layout, HostPlatform::current(), data.as_deref())
     }
 
+    pub fn for_game_host(
+        layout: &PortableLayout,
+        host: HostPlatform,
+        linux_data_dir: Option<&Path>,
+        system: &str,
+        rom: &Path,
+    ) -> Result<Self, LaunchError> {
+        Self::for_game_host_with_backend(layout, host, linux_data_dir, system, rom, None)
+    }
+
+    pub fn for_game_host_with_backend(
+        layout: &PortableLayout,
+        host: HostPlatform,
+        linux_data_dir: Option<&Path>,
+        system: &str,
+        rom: &Path,
+        backend: Option<&BackendRoute>,
+    ) -> Result<Self, LaunchError> {
+        if system.is_empty()
+            || !system.bytes().all(|byte| {
+                byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'-' || byte == b'_'
+            })
+        {
+            return Err(LaunchError::InvalidSystem(system.to_owned()));
+        }
+        if system == "chip8" {
+            return Self::for_retroarch_core(layout, host, linux_data_dir, "jaxe", rom);
+        }
+        if host == HostPlatform::Linux
+            && let Some(backend) = backend
+            && let Some(plan) = native_linux_game_plan(layout, backend, rom)
+        {
+            return Ok(plan);
+        }
+
+        let launcher = layout.emulator_launcher_executable();
+        let mut args = vec![PathBuf::from("-system"), PathBuf::from(system)];
+        if let Some(backend) = backend {
+            args.extend([PathBuf::from("-emulator"), PathBuf::from(&backend.emulator)]);
+            if let Some(core) = &backend.core {
+                args.extend([PathBuf::from("-core"), PathBuf::from(core)]);
+            }
+        }
+        args.push(PathBuf::from("-rom"));
+        let (program, current_dir, env) = match host {
+            HostPlatform::Windows => {
+                args.push(rom.to_owned());
+                (launcher, layout.emulationstation_root(), BTreeMap::new())
+            }
+            HostPlatform::Linux => {
+                let data_dir = linux_data_dir.ok_or(LaunchError::NoDataDirectory)?;
+                args.insert(0, launcher);
+                args.push(wine_path(rom)?);
+                (
+                    PathBuf::from("wine"),
+                    layout.emulationstation_root(),
+                    BTreeMap::from([(
+                        "WINEPREFIX".to_owned(),
+                        data_dir.join("retrobat-portable").join("wine-prefix"),
+                    )]),
+                )
+            }
+            HostPlatform::Unsupported => return Err(LaunchError::Unsupported),
+        };
+        Ok(Self {
+            program,
+            args,
+            current_dir,
+            env,
+        })
+    }
+
+    fn for_retroarch_core(
+        layout: &PortableLayout,
+        host: HostPlatform,
+        linux_data_dir: Option<&Path>,
+        core: &str,
+        rom: &Path,
+    ) -> Result<Self, LaunchError> {
+        let retroarch = layout.retroarch_executable();
+        let core = layout.retroarch_core(core);
+        let mut args = Vec::new();
+        let (program, env) = match host {
+            HostPlatform::Windows => {
+                args.extend([PathBuf::from("-L"), core, rom.to_owned()]);
+                (retroarch, BTreeMap::new())
+            }
+            HostPlatform::Linux => {
+                let data_dir = linux_data_dir.ok_or(LaunchError::NoDataDirectory)?;
+                args.extend([
+                    retroarch,
+                    PathBuf::from("-L"),
+                    wine_path(&core)?,
+                    wine_path(rom)?,
+                ]);
+                (
+                    PathBuf::from("wine"),
+                    BTreeMap::from([(
+                        "WINEPREFIX".to_owned(),
+                        data_dir.join("retrobat-portable").join("wine-prefix"),
+                    )]),
+                )
+            }
+            HostPlatform::Unsupported => return Err(LaunchError::Unsupported),
+        };
+        Ok(Self {
+            program,
+            args,
+            current_dir: layout.retroarch_root(),
+            env,
+        })
+    }
+
+    pub fn for_current_game(
+        layout: &PortableLayout,
+        system: &str,
+        rom: &Path,
+    ) -> Result<Self, LaunchError> {
+        let data = dirs::data_local_dir();
+        Self::for_game_host(
+            layout,
+            HostPlatform::current(),
+            data.as_deref(),
+            system,
+            rom,
+        )
+    }
+
+    pub fn for_current_game_with_backend(
+        layout: &PortableLayout,
+        system: &str,
+        rom: &Path,
+        backend: Option<&BackendRoute>,
+    ) -> Result<Self, LaunchError> {
+        let data = dirs::data_local_dir();
+        Self::for_game_host_with_backend(
+            layout,
+            HostPlatform::current(),
+            data.as_deref(),
+            system,
+            rom,
+            backend,
+        )
+    }
+
+    pub fn for_rpcs3_firmware_install_host(
+        layout: &PortableLayout,
+        host: HostPlatform,
+        linux_data_dir: Option<&Path>,
+        firmware: &Path,
+    ) -> Result<Self, LaunchError> {
+        let rpcs3 = layout.rpcs3_executable();
+        let current_dir = layout.emulator_root("rpcs3");
+        let native = layout.linux_runtime_root().join("RPCS3.AppImage");
+        let (program, args, env) = match host {
+            HostPlatform::Windows => (
+                rpcs3,
+                vec![PathBuf::from("--installfw"), firmware.to_owned()],
+                BTreeMap::new(),
+            ),
+            HostPlatform::Linux => {
+                if native.is_file() {
+                    return Ok(Self {
+                        program: native,
+                        args: vec![PathBuf::from("--installfw"), firmware.to_owned()],
+                        current_dir: layout.linux_runtime_root(),
+                        env: native_linux_environment(layout, "rpcs3"),
+                    });
+                }
+                let data_dir = linux_data_dir.ok_or(LaunchError::NoDataDirectory)?;
+                (
+                    PathBuf::from("wine"),
+                    vec![rpcs3, PathBuf::from("--installfw"), wine_path(firmware)?],
+                    BTreeMap::from([(
+                        "WINEPREFIX".to_owned(),
+                        data_dir.join("retrobat-portable").join("wine-prefix"),
+                    )]),
+                )
+            }
+            HostPlatform::Unsupported => return Err(LaunchError::Unsupported),
+        };
+        Ok(Self {
+            program,
+            args,
+            current_dir,
+            env,
+        })
+    }
+
+    pub fn for_current_rpcs3_firmware_install(
+        layout: &PortableLayout,
+        firmware: &Path,
+    ) -> Result<Self, LaunchError> {
+        let data = dirs::data_local_dir();
+        Self::for_rpcs3_firmware_install_host(
+            layout,
+            HostPlatform::current(),
+            data.as_deref(),
+            firmware,
+        )
+    }
+
     pub fn spawn(&self) -> Result<Child, LaunchError> {
         self.prepare_runtime()?;
 
@@ -103,8 +312,79 @@ impl LaunchPlan {
         if let Some(prefix) = self.env.get("WINEPREFIX") {
             fs::create_dir_all(prefix)?;
         }
+        for key in ["XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_CACHE_HOME"] {
+            if let Some(directory) = self.env.get(key) {
+                fs::create_dir_all(directory)?;
+            }
+        }
         Ok(())
     }
+}
+
+fn native_linux_game_plan(
+    layout: &PortableLayout,
+    backend: &BackendRoute,
+    rom: &Path,
+) -> Option<LaunchPlan> {
+    let runtime = layout.linux_runtime_root();
+    let emulator = backend.emulator.to_ascii_lowercase();
+    let (program, args, key) = match emulator.as_str() {
+        "eden" => (
+            runtime.join("Eden.AppImage"),
+            vec![PathBuf::from("-f"), PathBuf::from("-g"), rom.to_owned()],
+            "eden",
+        ),
+        "cemu" => (
+            runtime.join("Cemu.AppImage"),
+            vec![PathBuf::from("-g"), rom.to_owned(), PathBuf::from("-f")],
+            "cemu",
+        ),
+        "rpcs3" => (
+            runtime.join("RPCS3.AppImage"),
+            vec![PathBuf::from("--no-gui"), rom.to_owned()],
+            "rpcs3",
+        ),
+        "shadps4" => (
+            runtime.join("shadPS4/Shadps4-sdl.AppImage"),
+            vec![rom.to_owned()],
+            "shadps4",
+        ),
+        "xenia-canary" => (
+            runtime.join("XeniaCanary.AppImage"),
+            vec![rom.to_owned()],
+            "xenia-canary",
+        ),
+        _ => return None,
+    };
+    program.is_file().then(|| LaunchPlan {
+        program,
+        args,
+        current_dir: runtime,
+        env: native_linux_environment(layout, key),
+    })
+}
+
+fn native_linux_environment(layout: &PortableLayout, emulator: &str) -> BTreeMap<String, PathBuf> {
+    let root = layout
+        .metadata_root()
+        .join("runtime")
+        .join("linux")
+        .join(emulator);
+    BTreeMap::from([
+        ("XDG_CONFIG_HOME".to_owned(), root.join("config")),
+        ("XDG_DATA_HOME".to_owned(), root.join("data")),
+        ("XDG_CACHE_HOME".to_owned(), root.join("cache")),
+    ])
+}
+
+fn wine_path(path: &Path) -> Result<PathBuf, LaunchError> {
+    if !path.is_absolute() {
+        return Err(LaunchError::RelativeWinePath(path.to_owned()));
+    }
+    let Some(path_text) = path.to_str() else {
+        return Err(LaunchError::NonUnicodeWinePath(path.to_owned()));
+    };
+    Ok(PathBuf::from(format!("Z:{}", path_text.replace('/', "\\"))))
 }
 
 #[cfg(test)]
@@ -145,6 +425,49 @@ mod tests {
     }
 
     #[test]
+    fn windows_rpcs3_firmware_install_uses_the_bundled_emulator() {
+        let layout = PortableLayout::new("X:/Arcade");
+        let firmware = Path::new("X:/Arcade/RetroBat/bios/PS3UPDAT.PUP");
+        let plan = LaunchPlan::for_rpcs3_firmware_install_host(
+            &layout,
+            HostPlatform::Windows,
+            None,
+            firmware,
+        )
+        .unwrap();
+        assert_eq!(
+            plan.program,
+            PathBuf::from("X:/Arcade/RetroBat/emulators/rpcs3/rpcs3.exe")
+        );
+        assert_eq!(
+            plan.args,
+            vec![PathBuf::from("--installfw"), firmware.to_owned()]
+        );
+    }
+
+    #[test]
+    fn linux_rpcs3_firmware_install_converts_only_the_firmware_path() {
+        let layout = PortableLayout::new("/run/media/user/Arcade");
+        let firmware = Path::new("/run/media/user/Arcade/RetroBat/bios/PS3UPDAT.PUP");
+        let plan = LaunchPlan::for_rpcs3_firmware_install_host(
+            &layout,
+            HostPlatform::Linux,
+            Some(Path::new("/home/user/.local/share")),
+            firmware,
+        )
+        .unwrap();
+        assert_eq!(plan.program, PathBuf::from("wine"));
+        assert_eq!(
+            plan.args,
+            vec![
+                PathBuf::from("/run/media/user/Arcade/RetroBat/emulators/rpcs3/rpcs3.exe"),
+                PathBuf::from("--installfw"),
+                PathBuf::from("Z:\\run\\media\\user\\Arcade\\RetroBat\\bios\\PS3UPDAT.PUP")
+            ]
+        );
+    }
+
+    #[test]
     fn linux_creates_the_wine_prefix_before_first_launch() {
         let data_dir = tempfile::tempdir().unwrap();
         let layout = PortableLayout::new("/run/media/user/Arcade");
@@ -155,5 +478,157 @@ mod tests {
         assert!(!prefix.exists());
         plan.prepare_runtime().unwrap();
         assert!(prefix.is_dir());
+    }
+
+    #[test]
+    fn windows_game_launch_uses_retrobat_emulator_launcher() {
+        let layout = PortableLayout::new("X:/Arcade");
+        let rom = Path::new("X:/Arcade/RetroBat/roms/gb/2048.gb");
+        let plan =
+            LaunchPlan::for_game_host(&layout, HostPlatform::Windows, None, "gb", rom).unwrap();
+        assert_eq!(
+            plan.program,
+            PathBuf::from("X:/Arcade/RetroBat/emulationstation/emulatorLauncher.exe")
+        );
+        assert_eq!(
+            plan.args,
+            vec![
+                PathBuf::from("-system"),
+                PathBuf::from("gb"),
+                PathBuf::from("-rom"),
+                rom.to_owned(),
+            ]
+        );
+    }
+
+    #[test]
+    fn launch_can_pin_an_installed_alternative_backend() {
+        let layout = PortableLayout::new("X:/Arcade");
+        let rom = Path::new("X:/Arcade/RetroBat/roms/gamecube/game.rvz");
+        let backend = BackendRoute {
+            emulator: "libretro".to_owned(),
+            core: Some("dolphin".to_owned()),
+            incompatible_extensions: vec![".zip".to_owned()],
+        };
+        let plan = LaunchPlan::for_game_host_with_backend(
+            &layout,
+            HostPlatform::Windows,
+            None,
+            "gamecube",
+            rom,
+            Some(&backend),
+        )
+        .unwrap();
+        assert_eq!(
+            plan.args,
+            vec![
+                PathBuf::from("-system"),
+                PathBuf::from("gamecube"),
+                PathBuf::from("-emulator"),
+                PathBuf::from("libretro"),
+                PathBuf::from("-core"),
+                PathBuf::from("dolphin"),
+                PathBuf::from("-rom"),
+                rom.to_owned(),
+            ]
+        );
+    }
+
+    #[test]
+    fn linux_modern_console_route_uses_the_bundled_native_runtime() {
+        let temp = tempfile::tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path().join("Arcade"));
+        fs::create_dir_all(layout.linux_runtime_root()).unwrap();
+        fs::write(layout.linux_runtime_root().join("Cemu.AppImage"), b"app").unwrap();
+        let rom = layout.retrobat_root().join("roms/wiiu/game.rpx");
+        let backend = BackendRoute {
+            emulator: "cemu".to_owned(),
+            core: None,
+            incompatible_extensions: Vec::new(),
+        };
+        let plan = LaunchPlan::for_game_host_with_backend(
+            &layout,
+            HostPlatform::Linux,
+            None,
+            "wiiu",
+            &rom,
+            Some(&backend),
+        )
+        .unwrap();
+        assert_eq!(
+            plan.program,
+            layout.linux_runtime_root().join("Cemu.AppImage")
+        );
+        assert_eq!(
+            plan.args,
+            vec![PathBuf::from("-g"), rom, PathBuf::from("-f")]
+        );
+        assert!(plan.env["XDG_CONFIG_HOME"].starts_with(layout.metadata_root()));
+    }
+
+    #[test]
+    fn linux_game_launch_converts_the_rom_to_wines_z_drive() {
+        let layout = PortableLayout::new("/run/media/user/Arcade");
+        let rom = Path::new("/run/media/user/Arcade/RetroBat/roms/gb/2048.gb");
+        let plan = LaunchPlan::for_game_host(
+            &layout,
+            HostPlatform::Linux,
+            Some(Path::new("/home/user/.local/share")),
+            "gb",
+            rom,
+        )
+        .unwrap();
+        assert_eq!(plan.program, PathBuf::from("wine"));
+        assert_eq!(
+            plan.args,
+            vec![
+                PathBuf::from(
+                    "/run/media/user/Arcade/RetroBat/emulationstation/emulatorLauncher.exe"
+                ),
+                PathBuf::from("-system"),
+                PathBuf::from("gb"),
+                PathBuf::from("-rom"),
+                PathBuf::from(r"Z:\run\media\user\Arcade\RetroBat\roms\gb\2048.gb"),
+            ]
+        );
+    }
+
+    #[test]
+    fn game_launch_rejects_a_system_that_could_be_parsed_as_arguments() {
+        let layout = PortableLayout::new("/run/media/user/Arcade");
+        let result = LaunchPlan::for_game_host(
+            &layout,
+            HostPlatform::Linux,
+            Some(Path::new("/home/user/.local/share")),
+            "../gb",
+            Path::new("/tmp/game.gb"),
+        );
+        assert!(matches!(result, Err(LaunchError::InvalidSystem(_))));
+    }
+
+    #[test]
+    fn chip8_launch_uses_the_jaxe_core_directly() {
+        let layout = PortableLayout::new("/run/media/user/Arcade");
+        let rom = Path::new("/run/media/user/Arcade/RetroBat/roms/chip8/game.ch8");
+        let plan = LaunchPlan::for_game_host(
+            &layout,
+            HostPlatform::Linux,
+            Some(Path::new("/home/user/.local/share")),
+            "chip8",
+            rom,
+        )
+        .unwrap();
+        assert_eq!(plan.program, PathBuf::from("wine"));
+        assert_eq!(
+            plan.args,
+            vec![
+                PathBuf::from("/run/media/user/Arcade/RetroBat/emulators/retroarch/retroarch.exe"),
+                PathBuf::from("-L"),
+                PathBuf::from(
+                    r"Z:\run\media\user\Arcade\RetroBat\emulators\retroarch\cores\jaxe_libretro.dll"
+                ),
+                PathBuf::from(r"Z:\run\media\user\Arcade\RetroBat\roms\chip8\game.ch8"),
+            ]
+        );
     }
 }

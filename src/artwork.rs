@@ -3,9 +3,11 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use serde::Serialize;
 use sha2::Digest;
 use thiserror::Error;
 
+use crate::browse::{BrowseEntry, BundledArtwork};
 use crate::catalog::Artwork;
 use crate::install::{
     DownloadClient, DownloadError, InstallError, digest_file, ensure_safe_parent,
@@ -26,6 +28,83 @@ pub enum ArtworkError {
     Hash { expected: String, actual: String },
     #[error("artwork exceeds the {0} byte download limit")]
     TooLarge(usize),
+    #[error("bundled artwork is not a regular file: {0}")]
+    NotAFile(PathBuf),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+pub struct BundledArtworkAudit {
+    pub declared_assets: usize,
+    pub verified_assets: usize,
+    pub failed_assets: usize,
+    pub failure_examples: Vec<String>,
+}
+
+impl BundledArtworkAudit {
+    pub fn is_complete(&self) -> bool {
+        self.declared_assets == self.verified_assets && self.failed_assets == 0
+    }
+}
+
+pub fn audit_bundled_artwork(
+    layout: &PortableLayout,
+    entries: &[BrowseEntry],
+) -> BundledArtworkAudit {
+    let mut report = BundledArtworkAudit {
+        declared_assets: 0,
+        verified_assets: 0,
+        failed_assets: 0,
+        failure_examples: Vec::new(),
+    };
+    for entry in entries {
+        let Some(asset) = &entry.artwork_asset else {
+            continue;
+        };
+        report.declared_assets += 1;
+        match load_bundled_artwork(layout, asset) {
+            Ok(_) => report.verified_assets += 1,
+            Err(error) => {
+                report.failed_assets += 1;
+                if report.failure_examples.len() < 20 {
+                    report
+                        .failure_examples
+                        .push(format!("{}: {error}", entry.id));
+                }
+            }
+        }
+    }
+    report
+}
+
+pub fn load_bundled_artwork(
+    layout: &PortableLayout,
+    artwork: &BundledArtwork,
+) -> Result<Vec<u8>, ArtworkError> {
+    const MAX_BYTES: u64 = 8 * 1024 * 1024;
+    let relative = PathBuf::from(&artwork.path);
+    ensure_safe_parent(&layout.root, &relative)?;
+    let path = layout.root.join(&relative);
+    let metadata = fs::symlink_metadata(&path)?;
+    if metadata.file_type().is_symlink() || !metadata.is_file() {
+        return Err(ArtworkError::NotAFile(path));
+    }
+    if artwork.size > MAX_BYTES || metadata.len() > MAX_BYTES {
+        return Err(ArtworkError::TooLarge(MAX_BYTES as usize));
+    }
+    let (size, sha256) = digest_file(&path)?;
+    if size != artwork.size {
+        return Err(ArtworkError::Size {
+            expected: artwork.size,
+            actual: size,
+        });
+    }
+    if sha256 != artwork.sha256 {
+        return Err(ArtworkError::Hash {
+            expected: artwork.sha256.clone(),
+            actual: sha256,
+        });
+    }
+    Ok(fs::read(path)?)
 }
 
 pub fn load_snapshot_artwork<D: DownloadClient>(
@@ -228,5 +307,47 @@ mod tests {
             .join("cache/artwork")
             .join(format!("{}.image", artwork.sha256));
         assert!(!cache.exists());
+    }
+
+    #[test]
+    fn loads_only_the_declared_bundled_artwork_asset() {
+        let temp = tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path());
+        let path = layout.root.join("Artwork/mame/example.png");
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+        fs::write(&path, b"local artwork").unwrap();
+        let asset = BundledArtwork {
+            path: "Artwork/mame/example.png".to_owned(),
+            size: 13,
+            sha256: hex::encode(Sha256::digest(b"local artwork")),
+        };
+
+        assert_eq!(
+            load_bundled_artwork(&layout, &asset).unwrap(),
+            b"local artwork"
+        );
+    }
+
+    #[test]
+    fn bundled_artwork_audit_reports_missing_assets_instead_of_claiming_coverage() {
+        let temp = tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path());
+        let mut entry = crate::browse::BrowseCatalog::built_in()
+            .unwrap()
+            .entries
+            .into_iter()
+            .next()
+            .unwrap();
+        entry.artwork_asset = Some(BundledArtwork {
+            path: "Artwork/mame/missing.png".to_owned(),
+            size: 1,
+            sha256: "0".repeat(64),
+        });
+
+        let report = audit_bundled_artwork(&layout, &[entry]);
+
+        assert_eq!(report.declared_assets, 1);
+        assert_eq!(report.failed_assets, 1);
+        assert!(!report.is_complete());
     }
 }
