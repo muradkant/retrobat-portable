@@ -47,6 +47,13 @@ workers, preventing an 80,734-record scan from blocking desktop event handling.
   emulator.
 - A watcher thread owns and reaps the child. Exit detection therefore does not
   depend on focus events or block the GUI thread.
+- After the short LOADING transition, an active game does not drive continuous
+  frontend redraws. This avoids blocking a native Wayland event thread in an
+  occluded GL present while preserving compositor ping handling; the watcher
+  explicitly requests the exit repaint.
+- The gameplay-probe CLI runs a real imported game for a bounded interval and
+  then exercises termination, allowing compositor ANR monitoring to cover the
+  complete frontend-plus-emulator lifecycle.
 
 ## Import contract
 

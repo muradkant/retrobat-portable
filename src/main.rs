@@ -47,6 +47,9 @@ fn main() -> eframe::Result {
     let mut import_id = None;
     let mut import_file = None;
     let mut startup_probe_output = None;
+    let mut gameplay_probe_id = None;
+    let mut gameplay_probe_output = None;
+    let mut gameplay_probe_seconds = 20u64;
     let mut args = std::env::args().skip(1);
     while let Some(argument) = args.next() {
         match argument.as_str() {
@@ -105,12 +108,45 @@ fn main() -> eframe::Result {
                     std::process::exit(2);
                 }
             }
+            "--gameplay-probe" => {
+                gameplay_probe_id = args.next();
+                if gameplay_probe_id.is_none() {
+                    eprintln!("--gameplay-probe requires an imported browse catalog id");
+                    std::process::exit(2);
+                }
+            }
+            "--gameplay-probe-output" => {
+                gameplay_probe_output = args.next().map(PathBuf::from);
+                if gameplay_probe_output.is_none() {
+                    eprintln!("--gameplay-probe-output requires a path");
+                    std::process::exit(2);
+                }
+            }
+            "--gameplay-probe-seconds" => {
+                gameplay_probe_seconds = args
+                    .next()
+                    .and_then(|value| value.parse().ok())
+                    .filter(|seconds| *seconds >= 10)
+                    .unwrap_or_else(|| {
+                        eprintln!("--gameplay-probe-seconds requires an integer of at least 10");
+                        std::process::exit(2);
+                    });
+            }
             other => {
                 eprintln!("Unknown argument: {other}");
                 std::process::exit(2);
             }
         }
     }
+
+    let gameplay_probe = gameplay_probe_id.map(|catalog_id| GameplayProbeConfig {
+        catalog_id,
+        output: gameplay_probe_output.unwrap_or_else(|| {
+            eprintln!("--gameplay-probe requires --gameplay-probe-output");
+            std::process::exit(2);
+        }),
+        duration: Duration::from_secs(gameplay_probe_seconds),
+    });
 
     let layout = PortableLayout::new(bundle_root);
     if self_check_only {
@@ -266,6 +302,7 @@ fn main() -> eframe::Result {
                 layout,
                 &creation_context.egui_ctx,
                 startup_probe_output,
+                gameplay_probe,
             )))
         }),
     )
@@ -427,6 +464,10 @@ fn game_button_state(
     }
 }
 
+fn active_game_repaint_delay(elapsed: Duration, terminating: bool) -> Option<Duration> {
+    (elapsed < Duration::from_secs(5) || terminating).then_some(Duration::from_millis(100))
+}
+
 struct StartupProbe {
     output: PathBuf,
     started: Instant,
@@ -434,6 +475,41 @@ struct StartupProbe {
     library_ready_at: Option<Instant>,
     library_rendered_recorded: bool,
     post_load_responsive_recorded: bool,
+}
+
+struct GameplayProbeConfig {
+    catalog_id: String,
+    output: PathBuf,
+    duration: Duration,
+}
+
+struct GameplayProbe {
+    config: GameplayProbeConfig,
+    started: bool,
+    deadline_receiver: Option<Receiver<()>>,
+    terminating: bool,
+    complete_recorded: bool,
+}
+
+impl GameplayProbe {
+    fn new(config: GameplayProbeConfig) -> Self {
+        let _ = std::fs::remove_file(&config.output);
+        Self {
+            config,
+            started: false,
+            deadline_receiver: None,
+            terminating: false,
+            complete_recorded: false,
+        }
+    }
+
+    fn record(&self, event: &str) -> std::io::Result<()> {
+        let mut output = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&self.config.output)?;
+        writeln!(output, "{{\"event\":\"{event}\"}}")
+    }
 }
 
 impl StartupProbe {
@@ -543,6 +619,7 @@ struct PortableApp {
     controls_dialog: Option<GameControls>,
     loading: Option<Receiver<LoadedLibrary>>,
     startup_probe: Option<StartupProbe>,
+    gameplay_probe: Option<GameplayProbe>,
 }
 
 fn load_library(layout: &PortableLayout) -> LoadedLibrary {
@@ -652,6 +729,7 @@ impl PortableApp {
         layout: PortableLayout,
         context: &egui::Context,
         startup_probe_output: Option<PathBuf>,
+        gameplay_probe: Option<GameplayProbeConfig>,
     ) -> Self {
         #[cfg(target_os = "windows")]
         if context.native_pixels_per_point().unwrap_or(1.0) < 1.15 {
@@ -727,6 +805,7 @@ impl PortableApp {
             controls_dialog: None,
             loading: Some(loading_receiver),
             startup_probe: startup_probe_output.map(StartupProbe::new),
+            gameplay_probe: gameplay_probe.map(GameplayProbe::new),
         }
     }
 
@@ -1881,6 +1960,57 @@ impl eframe::App for PortableApp {
         } else if self.loading.is_some() {
             context.request_repaint_after(std::time::Duration::from_millis(50));
         }
+        let gameplay_probe_request = self
+            .gameplay_probe
+            .as_ref()
+            .filter(|probe| !probe.started && self.loading.is_none())
+            .map(|probe| probe.config.catalog_id.clone());
+        if let Some(catalog_id) = gameplay_probe_request {
+            let launch = self
+                .browse
+                .entries
+                .iter()
+                .find(|entry| entry.id == catalog_id)
+                .cloned()
+                .and_then(|entry| {
+                    self.imported_manifests
+                        .get(&catalog_id)
+                        .cloned()
+                        .map(|manifest| (entry, manifest))
+                });
+            if let Some(probe) = &mut self.gameplay_probe {
+                probe.started = true;
+            }
+            if let Some((entry, manifest)) = launch {
+                let rom = PortableLayout::new(PathBuf::from(&self.root_text))
+                    .root
+                    .join(&manifest.launch_relative_path);
+                self.launch_game(&entry.id, &entry.title, &manifest.system, &rom);
+                if self.running_game.is_some() {
+                    let (sender, receiver) = mpsc::channel();
+                    let (duration, repaint) = self
+                        .gameplay_probe
+                        .as_ref()
+                        .map(|probe| (probe.config.duration, self.context.clone()))
+                        .expect("gameplay probe exists");
+                    thread::spawn(move || {
+                        thread::sleep(duration);
+                        let _ = sender.send(());
+                        repaint.request_repaint();
+                    });
+                    if let Some(probe) = &mut self.gameplay_probe {
+                        probe.deadline_receiver = Some(receiver);
+                        let _ = probe.record("game_launched");
+                    }
+                } else if let Some(probe) = &self.gameplay_probe {
+                    let _ = probe.record("launch_failed");
+                    context.send_viewport_cmd(egui::ViewportCommand::Close);
+                }
+            } else if let Some(probe) = &self.gameplay_probe {
+                let _ = probe.record("imported_game_not_found");
+                context.send_viewport_cmd(egui::ViewportCommand::Close);
+            }
+        }
         let completed_operation = self
             .operation
             .as_ref()
@@ -1920,6 +2050,19 @@ impl eframe::App for PortableApp {
         {
             let _ = terminate_process_tree_id(game.process_id, true);
         }
+        let gameplay_probe_deadline = self
+            .gameplay_probe
+            .as_ref()
+            .and_then(|probe| probe.deadline_receiver.as_ref())
+            .is_some_and(|receiver| receiver.try_recv().is_ok());
+        if gameplay_probe_deadline {
+            if let Some(probe) = &mut self.gameplay_probe {
+                probe.deadline_receiver = None;
+                probe.terminating = true;
+                let _ = probe.record("deadline_reached");
+            }
+            self.terminate_running_game();
+        }
         let game_finished = self
             .running_game
             .as_ref()
@@ -1927,8 +2070,31 @@ impl eframe::App for PortableApp {
         if let Some(status) = game_finished {
             self.running_game = None;
             self.status = status;
-        } else if self.running_game.is_some() {
-            context.request_repaint_after(Duration::from_millis(100));
+        } else if let Some(game) = &self.running_game {
+            // Do not continuously render the frontend while a fullscreen game
+            // covers it. On native Wayland, presenting an occluded GL surface
+            // can wait on compositor/GPU frame availability long enough to
+            // prevent winit from answering xdg_wm_base pings. The process
+            // watcher requests a repaint on exit; only the short loading and
+            // forced-termination transitions need timers here.
+            if let Some(delay) = active_game_repaint_delay(
+                game.launched_at.elapsed(),
+                game.termination_requested_at.is_some(),
+            ) {
+                context.request_repaint_after(delay);
+            }
+        }
+        if self
+            .gameplay_probe
+            .as_ref()
+            .is_some_and(|probe| probe.terminating && !probe.complete_recorded)
+            && self.running_game.is_none()
+        {
+            if let Some(probe) = &mut self.gameplay_probe {
+                let _ = probe.record("gameplay_probe_complete");
+                probe.complete_recorded = true;
+            }
+            context.send_viewport_cmd(egui::ViewportCommand::Close);
         }
 
         // Bound texture uploads per frame. Decoding already happened on a worker;
@@ -3068,10 +3234,26 @@ mod ui_tests {
     }
 
     #[test]
+    fn fullscreen_game_does_not_keep_redrawing_the_covered_frontend() {
+        assert_eq!(
+            active_game_repaint_delay(Duration::from_secs(1), false),
+            Some(Duration::from_millis(100))
+        );
+        assert_eq!(
+            active_game_repaint_delay(Duration::from_secs(6), false),
+            None
+        );
+        assert_eq!(
+            active_game_repaint_delay(Duration::from_secs(6), true),
+            Some(Duration::from_millis(100))
+        );
+    }
+
+    #[test]
     fn app_construction_starts_with_background_loading_instead_of_parsing_inline() {
         let root = tempfile::tempdir().unwrap();
         let context = egui::Context::default();
-        let app = PortableApp::new(PortableLayout::new(root.path()), &context, None);
+        let app = PortableApp::new(PortableLayout::new(root.path()), &context, None, None);
         assert!(app.loading.is_some());
         assert!(app.browse.entries.is_empty());
     }

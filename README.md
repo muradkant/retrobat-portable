@@ -60,6 +60,10 @@ impossible while the game is opening or running; TERMINATE stops the emulator's
 whole process tree and returns the card to PLAY. Process monitoring and the
 complete post-import readiness audit run outside the GUI thread, so neither an
 emulator exit nor an 80,734-record rescan can stall the window.
+While a game covers the frontend, RetroPort also stops continuously presenting
+its occluded OpenGL surface. This keeps the native Wayland event loop free to
+answer compositor liveness pings; the child watcher wakes it when the game
+actually exits.
 
 ### Linux
 
@@ -158,6 +162,20 @@ cargo run -- --self-check --bundle-root /path/to/portable/root
 
 The ignored-by-default live test performs network I/O and verifies the pinned
 upstream metadata and downloadable artifact.
+
+Maintainers can exercise the actual GUI-plus-emulator lifecycle with an already
+imported catalogue record:
+
+```sh
+cargo run --release -- \
+  --bundle-root /path/to/portable/root \
+  --gameplay-probe CATALOG_ID \
+  --gameplay-probe-output /tmp/retroport-gameplay.jsonl \
+  --gameplay-probe-seconds 20
+```
+
+This launches the real configured backend, leaves it active beyond compositor
+ANR thresholds, terminates its process tree, and records each lifecycle phase.
 
 ## Build
 
