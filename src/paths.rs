@@ -19,6 +19,48 @@ impl PortableLayout {
         )
     }
 
+    pub fn discover(executable: &Path) -> Self {
+        let fallback = Self::from_executable(executable);
+        let mut candidates = Vec::new();
+
+        if let Some(configured) = std::env::var_os("RETROPORT_BUNDLE_ROOT") {
+            candidates.push(PathBuf::from(configured));
+        }
+        if let Some(parent) = executable.parent() {
+            candidates.extend(parent.ancestors().take(6).map(Path::to_path_buf));
+        }
+
+        #[cfg(target_os = "linux")]
+        {
+            if let Some(user) = std::env::var_os("USER") {
+                for parent in [
+                    Path::new("/run/media").join(&user),
+                    Path::new("/media").join(&user),
+                ] {
+                    append_child_directories(&parent, &mut candidates);
+                }
+            }
+            append_child_directories(Path::new("/mnt"), &mut candidates);
+        }
+
+        #[cfg(target_os = "windows")]
+        for letter in b'C'..=b'Z' {
+            candidates.push(PathBuf::from(format!("{}:\\", letter as char)));
+        }
+
+        candidates
+            .into_iter()
+            .find(|root| Self::new(root).is_complete_bundle())
+            .map(Self::new)
+            .unwrap_or(fallback)
+    }
+
+    pub fn is_complete_bundle(&self) -> bool {
+        self.retrobat_executable().is_file()
+            && self.emulator_launcher_executable().is_file()
+            && self.systems_config().is_file()
+    }
+
     pub fn retrobat_root(&self) -> PathBuf {
         self.root.join("RetroBat")
     }
@@ -96,5 +138,47 @@ impl PortableLayout {
             .join("modules")
             .join("rb_gui")
             .join("bios_local.json")
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn append_child_directories(parent: &Path, candidates: &mut Vec<PathBuf>) {
+    let Ok(entries) = std::fs::read_dir(parent) else {
+        return;
+    };
+    candidates.extend(entries.filter_map(Result::ok).filter_map(|entry| {
+        entry
+            .file_type()
+            .ok()
+            .filter(|kind| kind.is_dir())
+            .map(|_| entry.path())
+    }));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn discovery_walks_up_from_a_nested_development_binary() {
+        let root = tempfile::tempdir().unwrap();
+        let bundle = root.path().join("portable");
+        let executable = bundle.join("target/release/RetroPort-Linux");
+        std::fs::create_dir_all(executable.parent().unwrap()).unwrap();
+        std::fs::create_dir_all(bundle.join("RetroBat/emulationstation/.emulationstation"))
+            .unwrap();
+        std::fs::write(bundle.join("RetroBat/RetroBat.exe"), b"exe").unwrap();
+        std::fs::write(
+            bundle.join("RetroBat/emulationstation/emulatorLauncher.exe"),
+            b"exe",
+        )
+        .unwrap();
+        std::fs::write(
+            bundle.join("RetroBat/emulationstation/.emulationstation/es_systems.cfg"),
+            b"config",
+        )
+        .unwrap();
+
+        assert_eq!(PortableLayout::discover(&executable).root, bundle);
     }
 }

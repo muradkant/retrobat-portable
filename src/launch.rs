@@ -43,6 +43,7 @@ pub struct LaunchPlan {
     pub args: Vec<PathBuf>,
     pub current_dir: PathBuf,
     pub env: BTreeMap<String, PathBuf>,
+    pub generated_files: Vec<(PathBuf, String)>,
 }
 
 #[derive(Debug, Error)]
@@ -73,6 +74,7 @@ impl LaunchPlan {
                 args: Vec::new(),
                 current_dir: layout.retrobat_root(),
                 env: BTreeMap::new(),
+                generated_files: Vec::new(),
             }),
             HostPlatform::Linux => {
                 let data_dir = linux_data_dir.ok_or(LaunchError::NoDataDirectory)?;
@@ -84,6 +86,7 @@ impl LaunchPlan {
                         "WINEPREFIX".to_owned(),
                         data_dir.join("retrobat-portable").join("wine-prefix"),
                     )]),
+                    generated_files: Vec::new(),
                 })
             }
             HostPlatform::Unsupported => Err(LaunchError::Unsupported),
@@ -121,7 +124,40 @@ impl LaunchPlan {
             return Err(LaunchError::InvalidSystem(system.to_owned()));
         }
         if system == "chip8" {
-            return Self::for_retroarch_core(layout, host, linux_data_dir, "jaxe", rom);
+            return Self::for_retroarch_core(layout, host, linux_data_dir, system, "jaxe", rom);
+        }
+        if host == HostPlatform::Linux
+            && let Some(BackendRoute {
+                emulator,
+                core: Some(core),
+                ..
+            }) = backend
+            && emulator.eq_ignore_ascii_case("libretro")
+        {
+            // EmulatorLauncher is a .NET Framework/WinForms program. Several
+            // current Wine-Mono combinations abort before spawning RetroArch
+            // (gmisc-win32 filename assertion). Libretro has a complete,
+            // stable direct command line, so Linux card launches bypass that
+            // unnecessary process without bypassing the selected core.
+            return Self::for_retroarch_core(layout, host, linux_data_dir, system, core, rom);
+        }
+        if host == HostPlatform::Linux
+            && backend.is_some_and(|route| route.emulator.eq_ignore_ascii_case("windows"))
+            && rom
+                .extension()
+                .is_some_and(|extension| extension.eq_ignore_ascii_case("exe"))
+        {
+            let data_dir = linux_data_dir.ok_or(LaunchError::NoDataDirectory)?;
+            return Ok(Self {
+                program: PathBuf::from("wine"),
+                args: vec![rom.to_owned()],
+                current_dir: rom.parent().unwrap_or_else(|| Path::new(".")).to_owned(),
+                env: BTreeMap::from([(
+                    "WINEPREFIX".to_owned(),
+                    data_dir.join("retrobat-portable").join("wine-prefix"),
+                )]),
+                generated_files: Vec::new(),
+            });
         }
         if host == HostPlatform::Linux
             && let Some(backend) = backend
@@ -164,6 +200,7 @@ impl LaunchPlan {
             args,
             current_dir,
             env,
+            generated_files: Vec::new(),
         })
     }
 
@@ -171,21 +208,52 @@ impl LaunchPlan {
         layout: &PortableLayout,
         host: HostPlatform,
         linux_data_dir: Option<&Path>,
+        system: &str,
         core: &str,
         rom: &Path,
     ) -> Result<Self, LaunchError> {
         let retroarch = layout.retroarch_executable();
         let core = layout.retroarch_core(core);
+        let save = layout.retrobat_root().join("saves").join(system);
+        let state = layout
+            .retrobat_root()
+            .join("saves")
+            .join(system)
+            .join("states");
+        let append_config = layout
+            .metadata_root()
+            .join("runtime")
+            .join("retroarch")
+            .join(format!("{system}.cfg"));
         let mut args = Vec::new();
-        let (program, env) = match host {
+        let (program, env, config_argument, save_value, state_value) = match host {
             HostPlatform::Windows => {
-                args.extend([PathBuf::from("-L"), core, rom.to_owned()]);
-                (retroarch, BTreeMap::new())
+                let save_value = retroarch_config_path(&save);
+                let state_value = retroarch_config_path(&state);
+                args.extend([
+                    PathBuf::from("--appendconfig"),
+                    append_config.clone(),
+                    PathBuf::from("-L"),
+                    core,
+                    rom.to_owned(),
+                ]);
+                (
+                    retroarch,
+                    BTreeMap::new(),
+                    append_config.clone(),
+                    save_value,
+                    state_value,
+                )
             }
             HostPlatform::Linux => {
                 let data_dir = linux_data_dir.ok_or(LaunchError::NoDataDirectory)?;
+                let config_argument = wine_path(&append_config)?;
+                let save_value = retroarch_config_path(&wine_path(&save)?);
+                let state_value = retroarch_config_path(&wine_path(&state)?);
                 args.extend([
                     retroarch,
+                    PathBuf::from("--appendconfig"),
+                    config_argument.clone(),
                     PathBuf::from("-L"),
                     wine_path(&core)?,
                     wine_path(rom)?,
@@ -196,15 +264,25 @@ impl LaunchPlan {
                         "WINEPREFIX".to_owned(),
                         data_dir.join("retrobat-portable").join("wine-prefix"),
                     )]),
+                    config_argument,
+                    save_value,
+                    state_value,
                 )
             }
             HostPlatform::Unsupported => return Err(LaunchError::Unsupported),
         };
+        debug_assert!(args.iter().any(|argument| argument == &config_argument));
+        let config = format!(
+            "savefile_directory = \"{}\"\nsavestate_directory = \"{}\"\n",
+            save_value.replace('"', "\\\""),
+            state_value.replace('"', "\\\"")
+        );
         Ok(Self {
             program,
             args,
             current_dir: layout.retroarch_root(),
             env,
+            generated_files: vec![(append_config, config)],
         })
     }
 
@@ -262,6 +340,7 @@ impl LaunchPlan {
                         args: vec![PathBuf::from("--installfw"), firmware.to_owned()],
                         current_dir: layout.linux_runtime_root(),
                         env: native_linux_environment(layout, "rpcs3"),
+                        generated_files: Vec::new(),
                     });
                 }
                 let data_dir = linux_data_dir.ok_or(LaunchError::NoDataDirectory)?;
@@ -281,6 +360,7 @@ impl LaunchPlan {
             args,
             current_dir,
             env,
+            generated_files: Vec::new(),
         })
     }
 
@@ -317,8 +397,18 @@ impl LaunchPlan {
                 fs::create_dir_all(directory)?;
             }
         }
+        for (path, contents) in &self.generated_files {
+            if let Some(parent) = path.parent() {
+                fs::create_dir_all(parent)?;
+            }
+            fs::write(path, contents)?;
+        }
         Ok(())
     }
+}
+
+fn retroarch_config_path(path: &Path) -> String {
+    path.to_string_lossy().replace('\\', "/")
 }
 
 fn native_linux_game_plan(
@@ -361,6 +451,7 @@ fn native_linux_game_plan(
         args,
         current_dir: runtime,
         env: native_linux_environment(layout, key),
+        generated_files: Vec::new(),
     })
 }
 
@@ -594,6 +685,74 @@ mod tests {
     }
 
     #[test]
+    fn linux_libretro_card_play_bypasses_the_fragile_dotnet_launcher() {
+        let layout = PortableLayout::new("/run/media/user/Arcade");
+        let rom = Path::new("/run/media/user/Arcade/RetroBat/roms/mame/mspacman.zip");
+        let backend = BackendRoute {
+            emulator: "libretro".to_owned(),
+            core: Some("mame".to_owned()),
+            incompatible_extensions: Vec::new(),
+        };
+        let plan = LaunchPlan::for_game_host_with_backend(
+            &layout,
+            HostPlatform::Linux,
+            Some(Path::new("/home/user/.local/share")),
+            "mame",
+            rom,
+            Some(&backend),
+        )
+        .unwrap();
+
+        assert_eq!(plan.program, PathBuf::from("wine"));
+        assert_eq!(
+            plan.args,
+            vec![
+                layout.retroarch_executable(),
+                PathBuf::from("--appendconfig"),
+                PathBuf::from(
+                    r"Z:\run\media\user\Arcade\.retrobat-portable\runtime\retroarch\mame.cfg"
+                ),
+                PathBuf::from("-L"),
+                PathBuf::from(
+                    r"Z:\run\media\user\Arcade\RetroBat\emulators\retroarch\cores\mame_libretro.dll"
+                ),
+                PathBuf::from(r"Z:\run\media\user\Arcade\RetroBat\roms\mame\mspacman.zip"),
+            ]
+        );
+        assert_eq!(
+            plan.generated_files[0].1,
+            concat!(
+                "savefile_directory = \"Z:/run/media/user/Arcade/RetroBat/saves/mame\"\n",
+                "savestate_directory = \"Z:/run/media/user/Arcade/RetroBat/saves/mame/states\"\n"
+            )
+        );
+    }
+
+    #[test]
+    fn linux_windows_game_import_launches_the_exe_with_its_companion_directory() {
+        let layout = PortableLayout::new("/run/media/user/Arcade");
+        let game = Path::new("/run/media/user/Arcade/RetroBat/roms/windows/Game/bin/Game.exe");
+        let backend = BackendRoute {
+            emulator: "windows".to_owned(),
+            core: None,
+            incompatible_extensions: Vec::new(),
+        };
+        let plan = LaunchPlan::for_game_host_with_backend(
+            &layout,
+            HostPlatform::Linux,
+            Some(Path::new("/home/user/.local/share")),
+            "windows",
+            game,
+            Some(&backend),
+        )
+        .unwrap();
+
+        assert_eq!(plan.program, PathBuf::from("wine"));
+        assert_eq!(plan.args, vec![game.to_owned()]);
+        assert_eq!(plan.current_dir, game.parent().unwrap());
+    }
+
+    #[test]
     fn game_launch_rejects_a_system_that_could_be_parsed_as_arguments() {
         let layout = PortableLayout::new("/run/media/user/Arcade");
         let result = LaunchPlan::for_game_host(
@@ -623,6 +782,10 @@ mod tests {
             plan.args,
             vec![
                 PathBuf::from("/run/media/user/Arcade/RetroBat/emulators/retroarch/retroarch.exe"),
+                PathBuf::from("--appendconfig"),
+                PathBuf::from(
+                    r"Z:\run\media\user\Arcade\.retrobat-portable\runtime\retroarch\chip8.cfg"
+                ),
                 PathBuf::from("-L"),
                 PathBuf::from(
                     r"Z:\run\media\user\Arcade\RetroBat\emulators\retroarch\cores\jaxe_libretro.dll"

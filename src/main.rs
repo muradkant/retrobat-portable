@@ -20,7 +20,7 @@ use retrobat_portable::browse_install::{BrowseInstaller, supports_direct_downloa
 use retrobat_portable::catalog::{Artwork, Catalog, CatalogEntry};
 use retrobat_portable::featured::FeaturedCatalog;
 use retrobat_portable::firmware::{import_firmware, install_official_firmware};
-use retrobat_portable::import::{GameImporter, imported_manifest};
+use retrobat_portable::import::{GameImporter, ImportedManifest, imported_manifest};
 use retrobat_portable::install::{Installer, ReqwestDownloader, is_installed};
 use retrobat_portable::launch::LaunchPlan;
 use retrobat_portable::paths::PortableLayout;
@@ -31,11 +31,12 @@ use retrobat_portable::readiness::{
 
 const INPUT_BACKGROUND: egui::Color32 = egui::Color32::from_rgb(7, 9, 13);
 const CONTROL_BACKGROUND: egui::Color32 = egui::Color32::from_rgb(36, 43, 58);
+const ACCENT: egui::Color32 = egui::Color32::from_rgb(104, 146, 255);
 
 fn main() -> eframe::Result {
     let mut bundle_root = std::env::current_exe()
         .ok()
-        .map(|path| PortableLayout::from_executable(&path).root)
+        .map(|path| PortableLayout::discover(&path).root)
         .unwrap_or_else(|| PathBuf::from("."));
     let mut self_check_only = false;
     let mut self_check_output = None;
@@ -378,7 +379,14 @@ struct LoadedLibrary {
     readiness: Option<ReadinessReport>,
     featured_ids: HashSet<String>,
     search_documents: Vec<String>,
+    imported_ids: HashSet<String>,
     status: String,
+}
+
+struct OperationResult {
+    success: bool,
+    heading: String,
+    message: String,
 }
 
 struct StartupProbe {
@@ -448,12 +456,17 @@ impl ImportDialog {
         let directory = dirs::download_dir()
             .or_else(dirs::home_dir)
             .unwrap_or_else(|| PathBuf::from("."));
+        let message = if entry.system.eq_ignore_ascii_case("mame") {
+            "Select the intact MAME ROM-set ZIP (for example, mspacman.zip). Do not unzip it. Double-click the ZIP or select it and confirm below."
+        } else {
+            "Choose the local game file or disc descriptor. Double-click a file to import it immediately."
+        };
         Self {
             entry,
             path_text: directory.display().to_string(),
             directory,
             selected: None,
-            message: "Choose the local game file or disc descriptor.".to_owned(),
+            message: message.to_owned(),
         }
     }
 }
@@ -462,7 +475,8 @@ struct PortableApp {
     root_text: String,
     catalog: Catalog,
     status: String,
-    operation: Option<Receiver<String>>,
+    operation: Option<Receiver<OperationResult>>,
+    operation_notice: Option<OperationResult>,
     artwork_jobs: SyncSender<ArtworkJob>,
     artwork_receiver: Receiver<ArtworkMessage>,
     textures: HashMap<String, egui::TextureHandle>,
@@ -473,6 +487,7 @@ struct PortableApp {
     readiness: Option<ReadinessReport>,
     featured_ids: HashSet<String>,
     search_documents: Vec<String>,
+    imported_ids: HashSet<String>,
     browse_view_key: Option<BrowseViewKey>,
     browse_systems: Vec<String>,
     browse_matches: Vec<usize>,
@@ -562,8 +577,22 @@ fn load_library(layout: &PortableLayout) -> LoadedLibrary {
         readiness,
         featured_ids,
         search_documents,
+        imported_ids: load_imported_ids(layout),
         status,
     }
+}
+
+fn load_imported_ids(layout: &PortableLayout) -> HashSet<String> {
+    let Ok(entries) = std::fs::read_dir(layout.imported_root()) else {
+        return HashSet::new();
+    };
+    entries
+        .filter_map(Result::ok)
+        .filter_map(|entry| std::fs::File::open(entry.path()).ok())
+        .filter_map(|file| serde_json::from_reader::<_, ImportedManifest>(file).ok())
+        .filter(|manifest| layout.root.join(&manifest.launch_relative_path).exists())
+        .map(|manifest| manifest.catalog_id)
+        .collect()
 }
 
 impl PortableApp {
@@ -612,6 +641,7 @@ impl PortableApp {
             },
             status: "Loading catalogues and auditing installed backends…".to_owned(),
             operation: None,
+            operation_notice: None,
             artwork_jobs,
             artwork_receiver,
             textures: HashMap::new(),
@@ -627,6 +657,7 @@ impl PortableApp {
             readiness: None,
             featured_ids: HashSet::new(),
             search_documents: Vec::new(),
+            imported_ids: HashSet::new(),
             browse_view_key: None,
             browse_systems: Vec::new(),
             browse_matches: Vec::new(),
@@ -708,6 +739,17 @@ impl PortableApp {
             })
             .map(|(index, _)| index)
             .collect();
+        if !key.query.is_empty() {
+            self.browse_matches.sort_by_cached_key(|index| {
+                let entry = &self.browse.entries[*index];
+                (
+                    !self.imported_ids.contains(&entry.id),
+                    entry.title.to_ascii_lowercase() != key.query,
+                    entry.title.to_ascii_lowercase(),
+                    entry.system.clone(),
+                )
+            });
+        }
         self.browse_view_key = Some(key);
     }
 
@@ -718,15 +760,23 @@ impl PortableApp {
         self.status = format!("Downloading and verifying {}…", entry.title);
         thread::spawn(move || {
             let result = ReqwestDownloader::new()
-                .and_then(|downloader| Installer::new(&layout, &downloader).install(&entry))
-                .map(|report| {
-                    format!(
+                .and_then(|downloader| Installer::new(&layout, &downloader).install(&entry));
+            let result = match result {
+                Ok(report) => OperationResult {
+                    success: true,
+                    heading: "INSTALL COMPLETE".to_owned(),
+                    message: format!(
                         "Installed and verified {} bytes at {}.",
                         report.bytes,
                         report.destination.display()
-                    )
-                })
-                .unwrap_or_else(|error| format!("Install failed safely: {error}"));
+                    ),
+                },
+                Err(error) => OperationResult {
+                    success: false,
+                    heading: "INSTALL FAILED".to_owned(),
+                    message: format!("Install failed safely: {error}"),
+                },
+            };
             let _ = sender.send(result);
         });
     }
@@ -743,15 +793,23 @@ impl PortableApp {
                 importer.import_directory(&entry, &source)
             } else {
                 importer.import(&entry, &source)
-            }
-                .map(|report| {
-                    format!(
-                        "Imported {title}: {} file(s), {} MiB. Click PLAY to open the refreshed library.",
+            };
+            let result = match result {
+                Ok(report) => OperationResult {
+                    success: true,
+                    heading: "IMPORT COMPLETE — PLAY IS READY".to_owned(),
+                    message: format!(
+                        "Imported {title}: {} file(s), {} MiB. The card now shows PLAY.",
                         report.imported_files,
                         report.imported_bytes / (1024 * 1024)
-                    )
-                })
-                .unwrap_or_else(|error| format!("Import failed safely: {error}"));
+                    ),
+                },
+                Err(error) => OperationResult {
+                    success: false,
+                    heading: "IMPORT FAILED".to_owned(),
+                    message: format!("Could not import {title}: {error}"),
+                },
+            };
             let _ = sender.send(result);
         });
     }
@@ -763,19 +821,28 @@ impl PortableApp {
         self.status = format!("Adding firmware at bios/{}…", firmware.relative_path);
         thread::spawn(move || {
             let destination = firmware.relative_path.clone();
-            let result = import_firmware(&layout, &firmware, &source)
-                .map(|report| {
+            let result = match import_firmware(&layout, &firmware, &source) {
+                Ok(report) => {
                     let action = if report.replaced_existing {
                         "Replaced"
                     } else {
                         "Added"
                     };
-                    format!(
-                        "{action} bios/{destination}: {} bytes (SHA-256 recorded as {}). Readiness refreshed.",
-                        report.bytes, report.sha256,
-                    )
-                })
-                .unwrap_or_else(|error| format!("Firmware import failed safely: {error}"));
+                    OperationResult {
+                        success: true,
+                        heading: "FIRMWARE READY".to_owned(),
+                        message: format!(
+                            "{action} bios/{destination}: {} bytes (SHA-256 recorded as {}). Readiness refreshed.",
+                            report.bytes, report.sha256,
+                        ),
+                    }
+                }
+                Err(error) => OperationResult {
+                    success: false,
+                    heading: "FIRMWARE IMPORT FAILED".to_owned(),
+                    message: format!("Firmware import failed safely: {error}"),
+                },
+            };
             let _ = sender.send(result);
         });
     }
@@ -815,8 +882,19 @@ impl PortableApp {
                             report.bytes, download.publisher
                         ))
                     }
-                })
-                .unwrap_or_else(|error| format!("Firmware installation failed safely: {error}"));
+                });
+            let result = match result {
+                Ok(message) => OperationResult {
+                    success: true,
+                    heading: "FIRMWARE DOWNLOAD COMPLETE".to_owned(),
+                    message,
+                },
+                Err(error) => OperationResult {
+                    success: false,
+                    heading: "FIRMWARE INSTALLATION FAILED".to_owned(),
+                    message: format!("Firmware installation failed safely: {error}"),
+                },
+            };
             let _ = sender.send(result);
         });
     }
@@ -847,15 +925,23 @@ impl PortableApp {
                     BrowseInstaller::new(&layout, &downloader)
                         .install(&entry)
                         .map_err(|error| error.to_string())
-                })
-                .map(|report| {
-                    format!(
+                });
+            let result = match result {
+                Ok(report) => OperationResult {
+                    success: true,
+                    heading: "DOWNLOAD COMPLETE — PLAY IS READY".to_owned(),
+                    message: format!(
                         "Downloaded and imported {title}: {} file(s), {} MiB. PLAY is ready.",
                         report.import.imported_files,
                         report.import.imported_bytes / (1024 * 1024)
-                    )
-                })
-                .unwrap_or_else(|error| format!("Download failed safely: {error}"));
+                    ),
+                },
+                Err(error) => OperationResult {
+                    success: false,
+                    heading: "DOWNLOAD FAILED".to_owned(),
+                    message: format!("Download failed safely: {error}"),
+                },
+            };
             let _ = sender.send(result);
         });
     }
@@ -1355,10 +1441,23 @@ impl PortableApp {
         }
         root.add_space(6.0);
 
+        let supports_folder = matches!(
+            dialog.entry.system.to_ascii_lowercase().as_str(),
+            "ps3" | "ps4" | "wiiu" | "windows"
+        );
+        if dialog.entry.system.eq_ignore_ascii_case("mame") {
+            root.label(
+                egui::RichText::new(
+                    "MAME uses the intact ZIP. Folder import is disabled for this system.",
+                )
+                .small()
+                .color(egui::Color32::from_rgb(238, 177, 89)),
+            );
+        }
         root.horizontal(|ui| {
             if ui
                 .add_enabled(
-                    dialog.directory.is_dir() && self.operation.is_none(),
+                    supports_folder && dialog.directory.is_dir() && self.operation.is_none(),
                     egui::Button::new("IMPORT THIS FOLDER").fill(CONTROL_BACKGROUND),
                 )
                 .on_hover_text(
@@ -1474,7 +1573,9 @@ impl PortableApp {
                     };
                     let selected = dialog.selected.as_ref() == Some(path);
                     let response = ui.selectable_label(selected, label);
-                    if response.clicked() {
+                    if response.double_clicked() && !*is_directory && self.operation.is_none() {
+                        import = Some((dialog.entry.clone(), path.clone()));
+                    } else if response.clicked() {
                         if *is_directory {
                             dialog.directory = path.clone();
                             dialog.path_text = path.display().to_string();
@@ -1492,7 +1593,7 @@ impl PortableApp {
                 .add_enabled(
                     dialog.selected.as_ref().is_some_and(|path| path.is_file())
                         && self.operation.is_none(),
-                    egui::Button::new("IMPORT SELECTED FILE").fill(CONTROL_BACKGROUND),
+                    egui::Button::new("IMPORT AND PREPARE GAME").fill(ACCENT),
                 )
                 .clicked()
                 && let Some(path) = dialog.selected.clone()
@@ -1566,6 +1667,7 @@ impl eframe::App for PortableApp {
             self.readiness = loaded.readiness;
             self.featured_ids = loaded.featured_ids;
             self.search_documents = loaded.search_documents;
+            self.imported_ids = loaded.imported_ids;
             self.browse_view_key = None;
             self.browse_systems.clear();
             self.browse_matches.clear();
@@ -1585,9 +1687,13 @@ impl eframe::App for PortableApp {
             .operation
             .as_ref()
             .and_then(|receiver| receiver.try_recv().ok());
-        if let Some(status) = completed_operation {
-            self.status = status;
+        if let Some(result) = completed_operation {
+            self.status = result.message.clone();
+            self.operation_notice = Some(result);
             self.operation = None;
+            self.imported_ids =
+                load_imported_ids(&PortableLayout::new(PathBuf::from(&self.root_text)));
+            self.browse_view_key = None;
             self.refresh_readiness();
         }
         if self.operation.is_some() {
@@ -1642,7 +1748,6 @@ impl eframe::App for PortableApp {
     }
 
     fn ui(&mut self, root: &mut egui::Ui, _frame: &mut eframe::Frame) {
-        const ACCENT: egui::Color32 = egui::Color32::from_rgb(104, 146, 255);
         const CARD: egui::Color32 = egui::Color32::from_rgb(22, 27, 38);
         let panel = egui::Frame::new()
             .fill(egui::Color32::from_rgb(13, 16, 23))
@@ -2450,6 +2555,36 @@ impl eframe::App for PortableApp {
                     });
                 });
         });
+        if let Some(notice) = &self.operation_notice {
+            let mut dismiss = false;
+            let color = if notice.success {
+                egui::Color32::from_rgb(98, 211, 145)
+            } else {
+                egui::Color32::from_rgb(235, 113, 113)
+            };
+            egui::Window::new(&notice.heading)
+                .id(egui::Id::new("operation-result"))
+                .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+                .collapsible(false)
+                .resizable(false)
+                .show(root.ctx(), |ui| {
+                    ui.set_max_width(520.0);
+                    ui.label(egui::RichText::new(&notice.message).color(color));
+                    ui.add_space(10.0);
+                    if ui
+                        .add_sized(
+                            [140.0, 32.0],
+                            egui::Button::new("OK").fill(CONTROL_BACKGROUND),
+                        )
+                        .clicked()
+                    {
+                        dismiss = true;
+                    }
+                });
+            if dismiss {
+                self.operation_notice = None;
+            }
+        }
         if self.loading.is_none()
             && let Some(probe) = &mut self.startup_probe
             && !probe.library_rendered_recorded

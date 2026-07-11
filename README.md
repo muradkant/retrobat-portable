@@ -45,6 +45,8 @@ browse snapshots live under [`catalog/`](catalog/).
 3. Browse **FEATURED**, a source collection, or a system; then click the game.
 4. Click **DOWNLOAD** or **IMPORT GAME**. For an extracted PS3, PS4, Wii U, or
    PC game, choose **IMPORT THIS FOLDER** so DLLs and data files stay together.
+   Arcade/MAME sets such as `mspacman.zip` must be selected as the original ZIP;
+   do not extract their component files.
 5. Click **PLAY**.
 
 ### Linux
@@ -52,6 +54,12 @@ browse snapshots live under [`catalog/`](catalog/).
 1. Install 64-bit Wine from the distribution for the legacy RetroBat layer.
 2. Double-click `RetroPort-Linux.desktop`, or run `./RetroPort-Linux`.
 3. Follow the same DOWNLOAD/IMPORT → PLAY flow.
+
+On the development machine, `tools/run_latest_linux.sh` is the stable
+application-menu entry point. It asks Cargo to incrementally rebuild the
+current checkout before every launch, then opens that binary against the
+discovered complete data bundle. It therefore cannot silently run an older
+executable copied to a USB deployment.
 
 RPCS3, Cemu, shadPS4, Eden, and Xenia use bundled native Linux runtimes. The
 remaining Windows RetroBat stack runs through Wine. All emulator configuration,
@@ -104,6 +112,11 @@ RetroPort/
 
 The removable-drive bundle is intentionally one directory. Do not move either
 launcher away from the rest of the tree.
+
+RetroPort also discovers a complete bundle mounted elsewhere on the machine.
+This makes a desktop/application-menu shortcut safe: the shortcut may invoke
+the installed launcher entry while the actual games, emulators, imports, and
+current deployed binary remain together on the removable drive.
 
 ## Verify a copy
 

@@ -31,6 +31,8 @@ GET PLAYING
    PLAY         Starts the exact imported/downloaded game.
 3. For extracted PS3, PS4, Wii U, or PC games, click IMPORT THIS FOLDER. This
    preserves EBOOT/RPX files, DLLs, and data directories together.
+4. Keep MAME/arcade ROM sets such as mspacman.zip intact. Select the ZIP itself;
+   do not unzip and import its individual component files.
 
 Imports deliberately do not demand one exact database dump. Alternate
 revisions, translations, and patches are accepted. A known-dump mismatch is

@@ -981,6 +981,7 @@ mod tests {
 <systemList>
   <system><name>psx</name><extension>.cue .bin .chd</extension></system>
   <system><name>gb</name><extension>.gb .zip</extension></system>
+  <system><name>mame</name><extension>.zip .7z</extension></system>
   <system><name>ps3</name><extension>.ps3 .m3u .iso</extension></system>
   <system><name>wiiu</name><extension>.rpx .wua</extension></system>
   <system><name>Windows</name><extension>.exe .bat .cmd</extension></system>
@@ -1009,6 +1010,29 @@ mod tests {
             b"rom bytes"
         );
         assert!(is_imported(&layout, "test/Tetris"));
+    }
+
+    #[test]
+    fn imports_an_intact_mame_zip_and_immediately_exposes_play_manifest() {
+        let temp = tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path().join("bundle"));
+        create_config(&layout);
+        let source = temp.path().join("mspacman.zip");
+        fs::write(&source, b"intact mame rom set").unwrap();
+        let entry = fixture_entry("mame", "Ms. Pac-Man");
+
+        let report = GameImporter::new(&layout).import(&entry, &source).unwrap();
+
+        assert_eq!(report.system, "mame");
+        assert_eq!(report.launch_file.file_name().unwrap(), "mspacman.zip");
+        assert!(is_imported(&layout, &entry.id));
+        assert_eq!(
+            imported_manifest(&layout, &entry.id)
+                .unwrap()
+                .unwrap()
+                .launch_relative_path,
+            PathBuf::from("RetroBat/roms/mame/mspacman.zip")
+        );
     }
 
     #[test]
