@@ -49,6 +49,10 @@ browse snapshots live under [`catalog/`](catalog/).
    do not extract their component files.
 5. Click **PLAY**.
 
+PLAY immediately changes to **LOADING**, then **RUNNING**, and remains disabled
+until the emulator exits. RetroPort therefore cannot start a duplicate copy
+while a game is opening or already running.
+
 ### Linux
 
 1. Install 64-bit Wine from the distribution for the legacy RetroBat layer.
@@ -71,6 +75,13 @@ Connect a controller before PLAY. RetroPort passes launch control to RetroBat
 and its established controller profiles; the supplied Xbox-compatible
 controller path was probed through Linux xpad, Wine XInput,
 RetroBat/EmulationStation, and RetroArch.
+
+For arcade/MAME games, press **Back/View** on an Xbox-compatible controller to
+insert a coin, **Start** to begin, and use the D-pad or left stick to move. On a
+keyboard, press **5** to insert a coin, **1** to start, the arrow keys to move,
+and **Esc** to quit. RetroPort supplies these mappings explicitly and enables
+audio for direct RetroArch launches instead of depending on mutable inherited
+frontend settings.
 
 ## Firmware flow
 

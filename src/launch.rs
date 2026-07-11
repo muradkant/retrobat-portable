@@ -272,11 +272,44 @@ impl LaunchPlan {
             HostPlatform::Unsupported => return Err(LaunchError::Unsupported),
         };
         debug_assert!(args.iter().any(|argument| argument == &config_argument));
-        let config = format!(
-            "savefile_directory = \"{}\"\nsavestate_directory = \"{}\"\n",
+        let mut config = format!(
+            concat!(
+                "savefile_directory = \"{}\"\n",
+                "savestate_directory = \"{}\"\n",
+                "config_save_on_exit = \"false\"\n",
+                "audio_enable = \"true\"\n",
+                "audio_driver = \"xaudio\"\n",
+                "audio_mute_enable = \"false\"\n",
+                "audio_mixer_mute_enable = \"false\"\n",
+                "audio_volume = \"0.000000\"\n",
+                "input_autodetect_enable = \"true\"\n",
+                "input_joypad_driver = \"sdl2\"\n",
+                "input_player1_joypad_index = \"0\"\n",
+                "input_player1_analog_dpad_mode = \"1\"\n",
+                "input_player1_b_btn = \"0\"\n",
+                "input_player1_a_btn = \"1\"\n",
+                "input_player1_y_btn = \"2\"\n",
+                "input_player1_x_btn = \"3\"\n",
+                "input_player1_select_btn = \"4\"\n",
+                "input_player1_start_btn = \"6\"\n",
+                "input_player1_up_btn = \"11\"\n",
+                "input_player1_down_btn = \"12\"\n",
+                "input_player1_left_btn = \"13\"\n",
+                "input_player1_right_btn = \"14\"\n"
+            ),
             save_value.replace('"', "\\\""),
             state_value.replace('"', "\\\"")
         );
+        if system == "mame" {
+            config.push_str(concat!(
+                "input_player1_select = \"num5\"\n",
+                "input_player1_start = \"num1\"\n",
+                "input_player1_up = \"up\"\n",
+                "input_player1_down = \"down\"\n",
+                "input_player1_left = \"left\"\n",
+                "input_player1_right = \"right\"\n"
+            ));
+        }
         Ok(Self {
             program,
             args,
@@ -719,13 +752,50 @@ mod tests {
                 PathBuf::from(r"Z:\run\media\user\Arcade\RetroBat\roms\mame\mspacman.zip"),
             ]
         );
-        assert_eq!(
-            plan.generated_files[0].1,
-            concat!(
-                "savefile_directory = \"Z:/run/media/user/Arcade/RetroBat/saves/mame\"\n",
-                "savestate_directory = \"Z:/run/media/user/Arcade/RetroBat/saves/mame/states\"\n"
-            )
-        );
+        let config = &plan.generated_files[0].1;
+        for expected in [
+            "savefile_directory = \"Z:/run/media/user/Arcade/RetroBat/saves/mame\"",
+            "savestate_directory = \"Z:/run/media/user/Arcade/RetroBat/saves/mame/states\"",
+            "audio_enable = \"true\"",
+            "audio_driver = \"xaudio\"",
+            "audio_mute_enable = \"false\"",
+            "input_joypad_driver = \"sdl2\"",
+            "input_player1_select_btn = \"4\"",
+            "input_player1_start_btn = \"6\"",
+            "input_player1_select = \"num5\"",
+            "input_player1_start = \"num1\"",
+        ] {
+            assert!(config.contains(expected), "missing {expected}");
+        }
+    }
+
+    #[test]
+    fn direct_libretro_launch_materializes_its_audio_and_input_overrides() {
+        let temp = tempfile::tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path().join("Arcade"));
+        let rom = layout.retrobat_root().join("roms/mame/mspacman.zip");
+        let backend = BackendRoute {
+            emulator: "libretro".to_owned(),
+            core: Some("mame".to_owned()),
+            incompatible_extensions: Vec::new(),
+        };
+        let plan = LaunchPlan::for_game_host_with_backend(
+            &layout,
+            HostPlatform::Linux,
+            Some(temp.path()),
+            "mame",
+            &rom,
+            Some(&backend),
+        )
+        .unwrap();
+
+        plan.prepare_runtime().unwrap();
+
+        let config_path = layout.metadata_root().join("runtime/retroarch/mame.cfg");
+        let config = fs::read_to_string(config_path).unwrap();
+        assert!(config.contains("audio_enable = \"true\""));
+        assert!(config.contains("input_player1_select_btn = \"4\""));
+        assert!(config.contains("input_player1_start = \"num1\""));
     }
 
     #[test]

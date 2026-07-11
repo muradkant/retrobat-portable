@@ -6,10 +6,11 @@
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::io::{Cursor, Write};
 use std::path::PathBuf;
+use std::process::Child;
 use std::sync::mpsc::{self, Receiver, SyncSender, TrySendError};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use eframe::egui;
 use retrobat_portable::artwork::{load_bundled_artwork, load_or_fetch, load_snapshot_artwork};
@@ -389,6 +390,23 @@ struct OperationResult {
     message: String,
 }
 
+struct RunningGame {
+    title: String,
+    child: Child,
+    launched_at: Instant,
+}
+
+fn game_button_state(active: Option<(&str, Duration)>, card_title: &str) -> (String, bool) {
+    match active {
+        Some((title, elapsed)) if title == card_title && elapsed < Duration::from_secs(5) => {
+            ("⏳  LOADING…".to_owned(), false)
+        }
+        Some((title, _)) if title == card_title => ("●  RUNNING".to_owned(), false),
+        Some(_) => ("GAME RUNNING".to_owned(), false),
+        None => ("▶  PLAY".to_owned(), true),
+    }
+}
+
 struct StartupProbe {
     output: PathBuf,
     started: Instant,
@@ -477,6 +495,7 @@ struct PortableApp {
     status: String,
     operation: Option<Receiver<OperationResult>>,
     operation_notice: Option<OperationResult>,
+    running_game: Option<RunningGame>,
     artwork_jobs: SyncSender<ArtworkJob>,
     artwork_receiver: Receiver<ArtworkMessage>,
     textures: HashMap<String, egui::TextureHandle>,
@@ -642,6 +661,7 @@ impl PortableApp {
             status: "Loading catalogues and auditing installed backends…".to_owned(),
             operation: None,
             operation_notice: None,
+            running_game: None,
             artwork_jobs,
             artwork_receiver,
             textures: HashMap::new(),
@@ -1627,6 +1647,11 @@ impl PortableApp {
     }
 
     fn launch_game(&mut self, title: &str, system: &str, rom: &std::path::Path) {
+        if self.running_game.is_some() {
+            self.status = "A game is already loading or running. Close it before starting another."
+                .to_owned();
+            return;
+        }
         let layout = PortableLayout::new(PathBuf::from(&self.root_text));
         let backend = self
             .readiness
@@ -1634,16 +1659,31 @@ impl PortableApp {
             .and_then(|report| report.select_backend(system, rom))
             .cloned();
         let route_label = backend.as_ref().map(|route| route.label());
-        self.status =
-            match LaunchPlan::for_current_game_with_backend(&layout, system, rom, backend.as_ref())
-                .and_then(|plan| plan.spawn().map(|_| ()))
-            {
-                Ok(()) => route_label.map_or_else(
-                    || format!("Launched {title}; RetroBat will select or prepare its backend."),
-                    |route| format!("Launched {title} through the installed {route} backend."),
-                ),
-                Err(error) => format!("Could not launch {title}: {error}"),
-            };
+        self.status = format!("Loading {title}…");
+        match LaunchPlan::for_current_game_with_backend(&layout, system, rom, backend.as_ref())
+            .and_then(|plan| plan.spawn())
+        {
+            Ok(child) => {
+                self.running_game = Some(RunningGame {
+                    title: title.to_owned(),
+                    child,
+                    launched_at: Instant::now(),
+                });
+                self.status = if system.eq_ignore_ascii_case("mame") {
+                    format!(
+                        "Loading {title}… Controller: BACK/VIEW inserts a coin, START begins, D-pad or left stick moves. Keyboard: 5 inserts a coin, 1 begins, arrows move, Esc quits."
+                    )
+                } else {
+                    route_label.map_or_else(
+                        || format!("Loading {title}; its configured backend is starting…"),
+                        |route| format!("Loading {title} through the installed {route} backend…"),
+                    )
+                };
+            }
+            Err(error) => {
+                self.status = format!("Could not launch {title}: {error}");
+            }
+        }
     }
 }
 
@@ -1698,6 +1738,20 @@ impl eframe::App for PortableApp {
         }
         if self.operation.is_some() {
             context.request_repaint_after(std::time::Duration::from_millis(100));
+        }
+        let game_finished =
+            self.running_game
+                .as_mut()
+                .and_then(|game| match game.child.try_wait() {
+                    Ok(Some(status)) => Some(format!("{} closed ({status}).", game.title)),
+                    Ok(None) => None,
+                    Err(error) => Some(format!("Could not monitor {}: {error}", game.title)),
+                });
+        if let Some(status) = game_finished {
+            self.running_game = None;
+            self.status = status;
+        } else if self.running_game.is_some() {
+            context.request_repaint_after(Duration::from_millis(100));
         }
 
         // Bound texture uploads per frame. Decoding already happened on a worker;
@@ -2285,16 +2339,30 @@ impl eframe::App for PortableApp {
                                                         )
                                                         .ok()
                                                         .flatten();
-                                                        let label = if imported.is_some() {
-                                                            "▶  PLAY"
+                                                        let (label, game_enabled) = if imported
+                                                            .is_some()
+                                                        {
+                                                            game_button_state(
+                                                                self.running_game.as_ref().map(
+                                                                    |game| {
+                                                                        (
+                                                                            game.title.as_str(),
+                                                                            game.launched_at
+                                                                                .elapsed(),
+                                                                        )
+                                                                    },
+                                                                ),
+                                                                &entry.title,
+                                                            )
                                                         } else {
-                                                            "IMPORT GAME"
+                                                            ("IMPORT GAME".to_owned(), true)
                                                         };
                                                         if ui
                                                             .add_enabled(
-                                                                self.operation.is_none(),
+                                                                self.operation.is_none()
+                                                                    && game_enabled,
                                                                 egui::Button::new(
-                                                                    egui::RichText::new(label)
+                                                                    egui::RichText::new(&label)
                                                                         .small()
                                                                         .strong()
                                                                         .color(
@@ -2340,16 +2408,28 @@ impl eframe::App for PortableApp {
                                                         )
                                                         .ok()
                                                         .flatten();
-                                                        let label = if installed
-                                                            || imported.is_some()
-                                                        {
-                                                            "▶  PLAY"
+                                                        let game_ready = installed
+                                                            || imported.is_some();
+                                                        let (label, game_enabled) = if game_ready {
+                                                            game_button_state(
+                                                                self.running_game.as_ref().map(
+                                                                    |game| {
+                                                                        (
+                                                                            game.title.as_str(),
+                                                                            game.launched_at
+                                                                                .elapsed(),
+                                                                        )
+                                                                    },
+                                                                ),
+                                                                &entry.title,
+                                                            )
                                                         } else {
-                                                            "DOWNLOAD"
+                                                            ("DOWNLOAD".to_owned(), true)
                                                         };
                                                         if ui
                                                             .add_enabled(
                                                                 self.operation.is_none()
+                                                                    && game_enabled
                                                                     && (installed
                                                                         || imported.is_some()
                                                                         || trusted.is_some()
@@ -2357,7 +2437,7 @@ impl eframe::App for PortableApp {
                                                                             entry,
                                                                         )),
                                                                 egui::Button::new(
-                                                                    egui::RichText::new(label)
+                                                                    egui::RichText::new(&label)
                                                                         .small()
                                                                         .strong()
                                                                         .color(
@@ -2726,6 +2806,28 @@ mod ui_tests {
             assert!(used <= width);
             assert!(width - used <= columns as f32 + 2.0);
         }
+    }
+
+    #[test]
+    fn play_is_disabled_as_soon_as_a_game_starts_loading() {
+        let (label, enabled) = game_button_state(
+            Some(("Ms. Pac-Man", Duration::from_millis(10))),
+            "Ms. Pac-Man",
+        );
+        assert_eq!(label, "⏳  LOADING…");
+        assert!(!enabled);
+
+        let (other_label, other_enabled) =
+            game_button_state(Some(("Ms. Pac-Man", Duration::from_secs(10))), "Pac-Man");
+        assert_eq!(other_label, "GAME RUNNING");
+        assert!(!other_enabled);
+    }
+
+    #[test]
+    fn play_becomes_available_again_after_the_child_exits() {
+        let (label, enabled) = game_button_state(None, "Ms. Pac-Man");
+        assert_eq!(label, "▶  PLAY");
+        assert!(enabled);
     }
 
     #[test]

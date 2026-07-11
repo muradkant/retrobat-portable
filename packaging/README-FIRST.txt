@@ -58,6 +58,13 @@ its established controller profiles. The supplied Xbox-compatible controller
 path was probed through Linux xpad, Wine XInput, RetroBat/EmulationStation, and
 RetroArch. RetroBat's usual exit shortcut is HOTKEY + START.
 
+For arcade/MAME games:
+Controller  BACK/VIEW inserts a coin; START begins; D-pad/left stick moves.
+Keyboard    5 inserts a coin; 1 begins; arrow keys move; Esc quits.
+
+PLAY changes immediately to LOADING and then RUNNING. It stays disabled until
+the emulator exits, so a second click cannot open a duplicate game process.
+
 VERIFY THIS COPY
 ----------------
 Windows: double-click VERIFY-WINDOWS.cmd.
