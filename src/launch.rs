@@ -4,6 +4,9 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command};
 
+#[cfg(unix)]
+use std::os::unix::process::CommandExt;
+
 use serde::Serialize;
 use thiserror::Error;
 
@@ -415,6 +418,8 @@ impl LaunchPlan {
 
         let mut command = Command::new(&self.program);
         command.args(&self.args).current_dir(&self.current_dir);
+        #[cfg(unix)]
+        command.process_group(0);
         for (key, value) in &self.env {
             command.env(key, value);
         }
@@ -437,6 +442,64 @@ impl LaunchPlan {
             fs::write(path, contents)?;
         }
         Ok(())
+    }
+}
+
+pub fn terminate_process_tree(child: &mut Child, force: bool) -> Result<(), LaunchError> {
+    terminate_process_tree_id(child.id(), force)
+}
+
+pub fn terminate_process_tree_id(process_id: u32, force: bool) -> Result<(), LaunchError> {
+    #[cfg(unix)]
+    {
+        let signal = if force { libc::SIGKILL } else { libc::SIGTERM };
+        let process_group = -(process_id as i32);
+        // SAFETY: kill is called with a process-group id created by
+        // CommandExt::process_group(0). No pointers cross the FFI boundary.
+        let result = unsafe { libc::kill(process_group, signal) };
+        if result == 0 {
+            return Ok(());
+        }
+        let error = io::Error::last_os_error();
+        if error.raw_os_error() == Some(libc::ESRCH) {
+            return Ok(());
+        }
+        Err(LaunchError::Io(error))
+    }
+    #[cfg(target_os = "windows")]
+    {
+        let mut command = Command::new("taskkill");
+        command.args(["/PID", &process_id.to_string(), "/T"]);
+        if force {
+            command.arg("/F");
+        }
+        let status = command.status()?;
+        if status.success() {
+            Ok(())
+        } else {
+            Err(LaunchError::Io(io::Error::other(format!(
+                "taskkill exited with {status}"
+            ))))
+        }
+    }
+    #[cfg(not(any(unix, target_os = "windows")))]
+    {
+        let _ = force;
+        Err(LaunchError::Unsupported)
+    }
+}
+
+pub fn process_tree_is_running(process_id: u32) -> bool {
+    #[cfg(unix)]
+    {
+        // SAFETY: signal 0 performs existence/permission checking only and
+        // receives no pointer arguments.
+        (unsafe { libc::kill(-(process_id as i32), 0) } == 0)
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = process_id;
+        false
     }
 }
 
@@ -863,5 +926,32 @@ mod tests {
                 PathBuf::from(r"Z:\run\media\user\Arcade\RetroBat\roms\chip8\game.ch8"),
             ]
         );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn terminate_kills_the_entire_spawned_process_group() {
+        let mut child = LaunchPlan {
+            program: PathBuf::from("sh"),
+            args: vec![PathBuf::from("-c"), PathBuf::from("sleep 30 & wait")],
+            current_dir: PathBuf::from("/tmp"),
+            env: BTreeMap::new(),
+            generated_files: Vec::new(),
+        }
+        .spawn()
+        .unwrap();
+        let process_id = child.id();
+        assert!(process_tree_is_running(process_id));
+
+        terminate_process_tree(&mut child, false).unwrap();
+        for _ in 0..100 {
+            if child.try_wait().unwrap().is_some() {
+                break;
+            }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+
+        assert!(child.try_wait().unwrap().is_some());
+        assert!(!process_tree_is_running(process_id));
     }
 }

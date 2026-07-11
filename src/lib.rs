@@ -2,6 +2,7 @@ pub mod artwork;
 pub mod browse;
 pub mod browse_install;
 pub mod catalog;
+pub mod controls;
 pub mod featured;
 pub mod firmware;
 pub mod import;
@@ -20,6 +21,7 @@ use crate::{
     browse::BrowseCatalog,
     browse_install::{DownloadCoverage, audit_download_coverage},
     catalog::Catalog,
+    controls::{ControlsCatalog, ControlsCoverage},
     featured::{FeaturedCatalog, FeaturedReadinessAudit},
     import::{GameImporter, ImportCoverage},
     launch::HostPlatform,
@@ -45,6 +47,7 @@ pub struct SelfCheck {
     pub download_coverage: DownloadCoverage,
     pub readiness: Option<ReadinessReport>,
     pub featured_readiness: Option<FeaturedReadinessAudit>,
+    pub controls_coverage: ControlsCoverage,
     pub target_platform: &'static str,
 }
 
@@ -60,6 +63,8 @@ pub enum SelfCheckError {
     Readiness(#[from] readiness::ReadinessError),
     #[error(transparent)]
     Featured(#[from] featured::FeaturedError),
+    #[error(transparent)]
+    Controls(#[from] controls::ControlsError),
 }
 
 pub fn self_check(layout: &PortableLayout) -> Result<SelfCheck, SelfCheckError> {
@@ -84,6 +89,7 @@ pub fn self_check(layout: &PortableLayout) -> Result<SelfCheck, SelfCheckError> 
     };
     let bundled_artwork = audit_bundled_artwork(layout, &browse.entries);
     let featured = FeaturedCatalog::built_in(&browse)?;
+    let controls_coverage = ControlsCatalog::built_in()?.audit_coverage(&browse);
     let featured_readiness = readiness
         .as_ref()
         .map(|report| featured.audit_readiness(&browse, report));
@@ -111,6 +117,7 @@ pub fn self_check(layout: &PortableLayout) -> Result<SelfCheck, SelfCheckError> 
         download_coverage,
         readiness,
         featured_readiness,
+        controls_coverage,
         target_platform: host.as_str(),
     })
 }

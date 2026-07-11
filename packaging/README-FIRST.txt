@@ -29,6 +29,8 @@ GET PLAYING
    DOWNLOAD     Fetches, verifies, prepares, and installs a hosted game.
    IMPORT GAME  Selects a compatible local ROM, disc, executable, or game.
    PLAY         Starts the exact imported/downloaded game.
+   CONTROLS     Shows keyboard/controller bindings, required hardware, and the
+                machine-readable evidence used for this game.
 3. For extracted PS3, PS4, Wii U, or PC games, click IMPORT THIS FOLDER. This
    preserves EBOOT/RPX files, DLLs, and data directories together.
 4. Keep MAME/arcade ROM sets such as mspacman.zip intact. Select the ZIP itself;
@@ -51,19 +53,17 @@ hash gate. Switch prod.keys are copied automatically into both Windows and
 Linux Eden profiles. Optional firmware uses the same screen. If a core has a
 documented built-in fallback, no false required-firmware warning is shown.
 
-CONTROLLER
-----------
-Connect the controller before PLAY. RetroPort passes control to RetroBat and
-its established controller profiles. The supplied Xbox-compatible controller
-path was probed through Linux xpad, Wine XInput, RetroBat/EmulationStation, and
-RetroArch. RetroBat's usual exit shortcut is HOTKEY + START.
+CONTROLS AND EXITING A GAME
+---------------------------
+Every one of the 80,734 cards has CONTROLS. Connect the controller first, then
+open that view to see the mapping detected from this copy's RetroArch/RetroBat
+configuration, the matching controller profile, and any exact MAME or RetroBat
+per-game device metadata. The view states its source and confidence; it does
+not silently guess missing per-game action names.
 
-For arcade/MAME games:
-Controller  BACK/VIEW inserts a coin; START begins; D-pad/left stick moves.
-Keyboard    5 inserts a coin; 1 begins; arrow keys move; Esc quits.
-
-PLAY changes immediately to LOADING and then RUNNING. It stays disabled until
-the emulator exits, so a second click cannot open a duplicate game process.
+PLAY changes immediately to LOADING and then TERMINATE. A second launch cannot
+open while the game is active. Click TERMINATE to stop the complete emulator
+process tree and restore PLAY; closing only a desktop window is not required.
 
 VERIFY THIS COPY
 ----------------

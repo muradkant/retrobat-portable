@@ -19,11 +19,34 @@ catalogue card
               Linux: native modern AppImage or Wine adapter
 ```
 
-The browse snapshot and featured evidence are compiled into the application.
-Artwork loading and decoding are bounded background jobs; image dimensions and
-allocation limits are applied before data reaches the UI thread. Filter/search
-documents are precomputed and cached, preventing the 80,734-card catalogue from
-being reparsed on each frame.
+The browse snapshot, featured evidence, and controls-provider snapshot are
+compiled into the application. Artwork loading and decoding are bounded
+background jobs; image dimensions and allocation limits are applied before
+data reaches the UI thread. Filter/search documents and imported manifests are
+precomputed and cached. Initial and post-operation readiness audits run on
+workers, preventing an 80,734-record scan from blocking desktop event handling.
+
+## Controls contract
+
+- Every browse record has a CONTROLS action; coverage is enforced by self-check
+  and a regression test over the complete embedded catalogue.
+- The base mapping is parsed from the installed RetroArch/RetroBat system
+  configuration and the connected device's SDL autoconfiguration.
+- MAME input declarations are generated from `mame -listxml` and joined to the
+  pinned Libretro MAME DAT; imported ROM stems select the exact machine variant.
+- RetroBat's installed `gamesdb.xml` contributes exact special-device metadata.
+- The UI exposes source, scope, and confidence. It identifies core-declared
+  runtime mappings instead of manufacturing unsupported action labels.
+
+## Process lifecycle contract
+
+- A launched game owns an independent process group on Unix; Windows uses the
+  platform process-tree termination facility.
+- PLAY becomes LOADING immediately and then TERMINATE, preventing duplicate
+  launches and giving the frontend an explicit escape from a hidden or stuck
+  emulator.
+- A watcher thread owns and reaps the child. Exit detection therefore does not
+  depend on focus events or block the GUI thread.
 
 ## Import contract
 

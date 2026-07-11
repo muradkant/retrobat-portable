@@ -6,7 +6,6 @@
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::io::{Cursor, Write};
 use std::path::PathBuf;
-use std::process::Child;
 use std::sync::mpsc::{self, Receiver, SyncSender, TrySendError};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -19,11 +18,12 @@ use retrobat_portable::browse::{
 };
 use retrobat_portable::browse_install::{BrowseInstaller, supports_direct_download};
 use retrobat_portable::catalog::{Artwork, Catalog, CatalogEntry};
+use retrobat_portable::controls::{ControlsCatalog, GameControls};
 use retrobat_portable::featured::FeaturedCatalog;
 use retrobat_portable::firmware::{import_firmware, install_official_firmware};
 use retrobat_portable::import::{GameImporter, ImportedManifest, imported_manifest};
 use retrobat_portable::install::{Installer, ReqwestDownloader, is_installed};
-use retrobat_portable::launch::LaunchPlan;
+use retrobat_portable::launch::{LaunchPlan, process_tree_is_running, terminate_process_tree_id};
 use retrobat_portable::paths::PortableLayout;
 use retrobat_portable::readiness::{
     BackendState, FirmwareFileStatus, FirmwareInstallAction, FirmwareState, ReadinessReport,
@@ -381,6 +381,8 @@ struct LoadedLibrary {
     featured_ids: HashSet<String>,
     search_documents: Vec<String>,
     imported_ids: HashSet<String>,
+    imported_manifests: HashMap<String, ImportedManifest>,
+    controls: ControlsCatalog,
     status: String,
 }
 
@@ -391,19 +393,37 @@ struct OperationResult {
 }
 
 struct RunningGame {
+    catalog_id: String,
     title: String,
-    child: Child,
+    process_id: u32,
+    exit_receiver: Receiver<String>,
     launched_at: Instant,
+    termination_requested_at: Option<Instant>,
 }
 
-fn game_button_state(active: Option<(&str, Duration)>, card_title: &str) -> (String, bool) {
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum GameButtonIntent {
+    Play,
+    Terminate,
+    Disabled,
+}
+
+fn game_button_state(
+    active: Option<(&str, Duration, bool)>,
+    card_id: &str,
+) -> (String, GameButtonIntent) {
     match active {
-        Some((title, elapsed)) if title == card_title && elapsed < Duration::from_secs(5) => {
-            ("⏳  LOADING…".to_owned(), false)
+        Some((id, _, true)) if id == card_id => {
+            ("■  TERMINATING…".to_owned(), GameButtonIntent::Disabled)
         }
-        Some((title, _)) if title == card_title => ("●  RUNNING".to_owned(), false),
-        Some(_) => ("GAME RUNNING".to_owned(), false),
-        None => ("▶  PLAY".to_owned(), true),
+        Some((id, elapsed, false)) if id == card_id && elapsed < Duration::from_secs(5) => {
+            ("⏳  LOADING…".to_owned(), GameButtonIntent::Disabled)
+        }
+        Some((id, _, false)) if id == card_id => {
+            ("■  TERMINATE".to_owned(), GameButtonIntent::Terminate)
+        }
+        Some(_) => ("GAME RUNNING".to_owned(), GameButtonIntent::Disabled),
+        None => ("▶  PLAY".to_owned(), GameButtonIntent::Play),
     }
 }
 
@@ -490,6 +510,7 @@ impl ImportDialog {
 }
 
 struct PortableApp {
+    context: egui::Context,
     root_text: String,
     catalog: Catalog,
     status: String,
@@ -504,9 +525,12 @@ struct PortableApp {
     artwork_inflight: HashSet<String>,
     browse: BrowseCatalog,
     readiness: Option<ReadinessReport>,
+    readiness_refresh: Option<Receiver<Result<ReadinessReport, String>>>,
     featured_ids: HashSet<String>,
     search_documents: Vec<String>,
     imported_ids: HashSet<String>,
+    imported_manifests: HashMap<String, ImportedManifest>,
+    controls: Option<ControlsCatalog>,
     browse_view_key: Option<BrowseViewKey>,
     browse_systems: Vec<String>,
     browse_matches: Vec<usize>,
@@ -516,6 +540,7 @@ struct PortableApp {
     search: String,
     import_dialog: Option<ImportDialog>,
     firmware_dialog: Option<FirmwareDialog>,
+    controls_dialog: Option<GameControls>,
     loading: Option<Receiver<LoadedLibrary>>,
     startup_probe: Option<StartupProbe>,
 }
@@ -590,27 +615,35 @@ fn load_library(layout: &PortableLayout) -> LoadedLibrary {
             eprintln!("Featured snapshot rejected: {error}");
             HashSet::new()
         });
+    let imported_manifests = load_imported_manifests(layout);
+    let imported_ids = imported_manifests.keys().cloned().collect();
     LoadedLibrary {
         catalog,
         browse,
         readiness,
         featured_ids,
         search_documents,
-        imported_ids: load_imported_ids(layout),
+        imported_ids,
+        imported_manifests,
+        controls: ControlsCatalog::built_in().expect("built-in controls snapshot must validate"),
         status,
     }
 }
 
-fn load_imported_ids(layout: &PortableLayout) -> HashSet<String> {
+fn load_imported_manifests(layout: &PortableLayout) -> HashMap<String, ImportedManifest> {
     let Ok(entries) = std::fs::read_dir(layout.imported_root()) else {
-        return HashSet::new();
+        return HashMap::new();
     };
     entries
         .filter_map(Result::ok)
         .filter_map(|entry| std::fs::File::open(entry.path()).ok())
         .filter_map(|file| serde_json::from_reader::<_, ImportedManifest>(file).ok())
-        .filter(|manifest| layout.root.join(&manifest.launch_relative_path).exists())
-        .map(|manifest| manifest.catalog_id)
+        .filter_map(|manifest| {
+            imported_manifest(layout, &manifest.catalog_id)
+                .ok()
+                .flatten()
+                .map(|validated| (validated.catalog_id.clone(), validated))
+        })
         .collect()
 }
 
@@ -652,6 +685,7 @@ impl PortableApp {
             let _ = loading_sender.send(load_library(&loading_layout));
         });
         Self {
+            context: context.clone(),
             root_text: layout.root.display().to_string(),
             catalog: Catalog {
                 schema_version: 1,
@@ -675,9 +709,12 @@ impl PortableApp {
                 entries: Vec::new(),
             },
             readiness: None,
+            readiness_refresh: None,
             featured_ids: HashSet::new(),
             search_documents: Vec::new(),
             imported_ids: HashSet::new(),
+            imported_manifests: HashMap::new(),
+            controls: None,
             browse_view_key: None,
             browse_systems: Vec::new(),
             browse_matches: Vec::new(),
@@ -687,6 +724,7 @@ impl PortableApp {
             search: String::new(),
             import_dialog: None,
             firmware_dialog: None,
+            controls_dialog: None,
             loading: Some(loading_receiver),
             startup_probe: startup_probe_output.map(StartupProbe::new),
         }
@@ -920,12 +958,99 @@ impl PortableApp {
     }
 
     fn refresh_readiness(&mut self) {
+        if self.readiness_refresh.is_some() {
+            return;
+        }
         let layout = PortableLayout::new(PathBuf::from(&self.root_text));
-        match ReadinessReport::audit(&layout, &self.browse.entries) {
-            Ok(report) => self.readiness = Some(report),
-            Err(error) => {
-                self.status = format!("{} Readiness refresh failed: {error}", self.status)
+        let entries = self.browse.entries.clone();
+        let (sender, receiver) = mpsc::channel();
+        self.readiness_refresh = Some(receiver);
+        thread::spawn(move || {
+            let result =
+                ReadinessReport::audit(&layout, &entries).map_err(|error| error.to_string());
+            let _ = sender.send(result);
+        });
+    }
+
+    fn show_controls_dialog(&mut self, root: &mut egui::Ui) {
+        let Some(profile) = &self.controls_dialog else {
+            return;
+        };
+        let mut close = false;
+        root.horizontal(|ui| {
+            ui.vertical(|ui| {
+                ui.heading(format!("Controls · {}", profile.title));
+                ui.label(egui::RichText::new(&profile.scope).strong().color(ACCENT));
+                ui.label(
+                    egui::RichText::new(&profile.confidence)
+                        .small()
+                        .color(egui::Color32::from_gray(155)),
+                );
+            });
+            ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
+                if ui.button("CLOSE").clicked() {
+                    close = true;
+                }
+            });
+        });
+        root.separator();
+        egui::ScrollArea::vertical().show(root, |ui| {
+            ui.heading("Required input hardware");
+            for line in &profile.device_summary {
+                ui.label(format!("• {line}"));
             }
+            ui.add_space(10.0);
+            ui.columns(2, |columns| {
+                columns[0].heading("Keyboard");
+                if profile.keyboard.is_empty() {
+                    columns[0]
+                        .label("The installed backend does not declare keyboard-to-game bindings.");
+                } else {
+                    for binding in &profile.keyboard {
+                        columns[0].horizontal(|ui| {
+                            ui.label(
+                                egui::RichText::new(&binding.input)
+                                    .monospace()
+                                    .strong()
+                                    .color(ACCENT),
+                            );
+                            ui.label(format!("— {}", binding.function));
+                        });
+                    }
+                }
+                columns[1].heading("Controller");
+                for binding in &profile.controller {
+                    columns[1].horizontal(|ui| {
+                        ui.label(
+                            egui::RichText::new(&binding.input)
+                                .monospace()
+                                .strong()
+                                .color(ACCENT),
+                        );
+                        ui.label(format!("— {}", binding.function));
+                    });
+                }
+            });
+            ui.add_space(12.0);
+            ui.heading("Notes");
+            for note in &profile.notes {
+                ui.label(format!("• {note}"));
+            }
+            ui.add_space(12.0);
+            ui.heading("Evidence and provenance");
+            for source in &profile.sources {
+                ui.horizontal_wrapped(|ui| {
+                    ui.hyperlink_to(&source.name, &source.url);
+                    ui.label(
+                        egui::RichText::new(format!("· {}", source.version))
+                            .small()
+                            .color(egui::Color32::from_gray(135)),
+                    );
+                });
+            }
+        });
+        if close {
+            self.controls_dialog = None;
         }
     }
 
@@ -1646,7 +1771,7 @@ impl PortableApp {
             };
     }
 
-    fn launch_game(&mut self, title: &str, system: &str, rom: &std::path::Path) {
+    fn launch_game(&mut self, catalog_id: &str, title: &str, system: &str, rom: &std::path::Path) {
         if self.running_game.is_some() {
             self.status = "A game is already loading or running. Close it before starting another."
                 .to_owned();
@@ -1663,25 +1788,56 @@ impl PortableApp {
         match LaunchPlan::for_current_game_with_backend(&layout, system, rom, backend.as_ref())
             .and_then(|plan| plan.spawn())
         {
-            Ok(child) => {
-                self.running_game = Some(RunningGame {
-                    title: title.to_owned(),
-                    child,
-                    launched_at: Instant::now(),
+            Ok(mut child) => {
+                let process_id = child.id();
+                let (exit_sender, exit_receiver) = mpsc::channel();
+                let context = self.context.clone();
+                let game_title = title.to_owned();
+                thread::spawn(move || {
+                    let result = child.wait();
+                    while process_tree_is_running(process_id) {
+                        thread::sleep(Duration::from_millis(100));
+                    }
+                    let message = match result {
+                        Ok(status) => format!("{game_title} closed ({status})."),
+                        Err(error) => format!("Could not monitor {game_title}: {error}"),
+                    };
+                    let _ = exit_sender.send(message);
+                    context.request_repaint();
                 });
-                self.status = if system.eq_ignore_ascii_case("mame") {
-                    format!(
-                        "Loading {title}… Controller: BACK/VIEW inserts a coin, START begins, D-pad or left stick moves. Keyboard: 5 inserts a coin, 1 begins, arrows move, Esc quits."
-                    )
-                } else {
-                    route_label.map_or_else(
-                        || format!("Loading {title}; its configured backend is starting…"),
-                        |route| format!("Loading {title} through the installed {route} backend…"),
-                    )
-                };
+                self.running_game = Some(RunningGame {
+                    catalog_id: catalog_id.to_owned(),
+                    title: title.to_owned(),
+                    process_id,
+                    exit_receiver,
+                    launched_at: Instant::now(),
+                    termination_requested_at: None,
+                });
+                self.status = route_label.map_or_else(
+                    || format!("Loading {title}; its configured backend is starting…"),
+                    |route| format!("Loading {title} through the installed {route} backend…"),
+                );
             }
             Err(error) => {
                 self.status = format!("Could not launch {title}: {error}");
+            }
+        }
+    }
+
+    fn terminate_running_game(&mut self) {
+        let Some(game) = &mut self.running_game else {
+            return;
+        };
+        if game.termination_requested_at.is_some() {
+            return;
+        }
+        match terminate_process_tree_id(game.process_id, false) {
+            Ok(()) => {
+                game.termination_requested_at = Some(Instant::now());
+                self.status = format!("Terminating {} and its emulator process tree…", game.title);
+            }
+            Err(error) => {
+                self.status = format!("Could not terminate {}: {error}", game.title);
             }
         }
     }
@@ -1708,6 +1864,8 @@ impl eframe::App for PortableApp {
             self.featured_ids = loaded.featured_ids;
             self.search_documents = loaded.search_documents;
             self.imported_ids = loaded.imported_ids;
+            self.imported_manifests = loaded.imported_manifests;
+            self.controls = Some(loaded.controls);
             self.browse_view_key = None;
             self.browse_systems.clear();
             self.browse_matches.clear();
@@ -1731,22 +1889,41 @@ impl eframe::App for PortableApp {
             self.status = result.message.clone();
             self.operation_notice = Some(result);
             self.operation = None;
-            self.imported_ids =
-                load_imported_ids(&PortableLayout::new(PathBuf::from(&self.root_text)));
+            self.imported_manifests =
+                load_imported_manifests(&PortableLayout::new(PathBuf::from(&self.root_text)));
+            self.imported_ids = self.imported_manifests.keys().cloned().collect();
             self.browse_view_key = None;
             self.refresh_readiness();
         }
         if self.operation.is_some() {
             context.request_repaint_after(std::time::Duration::from_millis(100));
         }
-        let game_finished =
-            self.running_game
-                .as_mut()
-                .and_then(|game| match game.child.try_wait() {
-                    Ok(Some(status)) => Some(format!("{} closed ({status}).", game.title)),
-                    Ok(None) => None,
-                    Err(error) => Some(format!("Could not monitor {}: {error}", game.title)),
-                });
+        let refreshed_readiness = self
+            .readiness_refresh
+            .as_ref()
+            .and_then(|receiver| receiver.try_recv().ok());
+        if let Some(result) = refreshed_readiness {
+            self.readiness_refresh = None;
+            match result {
+                Ok(report) => self.readiness = Some(report),
+                Err(error) => {
+                    self.status = format!("{} Readiness refresh failed: {error}", self.status)
+                }
+            }
+        } else if self.readiness_refresh.is_some() {
+            context.request_repaint_after(Duration::from_millis(100));
+        }
+        if let Some(game) = &mut self.running_game
+            && game
+                .termination_requested_at
+                .is_some_and(|started| started.elapsed() >= Duration::from_secs(2))
+        {
+            let _ = terminate_process_tree_id(game.process_id, true);
+        }
+        let game_finished = self
+            .running_game
+            .as_ref()
+            .and_then(|game| game.exit_receiver.try_recv().ok());
         if let Some(status) = game_finished {
             self.running_game = None;
             self.status = status;
@@ -1825,6 +2002,10 @@ impl eframe::App for PortableApp {
                             .color(egui::Color32::from_gray(125)),
                     );
                 });
+                return;
+            }
+            if self.controls_dialog.is_some() {
+                self.show_controls_dialog(ui);
                 return;
             }
             if self.firmware_dialog.is_some() {
@@ -2024,7 +2205,9 @@ impl eframe::App for PortableApp {
                     let mut requested_install = None;
                     let mut requested_download = None;
                     let mut requested_firmware = None;
-                    let mut requested_play: Option<(String, String, PathBuf)> = None;
+                    let mut requested_controls = None;
+                    let mut requested_play: Option<(String, String, String, PathBuf)> = None;
+                    let mut requested_terminate = false;
                     let layout = PortableLayout::new(PathBuf::from(&self.root_text));
 
                     let (grid_columns, card_width, grid_spacing) =
@@ -2331,36 +2514,56 @@ impl eframe::App for PortableApp {
                                                     );
                                                 }
                                                 ui.add_space(4.0);
+                                                if ui
+                                                    .add(
+                                                        egui::Button::new(
+                                                            egui::RichText::new("⌨  CONTROLS")
+                                                                .small()
+                                                                .strong(),
+                                                        )
+                                                        .fill(CONTROL_BACKGROUND)
+                                                        .min_size(egui::vec2(122.0, 26.0)),
+                                                    )
+                                                    .clicked()
+                                                {
+                                                    requested_controls = Some(entry.clone());
+                                                }
+                                                ui.add_space(3.0);
                                                 match entry.acquisition {
                                                     Acquisition::LocalImport => {
-                                                        let imported = imported_manifest(
-                                                            &layout,
-                                                            &entry.id,
-                                                        )
-                                                        .ok()
-                                                        .flatten();
-                                                        let (label, game_enabled) = if imported
+                                                        let imported = self
+                                                            .imported_manifests
+                                                            .get(&entry.id)
+                                                            .cloned();
+                                                        let (label, game_intent) = if imported
                                                             .is_some()
                                                         {
                                                             game_button_state(
                                                                 self.running_game.as_ref().map(
                                                                     |game| {
                                                                         (
-                                                                            game.title.as_str(),
+                                                                            game.catalog_id
+                                                                                .as_str(),
                                                                             game.launched_at
                                                                                 .elapsed(),
+                                                                            game.termination_requested_at
+                                                                                .is_some(),
                                                                         )
                                                                     },
                                                                 ),
-                                                                &entry.title,
+                                                                &entry.id,
                                                             )
                                                         } else {
-                                                            ("IMPORT GAME".to_owned(), true)
+                                                            (
+                                                                "IMPORT GAME".to_owned(),
+                                                                GameButtonIntent::Play,
+                                                            )
                                                         };
                                                         if ui
                                                             .add_enabled(
                                                                 self.operation.is_none()
-                                                                    && game_enabled,
+                                                                    && game_intent
+                                                                        != GameButtonIntent::Disabled,
                                                                 egui::Button::new(
                                                                     egui::RichText::new(&label)
                                                                         .small()
@@ -2374,8 +2577,13 @@ impl eframe::App for PortableApp {
                                                             )
                                                             .clicked()
                                                         {
-                                                            if let Some(manifest) = imported {
+                                                            if game_intent
+                                                                == GameButtonIntent::Terminate
+                                                            {
+                                                                requested_terminate = true;
+                                                            } else if let Some(manifest) = imported {
                                                                 requested_play = Some((
+                                                                    entry.id.clone(),
                                                                     entry.title.clone(),
                                                                     manifest.system,
                                                                     layout.root.join(
@@ -2402,34 +2610,39 @@ impl eframe::App for PortableApp {
                                                                 is_installed(&layout, trusted)
                                                             },
                                                         );
-                                                        let imported = imported_manifest(
-                                                            &layout,
-                                                            &entry.id,
-                                                        )
-                                                        .ok()
-                                                        .flatten();
+                                                        let imported = self
+                                                            .imported_manifests
+                                                            .get(&entry.id)
+                                                            .cloned();
                                                         let game_ready = installed
                                                             || imported.is_some();
-                                                        let (label, game_enabled) = if game_ready {
+                                                        let (label, game_intent) = if game_ready {
                                                             game_button_state(
                                                                 self.running_game.as_ref().map(
                                                                     |game| {
                                                                         (
-                                                                            game.title.as_str(),
+                                                                            game.catalog_id
+                                                                                .as_str(),
                                                                             game.launched_at
                                                                                 .elapsed(),
+                                                                            game.termination_requested_at
+                                                                                .is_some(),
                                                                         )
                                                                     },
                                                                 ),
-                                                                &entry.title,
+                                                                &entry.id,
                                                             )
                                                         } else {
-                                                            ("DOWNLOAD".to_owned(), true)
+                                                            (
+                                                                "DOWNLOAD".to_owned(),
+                                                                GameButtonIntent::Play,
+                                                            )
                                                         };
                                                         if ui
                                                             .add_enabled(
                                                                 self.operation.is_none()
-                                                                    && game_enabled
+                                                                    && game_intent
+                                                                        != GameButtonIntent::Disabled
                                                                     && (installed
                                                                         || imported.is_some()
                                                                         || trusted.is_some()
@@ -2449,8 +2662,13 @@ impl eframe::App for PortableApp {
                                                             )
                                                             .clicked()
                                                         {
-                                                            if installed {
+                                                            if game_intent
+                                                                == GameButtonIntent::Terminate
+                                                            {
+                                                                requested_terminate = true;
+                                                            } else if installed {
                                                                 requested_play = Some((
+                                                                    entry.id.clone(),
                                                                     entry.title.clone(),
                                                                     trusted
                                                                         .expect(
@@ -2468,6 +2686,7 @@ impl eframe::App for PortableApp {
                                                                 ));
                                                             } else if let Some(manifest) = imported {
                                                                 requested_play = Some((
+                                                                    entry.id.clone(),
                                                                     entry.title.clone(),
                                                                     manifest.system,
                                                                     layout.root.join(
@@ -2505,8 +2724,16 @@ impl eframe::App for PortableApp {
                     if let Some(readiness) = requested_firmware {
                         self.firmware_dialog = Some(FirmwareDialog::new(&readiness));
                     }
-                    if let Some((title, system, rom)) = requested_play {
-                        self.launch_game(&title, &system, &rom);
+                    if let Some(entry) = requested_controls
+                        && let Some(controls) = &self.controls
+                    {
+                        let imported = self.imported_manifests.get(&entry.id);
+                        self.controls_dialog = Some(controls.for_game(&layout, &entry, imported));
+                    }
+                    if requested_terminate {
+                        self.terminate_running_game();
+                    } else if let Some((catalog_id, title, system, rom)) = requested_play {
+                        self.launch_game(&catalog_id, &title, &system, &rom);
                     }
                     self.start_browse_artwork(artwork_requests);
 
@@ -2810,24 +3037,34 @@ mod ui_tests {
 
     #[test]
     fn play_is_disabled_as_soon_as_a_game_starts_loading() {
-        let (label, enabled) = game_button_state(
-            Some(("Ms. Pac-Man", Duration::from_millis(10))),
-            "Ms. Pac-Man",
+        let (label, intent) = game_button_state(
+            Some(("mspacman", Duration::from_millis(10), false)),
+            "mspacman",
         );
         assert_eq!(label, "⏳  LOADING…");
-        assert!(!enabled);
+        assert_eq!(intent, GameButtonIntent::Disabled);
 
-        let (other_label, other_enabled) =
-            game_button_state(Some(("Ms. Pac-Man", Duration::from_secs(10))), "Pac-Man");
+        let (other_label, other_intent) =
+            game_button_state(Some(("mspacman", Duration::from_secs(10), false)), "pacman");
         assert_eq!(other_label, "GAME RUNNING");
-        assert!(!other_enabled);
+        assert_eq!(other_intent, GameButtonIntent::Disabled);
+    }
+
+    #[test]
+    fn running_game_exposes_terminate_instead_of_a_second_play() {
+        let (label, intent) = game_button_state(
+            Some(("mspacman", Duration::from_secs(10), false)),
+            "mspacman",
+        );
+        assert_eq!(label, "■  TERMINATE");
+        assert_eq!(intent, GameButtonIntent::Terminate);
     }
 
     #[test]
     fn play_becomes_available_again_after_the_child_exits() {
-        let (label, enabled) = game_button_state(None, "Ms. Pac-Man");
+        let (label, intent) = game_button_state(None, "mspacman");
         assert_eq!(label, "▶  PLAY");
-        assert!(enabled);
+        assert_eq!(intent, GameButtonIntent::Play);
     }
 
     #[test]

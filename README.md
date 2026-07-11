@@ -11,6 +11,9 @@ use the action on a game card:
   portable library.
 - **PLAY** launches that exact imported or downloaded game through the selected
   installed backend.
+- **CONTROLS** is present on every card. It explains the installed keyboard and
+  controller mapping, required input hardware, confidence, and its
+  machine-readable evidence instead of inventing game-specific directions.
 
 Search is global. Browsing is the primary interface: cards reflow into a
 full-width grid in windowed and full-screen views, and every record has a
@@ -27,7 +30,10 @@ The checked-in snapshot contains:
 - **410** evidence-backed iconic/community-praised title records resolving to
   **935** platform editions;
 - **80,734 / 80,734** visual cards;
-- **80,734 / 80,734** mapped import routes.
+- **80,734 / 80,734** mapped import routes;
+- **80,734 / 80,734** controls views, including MAME DAT machine associations
+  for all **15,605** MAME records and current MAME input declarations for
+  **14,845** of them (historical machine names remain explicitly labelled).
 
 The default **FEATURED** collection is not an arbitrary hand-picked list. Its
 records come from a critical-consensus dataset (a title must appear in at least
@@ -49,9 +55,11 @@ browse snapshots live under [`catalog/`](catalog/).
    do not extract their component files.
 5. Click **PLAY**.
 
-PLAY immediately changes to **LOADING**, then **RUNNING**, and remains disabled
-until the emulator exits. RetroPort therefore cannot start a duplicate copy
-while a game is opening or already running.
+PLAY immediately changes to **LOADING**, then **TERMINATE**. A second launch is
+impossible while the game is opening or running; TERMINATE stops the emulator's
+whole process tree and returns the card to PLAY. Process monitoring and the
+complete post-import readiness audit run outside the GUI thread, so neither an
+emulator exit nor an 80,734-record rescan can stall the window.
 
 ### Linux
 
@@ -71,17 +79,14 @@ artwork, imported games, saves, native XDG state, and verification metadata stay
 under the portable root; only Wine's symlink-heavy prefix is kept in the Linux
 user data directory.
 
-Connect a controller before PLAY. RetroPort passes launch control to RetroBat
-and its established controller profiles; the supplied Xbox-compatible
-controller path was probed through Linux xpad, Wine XInput,
-RetroBat/EmulationStation, and RetroArch.
-
-For arcade/MAME games, press **Back/View** on an Xbox-compatible controller to
-insert a coin, **Start** to begin, and use the D-pad or left stick to move. On a
-keyboard, press **5** to insert a coin, **1** to start, the arrow keys to move,
-and **Esc** to quit. RetroPort supplies these mappings explicitly and enables
-audio for direct RetroArch launches instead of depending on mutable inherited
-frontend settings.
+Connect a controller before PLAY, then use **CONTROLS** on the game card.
+RetroPort reads the installed RetroArch/RetroBat configuration and matching
+SDL controller autoconfiguration. For arcade records it additionally embeds
+MAME's machine-declared player, coin, joystick/button, and special-device data;
+for records tagged by RetroBat it shows the exact gun, wheel, spinner,
+trackball, or controller requirement. Each view labels its evidence scope and
+links its provider. If a core exposes action labels only at runtime, the view
+says so and points to RetroArch Quick Menu → Controls instead of guessing.
 
 ## Firmware flow
 
@@ -212,6 +217,14 @@ Supplementary execution projects installed by this bundle are
 [Play!](https://github.com/jpd002/Play-). RetroBat's own bundled emulator/core
 notices remain inside `RetroBat/`; this repository does not relabel their work
 as RetroPort code.
+
+Controls evidence is generated from [MAME's `-listxml` machine
+interface](https://docs.mamedev.org/commandline/commandline-all.html), the
+pinned [Libretro MAME DAT](https://github.com/libretro/libretro-database/tree/master/metadat/mame),
+and RetroBat EmulationStation's pinned
+[`gamesdb.xml`](https://github.com/RetroBat-Official/emulationstation/blob/d77fbf1fb198a10bb44221e40e463e2e2c30f1a7/resources/gamesdb.xml).
+The runtime presentation follows Libretro's documented
+[RetroPad mapping model](https://docs.libretro.com/guides/input-and-controls/).
 
 The catalogue/index layer references [Libretro Database](https://github.com/libretro/libretro-database),
 [Libretro Thumbnails](https://thumbnails.libretro.com/),
