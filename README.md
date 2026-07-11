@@ -61,9 +61,9 @@ while a game is opening or already running.
 
 On the development machine, `tools/run_latest_linux.sh` is the stable
 application-menu entry point. It asks Cargo to incrementally rebuild the
-current checkout before every launch, then opens that binary against the
-discovered complete data bundle. It therefore cannot silently run an older
-executable copied to a USB deployment.
+current checkout before every launch, validates the complete `RetroBat/` tree
+inside that same checkout, and passes the checkout root explicitly. It never
+borrows games, manifests, emulators, or configuration from a USB deployment.
 
 RPCS3, Cemu, shadPS4, Eden, and Xenia use bundled native Linux runtimes. The
 remaining Windows RetroBat stack runs through Wine. All emulator configuration,
@@ -121,13 +121,11 @@ RetroPort/
 └── README-FIRST.txt
 ```
 
-The removable-drive bundle is intentionally one directory. Do not move either
-launcher away from the rest of the tree.
-
-RetroPort also discovers a complete bundle mounted elsewhere on the machine.
-This makes a desktop/application-menu shortcut safe: the shortcut may invoke
-the installed launcher entry while the actual games, emulators, imports, and
-current deployed binary remain together on the removable drive.
+Every RetroPort copy is intentionally one independent directory. The local
+checkout has its own complete runtime/data tree; a removable-drive deployment
+has another. Each launcher resolves only its own ancestor bundle and never
+searches mounted drives or sibling directories. Do not move a launcher away
+from the rest of its copy.
 
 ## Verify a copy
 
@@ -170,9 +168,9 @@ The second command uses
 CRT/SDK packages to produce the Windows target from Linux. On a configured
 Windows MSVC host, ordinary `cargo build --release` is sufficient.
 
-To update an already assembled RetroBat portable root with both binaries,
-documentation, artwork, a fresh source snapshot, and a regenerated integrity
-manifest:
+To assemble the canonical local checkout and synchronize that complete local
+bundle—runtime, games, import state, binaries, documentation, artwork, source
+snapshot, and integrity manifest—to another independent directory:
 
 ```sh
 ./tools/deploy_bundle.sh /path/to/portable/root

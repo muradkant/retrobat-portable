@@ -22,30 +22,8 @@ impl PortableLayout {
     pub fn discover(executable: &Path) -> Self {
         let fallback = Self::from_executable(executable);
         let mut candidates = Vec::new();
-
-        if let Some(configured) = std::env::var_os("RETROPORT_BUNDLE_ROOT") {
-            candidates.push(PathBuf::from(configured));
-        }
         if let Some(parent) = executable.parent() {
             candidates.extend(parent.ancestors().take(6).map(Path::to_path_buf));
-        }
-
-        #[cfg(target_os = "linux")]
-        {
-            if let Some(user) = std::env::var_os("USER") {
-                for parent in [
-                    Path::new("/run/media").join(&user),
-                    Path::new("/media").join(&user),
-                ] {
-                    append_child_directories(&parent, &mut candidates);
-                }
-            }
-            append_child_directories(Path::new("/mnt"), &mut candidates);
-        }
-
-        #[cfg(target_os = "windows")]
-        for letter in b'C'..=b'Z' {
-            candidates.push(PathBuf::from(format!("{}:\\", letter as char)));
         }
 
         candidates
@@ -141,20 +119,6 @@ impl PortableLayout {
     }
 }
 
-#[cfg(target_os = "linux")]
-fn append_child_directories(parent: &Path, candidates: &mut Vec<PathBuf>) {
-    let Ok(entries) = std::fs::read_dir(parent) else {
-        return;
-    };
-    candidates.extend(entries.filter_map(Result::ok).filter_map(|entry| {
-        entry
-            .file_type()
-            .ok()
-            .filter(|kind| kind.is_dir())
-            .map(|_| entry.path())
-    }));
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -180,5 +144,31 @@ mod tests {
         .unwrap();
 
         assert_eq!(PortableLayout::discover(&executable).root, bundle);
+    }
+
+    #[test]
+    fn discovery_never_uses_an_unrelated_sibling_bundle() {
+        let root = tempfile::tempdir().unwrap();
+        let executable = root.path().join("source/target/release/RetroPort-Linux");
+        let unrelated = root.path().join("mounted-usb");
+        std::fs::create_dir_all(executable.parent().unwrap()).unwrap();
+        std::fs::create_dir_all(unrelated.join("RetroBat/emulationstation/.emulationstation"))
+            .unwrap();
+        std::fs::write(unrelated.join("RetroBat/RetroBat.exe"), b"exe").unwrap();
+        std::fs::write(
+            unrelated.join("RetroBat/emulationstation/emulatorLauncher.exe"),
+            b"exe",
+        )
+        .unwrap();
+        std::fs::write(
+            unrelated.join("RetroBat/emulationstation/.emulationstation/es_systems.cfg"),
+            b"config",
+        )
+        .unwrap();
+
+        assert_eq!(
+            PortableLayout::discover(&executable).root,
+            executable.parent().unwrap()
+        );
     }
 }
