@@ -78,6 +78,12 @@ browse snapshots live under [`catalog/`](catalog/).
 
 ### Windows
 
+> These steps require an **assembled installation**, not an untouched Git
+> clone. Git does not contain `RetroPort.exe`. The
+> [`bootstrap_bundle.sh`](tools/bootstrap_bundle.sh) command above generates it
+> at the repository root after downloading and verifying the complete runtime.
+> If that file is absent, the build/bootstrap has not been completed.
+
 1. Open the RetroPort installation folder.
 2. Double-click `RetroPort.exe`.
 3. Browse **FEATURED**, a source collection, or a system; then click the game.

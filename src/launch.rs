@@ -605,9 +605,7 @@ mod tests {
         );
         assert_eq!(
             plan.args,
-            vec![PathBuf::from(
-                "/opt/retroport/RetroBat/RetroBat.exe"
-            )]
+            vec![PathBuf::from("/opt/retroport/RetroBat/RetroBat.exe")]
         );
     }
 
@@ -649,7 +647,7 @@ mod tests {
             vec![
                 PathBuf::from("/opt/retroport/RetroBat/emulators/rpcs3/rpcs3.exe"),
                 PathBuf::from("--installfw"),
-                PathBuf::from("Z:\\run\\media\\user\\Arcade\\RetroBat\\bios\\PS3UPDAT.PUP")
+                PathBuf::from("Z:\\opt\\retroport\\RetroBat\\bios\\PS3UPDAT.PUP")
             ]
         );
     }
@@ -769,13 +767,11 @@ mod tests {
         assert_eq!(
             plan.args,
             vec![
-                PathBuf::from(
-                    "/opt/retroport/RetroBat/emulationstation/emulatorLauncher.exe"
-                ),
+                PathBuf::from("/opt/retroport/RetroBat/emulationstation/emulatorLauncher.exe"),
                 PathBuf::from("-system"),
                 PathBuf::from("gb"),
                 PathBuf::from("-rom"),
-                PathBuf::from(r"Z:\run\media\user\Arcade\RetroBat\roms\gb\2048.gb"),
+                PathBuf::from(r"Z:\opt\retroport\RetroBat\roms\gb\2048.gb"),
             ]
         );
     }
@@ -805,14 +801,12 @@ mod tests {
             vec![
                 layout.retroarch_executable(),
                 PathBuf::from("--appendconfig"),
-                PathBuf::from(
-                    r"Z:\run\media\user\Arcade\.retrobat-portable\runtime\retroarch\mame.cfg"
-                ),
+                PathBuf::from(r"Z:\opt\retroport\.retrobat-portable\runtime\retroarch\mame.cfg"),
                 PathBuf::from("-L"),
                 PathBuf::from(
-                    r"Z:\run\media\user\Arcade\RetroBat\emulators\retroarch\cores\mame_libretro.dll"
+                    r"Z:\opt\retroport\RetroBat\emulators\retroarch\cores\mame_libretro.dll"
                 ),
-                PathBuf::from(r"Z:\run\media\user\Arcade\RetroBat\roms\mame\mspacman.zip"),
+                PathBuf::from(r"Z:\opt\retroport\RetroBat\roms\mame\mspacman.zip"),
             ]
         );
         let config = &plan.generated_files[0].1;
@@ -916,14 +910,12 @@ mod tests {
             vec![
                 PathBuf::from("/opt/retroport/RetroBat/emulators/retroarch/retroarch.exe"),
                 PathBuf::from("--appendconfig"),
-                PathBuf::from(
-                    r"Z:\run\media\user\Arcade\.retrobat-portable\runtime\retroarch\chip8.cfg"
-                ),
+                PathBuf::from(r"Z:\opt\retroport\.retrobat-portable\runtime\retroarch\chip8.cfg"),
                 PathBuf::from("-L"),
                 PathBuf::from(
-                    r"Z:\run\media\user\Arcade\RetroBat\emulators\retroarch\cores\jaxe_libretro.dll"
+                    r"Z:\opt\retroport\RetroBat\emulators\retroarch\cores\jaxe_libretro.dll"
                 ),
-                PathBuf::from(r"Z:\run\media\user\Arcade\RetroBat\roms\chip8\game.ch8"),
+                PathBuf::from(r"Z:\opt\retroport\RetroBat\roms\chip8\game.ch8"),
             ]
         );
     }
