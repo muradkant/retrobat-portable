@@ -1,160 +1,126 @@
-# Dependency and distribution contract
+# Reproducible assembly
 
-RetroPort has two distinct artifacts:
+RetroPort has two artifacts with different jobs:
 
-1. **The Git repository** is the reviewable Rust control plane, catalogue and
-   evidence snapshots, generators, tests, packaging metadata, documentation,
-   and redistributable packaged artwork.
-2. **An assembled bundle** is a runnable product directory containing the
-   compiled RetroPort launchers, RetroBat, emulator binaries and cores, native
-   Linux runtimes, configuration, artwork, and mutable user state.
+1. The **Git repository** is reviewable: Rust source, catalogue and controls
+   evidence, tests, tools, metadata, documentation, and redistributable artwork.
+2. The **assembled installation** is playable: generated launchers, RetroBat,
+   emulator runtimes, configuration, and user state.
 
-A Git clone is intentionally not presented as an already populated emulator
-appliance. Each assembled installation is independent and does not borrow
-runtime files from another copy.
+A clone never borrows files from an installation, and one installation never
+borrows from another.
 
-## What Git contains
+## Inclusion boundary
 
-| Component | Git-tracked? | How it is represented |
+| Component | In Git | Reconstructed from |
 | --- | --- | --- |
-| RetroPort Rust source and lockfile | Yes | `src/`, `Cargo.toml`, `Cargo.lock` |
-| Catalogue/evidence snapshots | Yes | `catalog/` |
-| MAME catalogue artwork | Yes | `packaging/Artwork/` |
-| Build, audit, and deployment tools | Yes | `tools/` |
-| Exact upstream revisions and binary evidence | Yes | README tables and `packaging/THIRD-PARTY-ASSETS.txt` |
-| RetroBat runtime tree | No | Official 8.1.2 release plus its updater; assembled at `RetroBat/` |
-| Supplementary emulator binaries | No | Official URLs and hashes in `packaging/THIRD-PARTY-ASSETS.txt` |
-| Native Linux AppImages | No | Official URLs and hashes in `packaging/THIRD-PARTY-ASSETS.txt` |
-| Imported games, saves, caches, and private firmware | Never | Mutable/private bundle state under `RetroBat/` and `.retrobat-portable/` |
-| Built Linux/Windows launchers | No | Produced from the tagged Rust source |
+| Rust source and lockfile | Yes | `src/`, `Cargo.toml`, `Cargo.lock` |
+| Catalogue and evidence | Yes | `catalog/` |
+| Redistributable MAME artwork | Yes | `packaging/Artwork/` |
+| Build and audit tools | Yes | `tools/` |
+| Provenance and binary evidence | Yes | this file and `packaging/THIRD-PARTY-ASSETS.txt` |
+| RetroBat runtime | No | official 8.1.2 release into `RetroBat/` |
+| Supplementary Windows backends | No | pinned official archives |
+| Native Linux AppImages | No | pinned official archives |
+| Generated launchers | No | tagged Rust source |
+| Games, saves, caches, private firmware | Never | user-owned mutable state |
 
-The ignored paths are explicit in `.gitignore`. `tools/deploy_bundle.sh` copies
-an already complete canonical bundle to another directory; it is not a hidden
-network bootstrapper.
+The runtime is about 5 GB before a game library grows. GitHub rejects ordinary
+objects above 100 MiB and advises repositories below 1 GB; Git is also a poor
+updater for thousands of generated files owned by independent projects. Pinned
+release URLs and hashes give each binary a clearer provenance. Submodules would
+only add emulator source: RetroPort consumes official releases rather than
+rebuilding every upstream toolchain.
 
-## Why the runtime is not committed
+Some machine-installed files cannot be redistributed. Games, saves,
+credentials, and Sony system software therefore never enter public history.
+Redistributable large artifacts belong in versioned release storage after a
+licence audit, not ordinary Git objects.
 
-- The current assembled dependency tree is approximately 5 GB before user
-  libraries grow. GitHub blocks ordinary Git objects larger than 100 MiB and
-  recommends repositories remain below 1 GB when possible.
-- Git is a poor update mechanism for generated binaries and thousands of files
-  owned by independent upstream projects. Immutable upstream release URLs and
-  hashes preserve clearer provenance.
-- Some files may be installed on a private machine but may not be redistributed
-  by RetroPort. Imported commercial games, saves, account state, and Sony system
-  software must never enter the public repository.
-- Several catalogues require direct publisher/project download rather than
-  third-party rebundling.
-- Source-code submodules would not solve the runtime problem: RetroPort consumes
-  official emulator binaries and does not rebuild every emulator toolchain.
-  Audited source revisions are pinned in the main README instead.
+## Complete build
 
-Large public binaries belong in versioned release assets or an artifact store,
-split where necessary and only after every included licence permits
-redistribution—not in ordinary Git history.
-
-## One-command reproducible setup
-
-On a Debian/Ubuntu-family Linux host, install the small set of build tools and
-run the bootstrap from a fresh clone:
+On Debian or Ubuntu Linux:
 
 ```sh
 sudo apt-get update
-sudo apt-get install -y build-essential curl git p7zip-full rsync wine64
+sudo apt-get install -y build-essential curl git p7zip-full python3 rsync wine64
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
 . "$HOME/.cargo/env"
 git clone https://github.com/muradkant/retrobat-portable.git
 cd retrobat-portable
 ./tools/bootstrap_bundle.sh
-./RetroPort-Linux
 ```
 
-`bootstrap_bundle.sh` downloads only the pinned official assets listed in
-`packaging/THIRD-PARTY-ASSETS.txt`, checks every archive hash, validates the
-RetroBat version and central executables, installs the supplementary backends,
-builds both launchers, assembles the installation, runs RetroPort's self-check,
-and verifies the resulting integrity manifest. It is safe to rerun: verified
-downloads and the verified RetroBat base are reused.
+The bootstrap:
 
-The command needs roughly 7 GB of free space plus Cargo's build cache. Set
-`RETROPORT_DOWNLOAD_CACHE=/path` to choose the verified-download cache.
+1. downloads only the pinned official artifacts in
+   `packaging/THIRD-PARTY-ASSETS.txt`;
+2. verifies each archive before extraction;
+3. validates RetroBat's version and central executables;
+4. installs supplementary Windows and native Linux backends;
+5. builds `RetroPort-Linux` and `RetroPort.exe`;
+6. assembles the local installation, runs application self-check, and verifies
+   its integrity manifest.
 
-## Build the source-only application
+Successful downloads and the validated RetroBat base are cached across reruns.
+Set `RETROPORT_DOWNLOAD_CACHE=/path` to move that cache. Allow roughly 7 GB
+beyond Cargo's build cache.
 
-Rust 1.92.0 is pinned in `rust-toolchain.toml`. The embedded catalogues and
-controls evidence are already checked in, so building the GUI does not require
-cloning every emulator source tree.
+## Independent stages
+
+### Application only
+
+Rust 1.92.0 is pinned by `rust-toolchain.toml`. Embedded catalogue and controls
+snapshots make emulator source checkouts unnecessary.
 
 ```sh
 cargo build --release --target x86_64-unknown-linux-gnu
 cargo xwin build --release --target x86_64-pc-windows-msvc
 ```
 
-`cargo-xwin` 0.23.0 is installed automatically and is needed only when
-cross-compiling the Windows launcher from Linux. The Windows target uses the
-static MSVC runtime.
+The bootstrap installs pinned `cargo-xwin` 0.23.0 when needed. Its Windows
+target uses the static MSVC runtime.
 
-## Bootstrap the official RetroBat base
-
-On Linux, install `curl`, `7z`, and `sha256sum`, then run:
+### RetroBat base only
 
 ```sh
 ./tools/bootstrap_retrobat_base.sh
 ```
 
-The script downloads the official RetroBat 8.1.2 self-extracting release,
-checks its exact 1,838,225,617-byte SHA-256-pinned payload, extracts it into a
-new `RetroBat/` directory, and verifies the installed version and three central
-executables. On later runs it accepts only an existing base that passes those
-same checks; it never silently replaces an unknown directory.
+This downloads the official RetroBat 8.1.2 self-extracting release, verifies
+its exact 1,838,225,617-byte payload, extracts `RetroBat/`, then checks the
+version marker and three central executables. A later run reuses that directory
+only if the same checks pass; it never replaces an unknown tree.
 
-On Windows, the same official setup can be downloaded from the pinned release
-and installed into `RetroBat/`:
+Windows users can install the same release into `RetroBat/` from the
+[official 8.1.2 page](https://github.com/RetroBat-Official/retrobat/releases/tag/8.1.2).
+RetroBat deliberately ships its frontend and RetroArch base while **Updates &
+Downloads** supplies further standalone emulators.
 
-<https://github.com/RetroBat-Official/retrobat/releases/tag/8.1.2>
+### Supplementary runtime and verification
 
-RetroBat 8.1.2 intentionally ships the frontend and RetroArch base while its
-own **Updates & Downloads** workflow installs other standalone emulators. This
-is upstream's supported dependency mechanism. RetroPort's supplementary native
-Linux and firmware-free routes are listed with exact destinations, URLs,
-versions, archive hashes, and licence notes in
-`packaging/THIRD-PARTY-ASSETS.txt`.
+The complete installation adds native Linux RPCS3, Cemu, shadPS4, Eden, and
+Xenia AppImages; Windows RPCS3, Cemu, shadPS4, Eden, Cxbx-Reloaded, Play!, Xenia,
+and JAXE; installed RetroArch cores; configuration; and readiness metadata.
+`bootstrap_supplementary_runtime.sh` reconstructs these from the asset ledger.
 
-## Reconstructing the tested complete bundle
-
-The tested canonical bundle additionally contains:
-
-- official Linux AppImages for RPCS3, Cemu, shadPS4, Eden, and Xenia Canary;
-- supplementary Windows RPCS3, Cemu, shadPS4, Eden, Cxbx-Reloaded, Play!,
-  Xenia Canary, and JAXE installations;
-- RetroBat-downloaded RetroArch cores and their retained notices;
-- generated portable configuration and readiness metadata.
-
-The canonical bootstrap installs all pinned assets automatically. To run its
-stages separately, use `bootstrap_retrobat_base.sh`, then
-`bootstrap_supplementary_runtime.sh`, build both launchers, and run:
+After running both bootstrap stages and building both launchers:
 
 ```sh
 cargo test --all-targets
 cargo test --test live_source -- --ignored
 cargo clippy --all-targets -- -D warnings
 cargo run -- --self-check --bundle-root "$PWD"
-./tools/deploy_bundle.sh /path/to/independent/bundle
+./tools/deploy_bundle.sh /destination
 ```
 
-The deployment step creates a source snapshot and `SHA256SUMS`. Both the local
-and destination copies must finish `VERIFY-LINUX.sh` or `VERIFY-WINDOWS.cmd`
-successfully.
+Deployment writes the corresponding source snapshot and `SHA256SUMS`. Verify
+both source and destination with `VERIFY-LINUX.sh` or `VERIFY-WINDOWS.cmd`.
 
-## User-supplied and private dependencies
+## Mutable state
 
-Game imports are deliberately permissive and remain user-owned bundle state.
-Firmware follows one of two flows:
-
-- publisher-authorized immutable downloads are fetched and verified by the
-  product on the user's machine;
-- user-supplied firmware is imported without a rigid known-dump gate.
-
-Neither flow authorizes committing commercial ROMs, saves, credentials, or
-non-redistributable firmware to Git. The public source and the private assembled
-product therefore cannot—and should not—be byte-for-byte identical directories.
+Game import accepts compatible structure without demanding one canonical dump.
+Firmware is either downloaded from a declared publisher URL and verified, or
+selected by the user and recorded without a known-hash gate. Both remain
+user-owned state; neither makes a private installation byte-for-byte identical
+to the public repository.

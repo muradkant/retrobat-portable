@@ -1,110 +1,97 @@
 RETROPORT — START HERE
 ======================
 
-Everything used at run time is inside this folder. Keep the folder together;
-do not move RetroPort.exe or RetroPort-Linux away from it.
+Keep this installation together. Its launchers, emulators, games, artwork,
+saves, and configuration refer only to this folder.
 
-WINDOWS
--------
-1. Open this installation folder.
-2. Double-click RetroPort.exe.
-3. If Windows shows an unknown-publisher warning, choose More info, then Run
-   anyway. This personal build is not code-signed.
+OPEN RETROPORT
+--------------
 
-LINUX
------
-1. Install 64-bit Wine from your Linux distribution for the legacy systems.
-2. Double-click RetroPort-Linux.desktop, or run ./RetroPort-Linux here.
+Windows: double-click RetroPort.exe. If Windows warns that this personal build
+is unsigned, choose More info, then Run anyway.
 
-RPCS3, Cemu, shadPS4, Eden, and Xenia run through native Linux AppImages. The
-remaining RetroBat stack runs through Wine. Games, saves, artwork, emulator
-state, and catalogues remain in this folder.
+Linux: install 64-bit Wine for the legacy systems, then double-click
+RetroPort-Linux.desktop or run ./RetroPort-Linux. RPCS3, Cemu, shadPS4, Eden,
+and Xenia use the native Linux runtimes included here; the older RetroBat stack
+uses Wine.
 
-GET PLAYING
+PLAY A GAME
 -----------
-1. Browse FEATURED for 410 evidence-backed iconic/community-praised titles, or
-   ALL SOURCES for all 80,734 catalogue records. Cards fill the available
-   window in a multi-row grid. Search always spans every source and system.
-2. Use the action on the game card:
-   DOWNLOAD     Fetches, verifies, prepares, and installs a hosted game.
-   IMPORT GAME  Selects a compatible local ROM, disc, executable, or game.
-   PLAY         Starts the exact imported/downloaded game.
-   CONTROLS     Shows keyboard/controller bindings, required hardware, and the
-                machine-readable evidence used for this game.
-3. For extracted PS3, PS4, Wii U, or PC games, click IMPORT THIS FOLDER. This
-   preserves EBOOT/RPX files, DLLs, and data directories together.
-4. Keep MAME/arcade ROM sets such as mspacman.zip intact. Select the ZIP itself;
-   do not unzip and import its individual component files.
 
-Imports deliberately do not demand one exact database dump. Alternate
-revisions, translations, and patches are accepted. A known-dump mismatch is
-recorded for troubleshooting and never blocks PLAY.
+1. Browse FEATURED, a source, or a system. ALL SOURCES contains all 80,734
+   records; search always spans the full catalogue.
+2. Choose the card action:
+
+   DOWNLOAD     Fetch and verify a project- or publisher-hosted game.
+   IMPORT GAME  Copy a local ROM, disc set, executable, or game folder.
+   PLAY         Launch the imported or downloaded copy.
+   CONTROLS     Show detected bindings, hardware needs, and their evidence.
+
+3. PLAY changes to LOADING, then TERMINATE. A second launch is blocked while
+   the game runs. TERMINATE stops the emulator's complete process tree.
+
+Import an extracted PS3, PS4, Wii U, or PC game with IMPORT THIS FOLDER; its
+executables, libraries, and data must stay together. Import an arcade set such
+as mspacman.zip as the original ZIP, not as extracted component files.
+
+Import checks compatibility and safe structure, not one canonical dump hash.
+Alternate revisions, translations, and patches remain playable; known-hash
+differences are diagnostic only.
+
+CONTROLLERS
+-----------
+
+Connect the controller before PLAY. Every card has CONTROLS, derived from this
+installation's RetroArch/RetroBat configuration, SDL device profile, and any
+MAME or RetroBat device metadata. Unknown per-game action names are labelled,
+never guessed.
+
+On Linux, RetroPort detects the optional controller-mouse game guard from
+https://github.com/muradkant/linux-zhixu-controller-fix. It suspends desktop
+controller-as-mouse input while an emulator runs and restores it on exit.
 
 FIRMWARE
 --------
-RetroPort prefers established firmware-free routes where available: Play! for
-PS2, YabaSanshiro for Saturn, and Cxbx-Reloaded for original Xbox.
 
-INSTALL FIRMWARE downloads an exact publisher file and verifies it before the
-emulator installer opens. Sony PS3 system software uses this path.
+RetroPort uses firmware-free Play! (PS2), YabaSanshiro (Saturn), and
+Cxbx-Reloaded (original Xbox) routes where available.
 
-IMPORT FIRMWARE accepts a nonempty file selected by the user without an exact
-hash gate. Switch prod.keys are copied automatically into both Windows and
-Linux Eden profiles. Optional firmware uses the same screen. If a core has a
-documented built-in fallback, no false required-firmware warning is shown.
+INSTALL FIRMWARE retrieves and verifies a declared publisher file before
+opening its emulator installer. IMPORT FIRMWARE accepts any nonempty file you
+select and records its hash without rejecting unfamiliar bytes. Switch
+prod.keys are copied into both Eden profiles. Optional firmware follows the
+same flow; documented built-in fallbacks produce no warning.
 
-CONTROLS AND EXITING A GAME
----------------------------
-Every one of the 80,734 cards has CONTROLS. Connect the controller first, then
-open that view to see the mapping detected from this copy's RetroArch/RetroBat
-configuration, the matching controller profile, and any exact MAME or RetroBat
-per-game device metadata. The view states its source and confidence; it does
-not silently guess missing per-game action names.
+VERIFY OR TROUBLESHOOT
+----------------------
 
-On Linux, if the host provides `controller-mouse-game-guard`, RetroPort
-automatically suspends its AntiMicroX/controller-as-mouse desktop mapping before
-PLAY and restores it after the complete emulator process tree exits. This keeps
-the hidden pointer from stealing focus without disabling the physical gamepad.
-Profile, installation, and protocol documentation:
-https://github.com/muradkant/linux-zhixu-controller-fix
-
-PLAY changes immediately to LOADING and then TERMINATE. A second launch cannot
-open while the game is active. Click TERMINATE to stop the complete emulator
-process tree and restore PLAY; closing only a desktop window is not required.
-
-VERIFY THIS COPY
-----------------
 Windows: double-click VERIFY-WINDOWS.cmd.
 Linux:   run ./VERIFY-LINUX.sh.
 
-The commands verify the launchers, source snapshot, documentation, modern
-Linux runtimes, supplementary Windows backends, and all bundled artwork. A
-successful run ends with “VERIFICATION PASSED.”
+A successful integrity check ends with “VERIFICATION PASSED.” If a game still
+does not start:
 
-IF A GAME DOES NOT START
-------------------------
-1. Reopen its card and read the backend/firmware line.
-2. For CUE, GDI, and M3U, keep all referenced tracks/discs beside the
-   descriptor before import.
-3. For an extracted installation, import the folder rather than one executable.
-4. Run the verifier above.
-5. On Linux, confirm `wine --version` works and GPU drivers support Vulkan.
+1. Read its backend and firmware line.
+2. Keep every CUE, GDI, or M3U track/disc beside its descriptor before import.
+3. Import an extracted installation as a folder, not one executable.
+4. Run the verifier.
+5. On Linux, confirm `wine --version` works and the GPU supports Vulkan.
 
 CONTENTS
 --------
-RetroPort.exe                 Windows GUI
-RetroPort-Linux               Linux GUI
+
+RetroPort.exe                 Windows application
+RetroPort-Linux               Linux application
 RetroPort-Linux.desktop       Linux graphical shortcut
-RetroBat/                     frontend, adapters, emulators, ROMs, saves
+RetroBat/                     adapters, emulators, games, saves
 Runtime/Linux/                native modern-console runtimes
 Artwork/                      verified local artwork
-Source/RetroPort-source.zip   exact Rust source snapshot
-SHA256SUMS                    static bundle integrity manifest
+Source/RetroPort-source.zip   corresponding Rust source
+SHA256SUMS                    static integrity manifest
 VERIFY-LINUX.sh               Linux verifier
 VERIFY-WINDOWS.cmd/.ps1       Windows verifier
-THIRD-PARTY-ASSETS.txt        upstream URLs, versions, hashes, licences
+THIRD-PARTY-ASSETS.txt        upstream versions, URLs, hashes, licences
 LICENSE-RETROPORT.txt         RetroPort source licence
 
-RetroBat and emulator licence/notices are retained beside their respective
-programs. Imported games, saves, private machine data, and mutable configs are
-not part of the public static checksum manifest.
+Upstream notices remain beside their programs. Mutable games, saves, private
+machine data, and configuration are intentionally outside the static manifest.

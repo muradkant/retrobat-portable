@@ -1,5 +1,9 @@
-RetroPort supplementary runtime assets
-======================================
+Third-party asset ledger
+========================
+
+Every automatically acquired runtime below is tied to its upstream project,
+purpose, release, source URL, and verified digest. Narrative notes record only
+facts needed to choose, reconstruct, or audit that asset.
 
 RetroBat base distribution
 --------------------------
