@@ -31,7 +31,7 @@ done
 assemble_launchers_and_documents() {
     local root=$1
     mkdir -p "$root/Source" "$root/Artwork"
-    python "$project/tools/build_source_snapshot.py" "$root/Source/RetroPort-source.zip"
+    python3 "$project/tools/build_source_snapshot.py" "$root/Source/RetroPort-source.zip"
     cp -f "$linux_binary" "$root/RetroPort-Linux"
     cp -f "$windows_binary" "$root/RetroPort.exe"
     cp -f "$project/packaging/RetroPort-Linux.desktop" "$root/RetroPort-Linux.desktop"

@@ -2,6 +2,7 @@ pub mod artwork;
 pub mod browse;
 pub mod browse_install;
 pub mod catalog;
+pub mod controller_guard;
 pub mod controls;
 pub mod featured;
 pub mod firmware;

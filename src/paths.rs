@@ -150,7 +150,7 @@ mod tests {
     fn discovery_never_uses_an_unrelated_sibling_bundle() {
         let root = tempfile::tempdir().unwrap();
         let executable = root.path().join("source/target/release/RetroPort-Linux");
-        let unrelated = root.path().join("mounted-usb");
+        let unrelated = root.path().join("unrelated-installation");
         std::fs::create_dir_all(executable.parent().unwrap()).unwrap();
         std::fs::create_dir_all(unrelated.join("RetroBat/emulationstation/.emulationstation"))
             .unwrap();

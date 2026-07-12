@@ -54,6 +54,12 @@ workers, preventing an 80,734-record scan from blocking desktop event handling.
 - The gameplay-probe CLI runs a real imported game for a bounded interval and
   then exercises termination, allowing compositor ANR monitoring to cover the
   complete frontend-plus-emulator lifecycle.
+- On Linux, the optional
+  [`linux-zhixu-controller-fix`](https://github.com/muradkant/linux-zhixu-controller-fix)
+  controller-mouse guard is acquired before spawn and owned by the watcher
+  until the entire emulator process group is gone. Natural exit, TERMINATE,
+  and launch failure all release it; overlapping inhibitors remain isolated.
+  Other hosts take a no-op path.
 
 ## Import contract
 

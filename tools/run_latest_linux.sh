@@ -4,7 +4,7 @@ set -euo pipefail
 # Application-menu entry point for the development/source machine. Cargo's
 # incremental build makes this cheap when nothing changed and guarantees that
 # the process being opened corresponds to the current checkout, never to a
-# stale executable copied to a deployment drive.
+# stale executable from another installation.
 project=$(cd "$(dirname "$0")/.." && pwd)
 target=x86_64-unknown-linux-gnu
 
@@ -16,7 +16,7 @@ do
     if [[ ! -f "$required" ]]; then
         command -v notify-send >/dev/null && \
             notify-send --urgency=critical "RetroPort local bundle is incomplete" \
-            "Missing $required. The local copy will not borrow files from another drive."
+            "Missing $required. The local copy will not borrow files from another installation."
         echo "local RetroPort bundle is incomplete: missing $required" >&2
         exit 1
     fi

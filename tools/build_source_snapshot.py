@@ -16,8 +16,10 @@ ROOT_FILES = (
     "ARCHITECTURE.md",
     "Cargo.lock",
     "Cargo.toml",
+    "DEPENDENCIES.md",
     "LICENSE",
     "README.md",
+    "rust-toolchain.toml",
 )
 
 

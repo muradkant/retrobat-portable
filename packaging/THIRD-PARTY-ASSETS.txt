@@ -1,6 +1,26 @@
 RetroPort supplementary runtime assets
 ======================================
 
+RetroBat base distribution
+--------------------------
+Purpose: Windows frontend, RetroArch base, emulator adapters, templates, and
+upstream updater used by the portable runtime.
+Project: https://github.com/RetroBat-Official/retrobat
+Release: 8.1.2 stable win64
+Official release page:
+https://github.com/RetroBat-Official/retrobat/releases/tag/8.1.2
+Binary source:
+https://github.com/RetroBat-Official/retrobat/releases/download/8.1.2/RetroBat-v8.1.2-stable-win64-setup.exe
+Size: 1838225617 bytes
+Installer SHA-256:
+d6b6987f87d1903c02e6654f0e5f43de0b4b311f86bd355b5796a870c73a63d7
+Embedded ZIP SHA-256:
+92a12a61d60f7784d5bbb0bacb34ea3c2dc3b25268ea381dc67bd3f997dc7708
+Installed version marker: 8.1.2-stable-win64
+The official setup is a self-extracting ZIP and can be reproducibly unpacked
+by tools/bootstrap_retrobat_base.sh. RetroBat states that the base includes
+RetroArch while its updater downloads additional standalone emulators.
+
 JAXE libretro core
 ------------------
 Purpose: CHIP-8, S-CHIP, and XO-CHIP support.
@@ -9,11 +29,11 @@ Documentation: https://docs.libretro.com/library/jaxe/
 License: MIT
 Binary source:
 https://buildbot.libretro.com/nightly/windows/x86_64/latest/jaxe_libretro.dll.zip
-Retrieved: 2026-07-04
+Retrieved: 2026-07-12
 Archive SHA-256:
-e45bc1e865269b259f72d1004fa3a691c343782cc6e405816ea22c888fd3b00c
+1b239ae91d742b615daffbf2d8ab6154d78912261d964918a4b301a18999e9e0
 Extracted jaxe_libretro.dll SHA-256:
-b01439f4616ff24480104e26e3ecee6ee839fbdc8ecc640d2acbf10282162f94
+9f284ff90b3f8cbe654224cc7992c2b472ed3797cdfabeccdd2986ae1c4276f0
 
 Xenia Canary
 ------------
@@ -65,15 +85,19 @@ SHA-256 recorded after retrieval from Eden's official release service:
 
 Additional Windows backends
 ---------------------------
-RPCS3 0.0.38-18582, commit 65273dde (official Windows archive):
-SHA-256 cc6b555ed5f77a287199f780aa3f065f4c9eeee26771439b44236addaa579557
+RPCS3 0.0.41-19564, commit 700ca262 (official Windows archive):
+https://github.com/RPCS3/rpcs3-binaries-win/releases/download/build-700ca262f44fda57ba260283c3f0a4772db8a573/rpcs3-v0.0.41-19564-700ca262_win64_msvc.7z
+SHA-256 3d0e7b796df5ec05fa2d9448d4c1203f97ae2f605bc16dad3bc175ed858c191e
 
 Cemu 2.6 Windows archive:
+https://github.com/cemu-project/Cemu/releases/download/v2.6/cemu-2.6-windows-x64.zip
 SHA-256 a6bcc2bc42a362d10213819948f3152fae7d47f70067f25939b51d3ddcfb0896
 
 shadPS4 0.16.0 Windows SDL archive:
+https://github.com/shadps4-emu/shadPS4/releases/download/v.0.16.0/shadps4-win64-sdl-0.16.0.zip
 SHA-256 f6cdcca82f239fb69b2f820ad9dec07f2f00b423273851b67a0e24bc783acf46
 shadPS4 QtLauncher v224 Windows archive:
+https://github.com/shadps4-emu/shadps4-qtlauncher/releases/download/v224/shadPS4QtLauncher-win64-qt-v224.zip
 SHA-256 021871249bae6867900f62efd728a6cbdbed9934b69c28488b41d413280e2e1d
 
 Eden 0.2.1 Windows amd64 MSVC archive:

@@ -590,8 +590,8 @@ mod tests {
     }
 
     #[test]
-    fn linux_keeps_the_wine_prefix_off_the_removable_drive() {
-        let layout = PortableLayout::new("/run/media/user/Arcade");
+    fn linux_keeps_the_wine_prefix_in_host_user_data() {
+        let layout = PortableLayout::new("/opt/retroport");
         let plan = LaunchPlan::for_host(
             &layout,
             HostPlatform::Linux,
@@ -606,7 +606,7 @@ mod tests {
         assert_eq!(
             plan.args,
             vec![PathBuf::from(
-                "/run/media/user/Arcade/RetroBat/RetroBat.exe"
+                "/opt/retroport/RetroBat/RetroBat.exe"
             )]
         );
     }
@@ -634,8 +634,8 @@ mod tests {
 
     #[test]
     fn linux_rpcs3_firmware_install_converts_only_the_firmware_path() {
-        let layout = PortableLayout::new("/run/media/user/Arcade");
-        let firmware = Path::new("/run/media/user/Arcade/RetroBat/bios/PS3UPDAT.PUP");
+        let layout = PortableLayout::new("/opt/retroport");
+        let firmware = Path::new("/opt/retroport/RetroBat/bios/PS3UPDAT.PUP");
         let plan = LaunchPlan::for_rpcs3_firmware_install_host(
             &layout,
             HostPlatform::Linux,
@@ -647,7 +647,7 @@ mod tests {
         assert_eq!(
             plan.args,
             vec![
-                PathBuf::from("/run/media/user/Arcade/RetroBat/emulators/rpcs3/rpcs3.exe"),
+                PathBuf::from("/opt/retroport/RetroBat/emulators/rpcs3/rpcs3.exe"),
                 PathBuf::from("--installfw"),
                 PathBuf::from("Z:\\run\\media\\user\\Arcade\\RetroBat\\bios\\PS3UPDAT.PUP")
             ]
@@ -657,7 +657,7 @@ mod tests {
     #[test]
     fn linux_creates_the_wine_prefix_before_first_launch() {
         let data_dir = tempfile::tempdir().unwrap();
-        let layout = PortableLayout::new("/run/media/user/Arcade");
+        let layout = PortableLayout::new("/opt/retroport");
         let plan =
             LaunchPlan::for_host(&layout, HostPlatform::Linux, Some(data_dir.path())).unwrap();
         let prefix = &plan.env["WINEPREFIX"];
@@ -755,8 +755,8 @@ mod tests {
 
     #[test]
     fn linux_game_launch_converts_the_rom_to_wines_z_drive() {
-        let layout = PortableLayout::new("/run/media/user/Arcade");
-        let rom = Path::new("/run/media/user/Arcade/RetroBat/roms/gb/2048.gb");
+        let layout = PortableLayout::new("/opt/retroport");
+        let rom = Path::new("/opt/retroport/RetroBat/roms/gb/2048.gb");
         let plan = LaunchPlan::for_game_host(
             &layout,
             HostPlatform::Linux,
@@ -770,7 +770,7 @@ mod tests {
             plan.args,
             vec![
                 PathBuf::from(
-                    "/run/media/user/Arcade/RetroBat/emulationstation/emulatorLauncher.exe"
+                    "/opt/retroport/RetroBat/emulationstation/emulatorLauncher.exe"
                 ),
                 PathBuf::from("-system"),
                 PathBuf::from("gb"),
@@ -782,8 +782,8 @@ mod tests {
 
     #[test]
     fn linux_libretro_card_play_bypasses_the_fragile_dotnet_launcher() {
-        let layout = PortableLayout::new("/run/media/user/Arcade");
-        let rom = Path::new("/run/media/user/Arcade/RetroBat/roms/mame/mspacman.zip");
+        let layout = PortableLayout::new("/opt/retroport");
+        let rom = Path::new("/opt/retroport/RetroBat/roms/mame/mspacman.zip");
         let backend = BackendRoute {
             emulator: "libretro".to_owned(),
             core: Some("mame".to_owned()),
@@ -817,8 +817,8 @@ mod tests {
         );
         let config = &plan.generated_files[0].1;
         for expected in [
-            "savefile_directory = \"Z:/run/media/user/Arcade/RetroBat/saves/mame\"",
-            "savestate_directory = \"Z:/run/media/user/Arcade/RetroBat/saves/mame/states\"",
+            "savefile_directory = \"Z:/opt/retroport/RetroBat/saves/mame\"",
+            "savestate_directory = \"Z:/opt/retroport/RetroBat/saves/mame/states\"",
             "audio_enable = \"true\"",
             "audio_driver = \"xaudio\"",
             "audio_mute_enable = \"false\"",
@@ -863,8 +863,8 @@ mod tests {
 
     #[test]
     fn linux_windows_game_import_launches_the_exe_with_its_companion_directory() {
-        let layout = PortableLayout::new("/run/media/user/Arcade");
-        let game = Path::new("/run/media/user/Arcade/RetroBat/roms/windows/Game/bin/Game.exe");
+        let layout = PortableLayout::new("/opt/retroport");
+        let game = Path::new("/opt/retroport/RetroBat/roms/windows/Game/bin/Game.exe");
         let backend = BackendRoute {
             emulator: "windows".to_owned(),
             core: None,
@@ -887,7 +887,7 @@ mod tests {
 
     #[test]
     fn game_launch_rejects_a_system_that_could_be_parsed_as_arguments() {
-        let layout = PortableLayout::new("/run/media/user/Arcade");
+        let layout = PortableLayout::new("/opt/retroport");
         let result = LaunchPlan::for_game_host(
             &layout,
             HostPlatform::Linux,
@@ -900,8 +900,8 @@ mod tests {
 
     #[test]
     fn chip8_launch_uses_the_jaxe_core_directly() {
-        let layout = PortableLayout::new("/run/media/user/Arcade");
-        let rom = Path::new("/run/media/user/Arcade/RetroBat/roms/chip8/game.ch8");
+        let layout = PortableLayout::new("/opt/retroport");
+        let rom = Path::new("/opt/retroport/RetroBat/roms/chip8/game.ch8");
         let plan = LaunchPlan::for_game_host(
             &layout,
             HostPlatform::Linux,
@@ -914,7 +914,7 @@ mod tests {
         assert_eq!(
             plan.args,
             vec![
-                PathBuf::from("/run/media/user/Arcade/RetroBat/emulators/retroarch/retroarch.exe"),
+                PathBuf::from("/opt/retroport/RetroBat/emulators/retroarch/retroarch.exe"),
                 PathBuf::from("--appendconfig"),
                 PathBuf::from(
                     r"Z:\run\media\user\Arcade\.retrobat-portable\runtime\retroarch\chip8.cfg"

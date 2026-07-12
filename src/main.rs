@@ -18,6 +18,7 @@ use retrobat_portable::browse::{
 };
 use retrobat_portable::browse_install::{BrowseInstaller, supports_direct_download};
 use retrobat_portable::catalog::{Artwork, Catalog, CatalogEntry};
+use retrobat_portable::controller_guard::ControllerMouseGuard;
 use retrobat_portable::controls::{ControlsCatalog, GameControls};
 use retrobat_portable::featured::FeaturedCatalog;
 use retrobat_portable::firmware::{import_firmware, install_official_firmware};
@@ -330,9 +331,9 @@ struct ArtworkJob {
     source: ArtworkSource,
 }
 
-// Two readers keep removable flash media responsive. Four simultaneous image
-// reads were enough to exhaust this USB drive's request queue and trigger the
-// desktop compositor's "Application Not Responding" watchdog.
+// Two readers bound storage and image-decoding pressure. Four simultaneous
+// reads were enough to starve the desktop event loop on slower storage and
+// trigger the compositor's "Application Not Responding" watchdog.
 const ARTWORK_WORKERS: usize = 2;
 const ARTWORK_QUEUE_CAPACITY: usize = 64;
 
@@ -1864,9 +1865,25 @@ impl PortableApp {
             .cloned();
         let route_label = backend.as_ref().map(|route| route.label());
         self.status = format!("Loading {title}…");
-        match LaunchPlan::for_current_game_with_backend(&layout, system, rom, backend.as_ref())
-            .and_then(|plan| plan.spawn())
-        {
+        let plan =
+            match LaunchPlan::for_current_game_with_backend(&layout, system, rom, backend.as_ref())
+            {
+                Ok(plan) => plan,
+                Err(error) => {
+                    self.status = format!("Could not prepare {title}: {error}");
+                    return;
+                }
+            };
+        let controller_guard = match ControllerMouseGuard::acquire_if_available() {
+            Ok(guard) => guard,
+            Err(error) => {
+                self.status = format!(
+                    "Could not suspend the desktop controller-to-mouse mapping; {title} was not launched: {error}"
+                );
+                return;
+            }
+        };
+        match plan.spawn() {
             Ok(mut child) => {
                 let process_id = child.id();
                 let (exit_sender, exit_receiver) = mpsc::channel();
@@ -1877,10 +1894,18 @@ impl PortableApp {
                     while process_tree_is_running(process_id) {
                         thread::sleep(Duration::from_millis(100));
                     }
-                    let message = match result {
+                    let guard_result = controller_guard
+                        .map(ControllerMouseGuard::release)
+                        .transpose();
+                    let mut message = match result {
                         Ok(status) => format!("{game_title} closed ({status})."),
                         Err(error) => format!("Could not monitor {game_title}: {error}"),
                     };
+                    if let Err(error) = guard_result {
+                        message.push_str(&format!(
+                            " The desktop controller-to-mouse mapping could not be restored: {error}"
+                        ));
+                    }
                     let _ = exit_sender.send(message);
                     context.request_repaint();
                 });
@@ -1898,6 +1923,7 @@ impl PortableApp {
                 );
             }
             Err(error) => {
+                drop(controller_guard);
                 self.status = format!("Could not launch {title}: {error}");
             }
         }

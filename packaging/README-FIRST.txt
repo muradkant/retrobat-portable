@@ -6,7 +6,7 @@ do not move RetroPort.exe or RetroPort-Linux away from it.
 
 WINDOWS
 -------
-1. Plug in the drive and open this folder.
+1. Open this installation folder.
 2. Double-click RetroPort.exe.
 3. If Windows shows an unknown-publisher warning, choose More info, then Run
    anyway. This personal build is not code-signed.
@@ -60,6 +60,13 @@ open that view to see the mapping detected from this copy's RetroArch/RetroBat
 configuration, the matching controller profile, and any exact MAME or RetroBat
 per-game device metadata. The view states its source and confidence; it does
 not silently guess missing per-game action names.
+
+On Linux, if the host provides `controller-mouse-game-guard`, RetroPort
+automatically suspends its AntiMicroX/controller-as-mouse desktop mapping before
+PLAY and restores it after the complete emulator process tree exits. This keeps
+the hidden pointer from stealing focus without disabling the physical gamepad.
+Profile, installation, and protocol documentation:
+https://github.com/muradkant/linux-zhixu-controller-fix
 
 PLAY changes immediately to LOADING and then TERMINATE. A second launch cannot
 open while the game is active. Click TERMINATE to stop the complete emulator
