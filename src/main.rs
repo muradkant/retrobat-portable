@@ -572,9 +572,9 @@ impl ImportDialog {
             .or_else(dirs::home_dir)
             .unwrap_or_else(|| PathBuf::from("."));
         let message = if entry.system.eq_ignore_ascii_case("mame") {
-            "Select the intact MAME ROM-set ZIP (for example, mspacman.zip). Do not unzip it. Double-click the ZIP or select it and confirm below."
+            "Select the intact MAME ROM-set ZIP (for example, mspacman.zip). If it came inside a RAR archive, select the RAR and RetroPort will unpack it."
         } else {
-            "Choose the local game file or disc descriptor. Double-click a file to import it immediately."
+            "Choose the local game file, disc descriptor, or RAR archive. RAR files are unpacked automatically. Double-click a file to import it immediately."
         };
         Self {
             entry,

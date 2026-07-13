@@ -2,6 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Read, Write};
 use std::path::{Component, Path, PathBuf};
+use std::process::{Command, Output};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use quick_xml::Reader;
@@ -32,6 +33,15 @@ pub enum ImportError {
     NoDirectoryLaunch(PathBuf),
     #[error("the selected file type {extension} is not accepted for {system}")]
     UnsupportedExtension { system: String, extension: String },
+    #[error("RAR import needs 7-Zip, but no usable extractor was found")]
+    ArchiveToolMissing,
+    #[error("could not {action} the RAR archive: {message}")]
+    ArchiveCommand {
+        action: &'static str,
+        message: String,
+    },
+    #[error("the RAR archive contains no files")]
+    EmptyArchive,
     #[error("disc playlist or descriptor references an unsafe path: {0}")]
     UnsafeReference(PathBuf),
     #[error("disc playlist or descriptor references a missing file: {0}")]
@@ -103,6 +113,9 @@ impl<'a> GameImporter<'a> {
     }
 
     pub fn import(&self, entry: &BrowseEntry, source: &Path) -> Result<ImportReport, ImportError> {
+        if normalized_extension(source) == ".rar" {
+            return self.import_rar(entry, source);
+        }
         let profiles = load_system_profiles(&self.layout.systems_config())?;
         reject_non_file_or_symlink(source)?;
         let extension = normalized_extension(source);
@@ -241,6 +254,49 @@ impl<'a> GameImporter<'a> {
                 imported_files: manifest.files.len(),
                 imported_bytes: manifest.files.iter().map(|file| file.size).sum(),
             })
+        })();
+
+        let _ = fs::remove_dir_all(&stage_dir);
+        result
+    }
+
+    fn import_rar(&self, entry: &BrowseEntry, source: &Path) -> Result<ImportReport, ImportError> {
+        reject_non_file_or_symlink(source)?;
+        let source = source.canonicalize()?;
+        let operation_id = format!(
+            "import-rar-{}-{}",
+            std::process::id(),
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_nanos()
+        );
+        let stage_dir = self.layout.staging_root().join(operation_id);
+        let payload = stage_dir.join("payload");
+        fs::create_dir_all(&payload)?;
+
+        let result = (|| {
+            let listing = run_7zip(
+                self.layout,
+                ["l", "-slt", "-ba"]
+                    .into_iter()
+                    .map(Into::into)
+                    .chain(std::iter::once(source.as_os_str().to_owned())),
+            )?;
+            require_archive_success("inspect", &listing)?;
+            validate_rar_listing(&listing.stdout)?;
+
+            let output_directory = format!("-o{}", payload.display());
+            let extraction = run_7zip(
+                self.layout,
+                ["x", "-y", "-bb0"]
+                    .into_iter()
+                    .map(Into::into)
+                    .chain(std::iter::once(output_directory.into()))
+                    .chain(std::iter::once(source.as_os_str().to_owned())),
+            )?;
+            require_archive_success("extract", &extraction)?;
+            self.import_directory(entry, &payload)
         })();
 
         let _ = fs::remove_dir_all(&stage_dir);
@@ -666,6 +722,110 @@ fn should_verify_sha1(system: &str, extension: &str) -> bool {
             extension,
             ".zip" | ".7z" | ".cue" | ".gdi" | ".m3u" | ".chd" | ".iso" | ".cso" | ".rvz" | ".wbfs"
         )
+}
+
+fn run_7zip(
+    layout: &PortableLayout,
+    arguments: impl IntoIterator<Item = std::ffi::OsString> + Clone,
+) -> Result<Output, ImportError> {
+    for program in seven_zip_candidates(layout) {
+        match Command::new(&program).args(arguments.clone()).output() {
+            Ok(output) => return Ok(output),
+            Err(error) if error.kind() == io::ErrorKind::NotFound => continue,
+            Err(error) => {
+                return Err(ImportError::ArchiveCommand {
+                    action: "start 7-Zip for",
+                    message: format!("{}: {error}", program.display()),
+                });
+            }
+        }
+    }
+    Err(ImportError::ArchiveToolMissing)
+}
+
+fn seven_zip_candidates(layout: &PortableLayout) -> Vec<PathBuf> {
+    #[cfg(target_os = "windows")]
+    {
+        vec![
+            layout
+                .retrobat_root()
+                .join("emulationstation")
+                .join("7z.exe"),
+            layout
+                .retrobat_root()
+                .join("emulationstation")
+                .join("7za.exe"),
+            PathBuf::from("7z.exe"),
+        ]
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        let _ = layout;
+        vec![PathBuf::from("7z"), PathBuf::from("7zz")]
+    }
+}
+
+fn require_archive_success(action: &'static str, output: &Output) -> Result<(), ImportError> {
+    if output.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+    let stdout = String::from_utf8_lossy(&output.stdout).trim().to_owned();
+    let message = if !stderr.is_empty() { stderr } else { stdout };
+    Err(ImportError::ArchiveCommand {
+        action,
+        message: if message.is_empty() {
+            format!("7-Zip exited with {}", output.status)
+        } else {
+            message
+        },
+    })
+}
+
+fn validate_rar_listing(listing: &[u8]) -> Result<(), ImportError> {
+    let listing = String::from_utf8_lossy(listing);
+    let mut entries = BTreeSet::new();
+    let mut current = None;
+
+    for line in listing.lines() {
+        if let Some(value) = line.strip_prefix("Path = ") {
+            let normalized = value.replace('\\', "/");
+            let path = PathBuf::from(&normalized);
+            validate_relative(&path)?;
+            if path.components().any(|component| match component {
+                Component::Normal(value) => {
+                    let value = value.to_string_lossy();
+                    value.contains(':') || value.chars().any(char::is_control)
+                }
+                _ => true,
+            }) {
+                return Err(ImportError::UnsafeReference(path));
+            }
+            if !entries.insert(path.clone()) {
+                return Err(ImportError::UnsafeReference(path));
+            }
+            current = Some(path);
+        } else if ["Symbolic Link = ", "Hard Link = ", "Copy Link = "]
+            .iter()
+            .find_map(|prefix| line.strip_prefix(prefix))
+            .is_some_and(|value| !value.trim().is_empty() && value.trim() != "-")
+            || line
+                .strip_prefix("Alternate Stream = ")
+                .is_some_and(|value| value.trim() != "-")
+        {
+            return Err(ImportError::UnsafeReference(
+                current
+                    .clone()
+                    .unwrap_or_else(|| PathBuf::from("archive-entry")),
+            ));
+        }
+    }
+
+    if entries.is_empty() {
+        Err(ImportError::EmptyArchive)
+    } else {
+        Ok(())
+    }
 }
 
 fn digest_sha1(path: &Path) -> Result<String, io::Error> {
@@ -1135,6 +1295,30 @@ mod tests {
         assert!(matches!(
             GameImporter::new(&layout).import(&fixture_entry("gb", "Wrong"), &source),
             Err(ImportError::UnsupportedExtension { .. })
+        ));
+    }
+
+    #[test]
+    fn accepts_safe_rar_listing_paths() {
+        validate_rar_listing(
+            b"Path = game/Game.a26\nFolder = -\nSymbolic Link = \nHard Link = \nCopy Link = \nAlternate Stream = -\n",
+        )
+        .unwrap();
+    }
+
+    #[test]
+    fn rejects_rar_path_traversal_before_extraction() {
+        assert!(matches!(
+            validate_rar_listing(b"Path = ../outside.a26\nFolder = -\n"),
+            Err(ImportError::UnsafeReference(_))
+        ));
+    }
+
+    #[test]
+    fn rejects_links_inside_rar_archives() {
+        assert!(matches!(
+            validate_rar_listing(b"Path = game.a26\nFolder = -\nSymbolic Link = ../outside.a26\n"),
+            Err(ImportError::UnsafeReference(_))
         ));
     }
 

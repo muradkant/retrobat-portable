@@ -55,8 +55,10 @@ Then:
 3. Choose **PLAY**.
 
 Import extracted PS3, PS4, Wii U, and PC games with **IMPORT THIS FOLDER** so
-their executables, libraries, and data stay together. Import an arcade set such
-as `mspacman.zip` as the original ZIP, not as its extracted component files.
+their executables, libraries, and data stay together. RAR archives can be
+selected directly and are unpacked into the managed game import. Import an
+arcade set such as `mspacman.zip` as the original ZIP, not as its extracted
+component files.
 
 **PLAY** becomes **LOADING**, then **TERMINATE**. This prevents duplicate
 launches; **TERMINATE** stops the emulator's complete process tree. Readiness
