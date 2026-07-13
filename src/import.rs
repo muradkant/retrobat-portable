@@ -68,6 +68,13 @@ pub struct ImportReport {
     pub imported_bytes: u64,
 }
 
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct RemoveImportReport {
+    pub removed: Vec<PathBuf>,
+    pub preserved_modified: Vec<PathBuf>,
+    pub already_missing: Vec<PathBuf>,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 pub struct ImportCoverage {
     pub total_entries: usize,
@@ -495,6 +502,69 @@ impl<'a> GameImporter<'a> {
 
 pub fn is_imported(layout: &PortableLayout, catalog_id: &str) -> bool {
     imported_manifest(layout, catalog_id).is_ok_and(|manifest| manifest.is_some())
+}
+
+pub fn remove_import(
+    layout: &PortableLayout,
+    catalog_id: &str,
+) -> Result<RemoveImportReport, ImportError> {
+    let record_path = manifest_path(layout, catalog_id);
+    let manifest: ImportedManifest = serde_json::from_reader(File::open(&record_path)?)?;
+    if manifest.schema_version != 1
+        || manifest.catalog_id != catalog_id
+        || manifest.files.is_empty()
+    {
+        return Err(ImportError::InvalidManifest(
+            record_path.display().to_string(),
+        ));
+    }
+
+    let system_root_relative = Path::new("RetroBat").join("roms").join(&manifest.system);
+    validate_relative(&system_root_relative)?;
+    let system_root = layout.root.join(&system_root_relative);
+    let mut seen = BTreeSet::new();
+    let mut report = RemoveImportReport::default();
+    let mut parents = BTreeSet::new();
+
+    for imported in &manifest.files {
+        validate_relative(&imported.relative_path)?;
+        if !imported.relative_path.starts_with(&system_root_relative)
+            || !seen.insert(imported.relative_path.clone())
+        {
+            return Err(ImportError::InvalidManifest(
+                imported.relative_path.display().to_string(),
+            ));
+        }
+        validate_existing_parent_chain(&layout.root, &imported.relative_path)?;
+        let destination = layout.root.join(&imported.relative_path);
+        if let Some(parent) = destination.parent() {
+            parents.insert(parent.to_owned());
+        }
+        match fs::symlink_metadata(&destination) {
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {
+                report.already_missing.push(destination);
+            }
+            Err(error) => return Err(error.into()),
+            Ok(metadata) if metadata.file_type().is_symlink() || !metadata.is_file() => {
+                report.preserved_modified.push(destination);
+            }
+            Ok(_) => {
+                let (size, sha256) = digest_file(&destination)?;
+                if size == imported.size && sha256 == imported.sha256 {
+                    fs::remove_file(&destination)?;
+                    report.removed.push(destination);
+                } else {
+                    report.preserved_modified.push(destination);
+                }
+            }
+        }
+    }
+
+    fs::remove_file(record_path)?;
+    for parent in parents.into_iter().rev() {
+        prune_empty_import_directories(&parent, &system_root)?;
+    }
+    Ok(report)
 }
 
 pub fn imported_manifest(
@@ -1061,6 +1131,51 @@ fn validate_relative(path: &Path) -> Result<(), ImportError> {
     Ok(())
 }
 
+fn validate_existing_parent_chain(root: &Path, relative: &Path) -> Result<(), ImportError> {
+    let Some(parent) = relative.parent() else {
+        return Err(ImportError::UnsafeReference(relative.to_owned()));
+    };
+    let mut current = root.to_owned();
+    for component in parent.components() {
+        let Component::Normal(name) = component else {
+            return Err(ImportError::UnsafeReference(relative.to_owned()));
+        };
+        current.push(name);
+        match fs::symlink_metadata(&current) {
+            Ok(metadata) if metadata.file_type().is_symlink() || !metadata.is_dir() => {
+                return Err(ImportError::UnsafeReference(current));
+            }
+            Ok(_) => {}
+            Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(()),
+            Err(error) => return Err(error.into()),
+        }
+    }
+    Ok(())
+}
+
+fn prune_empty_import_directories(directory: &Path, system_root: &Path) -> Result<(), ImportError> {
+    let mut current = directory.to_owned();
+    while current.starts_with(system_root) && current != system_root {
+        match fs::remove_dir(&current) {
+            Ok(()) => {}
+            Err(error)
+                if matches!(
+                    error.kind(),
+                    io::ErrorKind::DirectoryNotEmpty | io::ErrorKind::NotFound
+                ) =>
+            {
+                break;
+            }
+            Err(error) => return Err(error.into()),
+        }
+        let Some(parent) = current.parent() else {
+            break;
+        };
+        current = parent.to_owned();
+    }
+    Ok(())
+}
+
 fn safe_component(title: &str, fallback: &str) -> String {
     let sanitized = title
         .chars()
@@ -1140,6 +1255,7 @@ mod tests {
             r#"<?xml version="1.0"?>
 <systemList>
   <system><name>psx</name><extension>.cue .bin .chd</extension></system>
+  <system><name>atari2600</name><extension>.a26 .bin .rom .zip</extension></system>
   <system><name>gb</name><extension>.gb .zip</extension></system>
   <system><name>mame</name><extension>.zip .7z</extension></system>
   <system><name>ps3</name><extension>.ps3 .m3u .iso</extension></system>
@@ -1170,6 +1286,72 @@ mod tests {
             b"rom bytes"
         );
         assert!(is_imported(&layout, "test/Tetris"));
+    }
+
+    #[test]
+    fn removing_an_import_deletes_owned_files_and_reverts_to_importable() {
+        let temp = tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path().join("bundle"));
+        create_config(&layout);
+        let source = temp.path().join("Pac-Man.a26");
+        fs::write(&source, b"rom bytes").unwrap();
+        let entry = fixture_entry("atari2600", "Pac-Man");
+
+        let imported = GameImporter::new(&layout).import(&entry, &source).unwrap();
+        assert!(imported.launch_file.is_file());
+        assert!(is_imported(&layout, &entry.id));
+
+        let removed = remove_import(&layout, &entry.id).unwrap();
+        assert_eq!(removed.removed, vec![imported.launch_file.clone()]);
+        assert!(removed.preserved_modified.is_empty());
+        assert!(!imported.launch_file.exists());
+        assert!(!is_imported(&layout, &entry.id));
+        assert!(!manifest_path(&layout, &entry.id).exists());
+    }
+
+    #[test]
+    fn removing_an_import_preserves_modified_files_but_releases_the_card() {
+        let temp = tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path().join("bundle"));
+        create_config(&layout);
+        let source = temp.path().join("Tetris.gb");
+        fs::write(&source, b"original bytes").unwrap();
+        let entry = fixture_entry("gb", "Tetris");
+        let imported = GameImporter::new(&layout).import(&entry, &source).unwrap();
+        fs::write(&imported.launch_file, b"user-modified bytes").unwrap();
+
+        let removed = remove_import(&layout, &entry.id).unwrap();
+        assert_eq!(
+            removed.preserved_modified,
+            vec![imported.launch_file.clone()]
+        );
+        assert_eq!(
+            fs::read(&imported.launch_file).unwrap(),
+            b"user-modified bytes"
+        );
+        assert!(!is_imported(&layout, &entry.id));
+    }
+
+    #[test]
+    fn removal_rejects_a_manifest_path_outside_the_system_rom_root() {
+        let temp = tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path().join("bundle"));
+        create_config(&layout);
+        let source = temp.path().join("Tetris.gb");
+        fs::write(&source, b"original bytes").unwrap();
+        let entry = fixture_entry("gb", "Tetris");
+        GameImporter::new(&layout).import(&entry, &source).unwrap();
+        let path = manifest_path(&layout, &entry.id);
+        let mut manifest: ImportedManifest =
+            serde_json::from_reader(File::open(&path).unwrap()).unwrap();
+        manifest.files[0].relative_path = PathBuf::from("README.md");
+        serde_json::to_writer_pretty(File::create(&path).unwrap(), &manifest).unwrap();
+
+        assert!(matches!(
+            remove_import(&layout, &entry.id),
+            Err(ImportError::InvalidManifest(_))
+        ));
+        assert!(path.is_file());
     }
 
     #[test]
@@ -1320,6 +1502,26 @@ mod tests {
             validate_rar_listing(b"Path = game.a26\nFolder = -\nSymbolic Link = ../outside.a26\n"),
             Err(ImportError::UnsafeReference(_))
         ));
+    }
+
+    #[test]
+    #[ignore = "requires RETROPORT_TEST_RAR and an installed 7-Zip command"]
+    fn imports_and_removes_an_external_rar_end_to_end() {
+        let source = std::env::var_os("RETROPORT_TEST_RAR")
+            .map(PathBuf::from)
+            .expect("RETROPORT_TEST_RAR must name a RAR containing an Atari 2600 ROM");
+        let temp = tempdir().unwrap();
+        let layout = PortableLayout::new(temp.path().join("bundle"));
+        create_config(&layout);
+        let entry = fixture_entry("atari2600", "Pac-Man");
+
+        let imported = GameImporter::new(&layout).import(&entry, &source).unwrap();
+        assert_eq!(normalized_extension(&imported.launch_file), ".a26");
+        assert!(is_imported(&layout, &entry.id));
+        let removed = remove_import(&layout, &entry.id).unwrap();
+        assert_eq!(removed.removed.len(), 1);
+        assert!(!imported.launch_file.exists());
+        assert!(!is_imported(&layout, &entry.id));
     }
 
     #[test]

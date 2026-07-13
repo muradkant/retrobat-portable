@@ -60,6 +60,10 @@ selected directly and are unpacked into the managed game import. Import an
 arcade set such as `mspacman.zip` as the original ZIP, not as its extracted
 component files.
 
+An imported card adds **REMOVE** beside its ready actions. Removal deletes files
+that still match the import record, preserves anything modified afterward, and
+returns the card to **IMPORT GAME**.
+
 **PLAY** becomes **LOADING**, then **TERMINATE**. This prevents duplicate
 launches; **TERMINATE** stops the emulator's complete process tree. Readiness
 audits and process monitoring run off the GUI thread, so importing or closing a
@@ -73,6 +77,10 @@ add MAME-declared players, coins, controls, buttons, and special devices;
 RetroBat-tagged entries add exact gun, wheel, spinner, and trackball needs. If a
 core reveals action labels only at runtime, RetroPort directs the reader to
 RetroArch's Quick Menu → Controls rather than guessing.
+
+This evidence exists independently of the ROM bytes, so **CONTROLS** remains
+available before import. ZIP and RAR containers for the same catalogue game
+therefore resolve to the same guidance.
 
 On Linux, RetroPort also understands the optional
 [`linux-zhixu-controller-fix` game guard](https://github.com/muradkant/linux-zhixu-controller-fix#tested-machine-circumstance).

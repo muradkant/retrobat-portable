@@ -22,7 +22,7 @@ use retrobat_portable::controller_guard::ControllerMouseGuard;
 use retrobat_portable::controls::{ControlsCatalog, GameControls};
 use retrobat_portable::featured::FeaturedCatalog;
 use retrobat_portable::firmware::{import_firmware, install_official_firmware};
-use retrobat_portable::import::{GameImporter, ImportedManifest, imported_manifest};
+use retrobat_portable::import::{GameImporter, ImportedManifest, imported_manifest, remove_import};
 use retrobat_portable::install::{Installer, ReqwestDownloader, is_installed};
 use retrobat_portable::launch::{LaunchPlan, process_tree_is_running, terminate_process_tree_id};
 use retrobat_portable::paths::PortableLayout;
@@ -467,6 +467,23 @@ fn game_button_state(
 
 fn active_game_repaint_delay(elapsed: Duration, terminating: bool) -> Option<Duration> {
     (elapsed < Duration::from_secs(5) || terminating).then_some(Duration::from_millis(100))
+}
+
+fn format_import_size(bytes: u64) -> String {
+    const KIB: u64 = 1024;
+    const MIB: u64 = KIB * 1024;
+    const GIB: u64 = MIB * 1024;
+    match bytes {
+        0..KIB => format!("{bytes} B"),
+        KIB..MIB if bytes.is_multiple_of(KIB) => format!("{} KiB", bytes / KIB),
+        KIB..MIB => format!("{:.1} KiB", bytes as f64 / KIB as f64),
+        MIB..GIB => format!("{:.2} MiB", bytes as f64 / MIB as f64),
+        _ => format!("{:.2} GiB", bytes as f64 / GIB as f64),
+    }
+}
+
+fn remove_import_available(imported: bool, operation_running: bool, game_running: bool) -> bool {
+    imported && !operation_running && !game_running
 }
 
 struct StartupProbe {
@@ -937,15 +954,42 @@ impl PortableApp {
                     success: true,
                     heading: "IMPORT COMPLETE — PLAY IS READY".to_owned(),
                     message: format!(
-                        "Imported {title}: {} file(s), {} MiB. The card now shows PLAY.",
+                        "Imported {title}: {} file(s), {}. The card now shows PLAY.",
                         report.imported_files,
-                        report.imported_bytes / (1024 * 1024)
+                        format_import_size(report.imported_bytes)
                     ),
                 },
                 Err(error) => OperationResult {
                     success: false,
                     heading: "IMPORT FAILED".to_owned(),
                     message: format!("Could not import {title}: {error}"),
+                },
+            };
+            let _ = sender.send(result);
+        });
+    }
+
+    fn start_remove_import(&mut self, catalog_id: String, title: String) {
+        let layout = PortableLayout::new(PathBuf::from(&self.root_text));
+        let (sender, receiver) = mpsc::channel();
+        self.operation = Some(receiver);
+        self.status = format!("Removing imported {title}…");
+        thread::spawn(move || {
+            let result = match remove_import(&layout, &catalog_id) {
+                Ok(report) => OperationResult {
+                    success: true,
+                    heading: "IMPORTED GAME REMOVED".to_owned(),
+                    message: format!(
+                        "Removed {title}: {} owned file(s) deleted, {} modified file(s) preserved, {} already absent. The card now shows IMPORT GAME.",
+                        report.removed.len(),
+                        report.preserved_modified.len(),
+                        report.already_missing.len(),
+                    ),
+                },
+                Err(error) => OperationResult {
+                    success: false,
+                    heading: "REMOVE FAILED".to_owned(),
+                    message: format!("Could not remove imported {title}: {error}"),
                 },
             };
             let _ = sender.send(result);
@@ -2398,6 +2442,7 @@ impl eframe::App for PortableApp {
                     let mut requested_download = None;
                     let mut requested_firmware = None;
                     let mut requested_controls = None;
+                    let mut requested_remove_import = None;
                     let mut requested_play: Option<(String, String, String, PathBuf)> = None;
                     let mut requested_terminate = false;
                     let layout = PortableLayout::new(PathBuf::from(&self.root_text));
@@ -2716,6 +2761,9 @@ impl eframe::App for PortableApp {
                                                         .fill(CONTROL_BACKGROUND)
                                                         .min_size(egui::vec2(122.0, 26.0)),
                                                     )
+                                                    .on_hover_text(
+                                                        "Available before import: guidance comes from the catalogue's MAME/RetroBat metadata and the installed RetroArch/controller configuration, not from inspecting ROM bytes.",
+                                                    )
                                                     .clicked()
                                                 {
                                                     requested_controls = Some(entry.clone());
@@ -2727,6 +2775,7 @@ impl eframe::App for PortableApp {
                                                             .imported_manifests
                                                             .get(&entry.id)
                                                             .cloned();
+                                                        let imported_ready = imported.is_some();
                                                         let (label, game_intent) = if imported
                                                             .is_some()
                                                         {
@@ -2773,7 +2822,7 @@ impl eframe::App for PortableApp {
                                                                 == GameButtonIntent::Terminate
                                                             {
                                                                 requested_terminate = true;
-                                                            } else if let Some(manifest) = imported {
+                                                            } else if let Some(manifest) = imported.clone() {
                                                                 requested_play = Some((
                                                                     entry.id.clone(),
                                                                     entry.title.clone(),
@@ -2787,6 +2836,38 @@ impl eframe::App for PortableApp {
                                                                 requested_import =
                                                                     Some(entry.clone());
                                                             }
+                                                        }
+                                                        if imported_ready
+                                                            && ui
+                                                                .add_enabled(
+                                                                    remove_import_available(
+                                                                        imported_ready,
+                                                                        self.operation.is_some(),
+                                                                        self.running_game.is_some(),
+                                                                    ),
+                                                                    egui::Button::new(
+                                                                        egui::RichText::new(
+                                                                            "REMOVE",
+                                                                        )
+                                                                        .small()
+                                                                        .strong(),
+                                                                    )
+                                                                    .fill(egui::Color32::from_rgb(
+                                                                        113, 47, 55,
+                                                                    ))
+                                                                    .min_size(egui::vec2(
+                                                                        122.0, 26.0,
+                                                                    )),
+                                                                )
+                                                                .on_hover_text(
+                                                                    "Remove files owned by this import and return the card to IMPORT GAME. Modified files are preserved.",
+                                                                )
+                                                                .clicked()
+                                                        {
+                                                            requested_remove_import = Some((
+                                                                entry.id.clone(),
+                                                                entry.title.clone(),
+                                                            ));
                                                         }
                                                     }
                                                     Acquisition::DirectDownload => {
@@ -2806,6 +2887,7 @@ impl eframe::App for PortableApp {
                                                             .imported_manifests
                                                             .get(&entry.id)
                                                             .cloned();
+                                                        let imported_ready = imported.is_some();
                                                         let game_ready = installed
                                                             || imported.is_some();
                                                         let (label, game_intent) = if game_ready {
@@ -2876,7 +2958,7 @@ impl eframe::App for PortableApp {
                                                                             .install_relative_path(),
                                                                         ),
                                                                 ));
-                                                            } else if let Some(manifest) = imported {
+                                                            } else if let Some(manifest) = imported.clone() {
                                                                 requested_play = Some((
                                                                     entry.id.clone(),
                                                                     entry.title.clone(),
@@ -2894,6 +2976,38 @@ impl eframe::App for PortableApp {
                                                                 requested_download =
                                                                     Some(entry.clone());
                                                             }
+                                                        }
+                                                        if imported_ready
+                                                            && ui
+                                                                .add_enabled(
+                                                                    remove_import_available(
+                                                                        imported_ready,
+                                                                        self.operation.is_some(),
+                                                                        self.running_game.is_some(),
+                                                                    ),
+                                                                    egui::Button::new(
+                                                                        egui::RichText::new(
+                                                                            "REMOVE",
+                                                                        )
+                                                                        .small()
+                                                                        .strong(),
+                                                                    )
+                                                                    .fill(egui::Color32::from_rgb(
+                                                                        113, 47, 55,
+                                                                    ))
+                                                                    .min_size(egui::vec2(
+                                                                        150.0, 26.0,
+                                                                    )),
+                                                                )
+                                                                .on_hover_text(
+                                                                    "Remove files owned by this import. Modified files are preserved.",
+                                                                )
+                                                                .clicked()
+                                                        {
+                                                            requested_remove_import = Some((
+                                                                entry.id.clone(),
+                                                                entry.title.clone(),
+                                                            ));
                                                         }
                                                     }
                                                 }
@@ -2921,6 +3035,9 @@ impl eframe::App for PortableApp {
                     {
                         let imported = self.imported_manifests.get(&entry.id);
                         self.controls_dialog = Some(controls.for_game(&layout, &entry, imported));
+                    }
+                    if let Some((catalog_id, title)) = requested_remove_import {
+                        self.start_remove_import(catalog_id, title);
                     }
                     if requested_terminate {
                         self.terminate_running_game();
@@ -3257,6 +3374,21 @@ mod ui_tests {
         let (label, intent) = game_button_state(None, "mspacman");
         assert_eq!(label, "▶  PLAY");
         assert_eq!(intent, GameButtonIntent::Play);
+    }
+
+    #[test]
+    fn small_imports_never_round_down_to_zero_megabytes() {
+        assert_eq!(format_import_size(0), "0 B");
+        assert_eq!(format_import_size(4_096), "4 KiB");
+        assert_eq!(format_import_size(1_572_864), "1.50 MiB");
+    }
+
+    #[test]
+    fn remove_exists_only_for_idle_imported_cards() {
+        assert!(!remove_import_available(false, false, false));
+        assert!(remove_import_available(true, false, false));
+        assert!(!remove_import_available(true, true, false));
+        assert!(!remove_import_available(true, false, true));
     }
 
     #[test]
