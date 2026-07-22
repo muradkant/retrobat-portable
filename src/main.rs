@@ -2349,9 +2349,11 @@ impl eframe::App for PortableApp {
                     );
                     ui.add_space(8.0);
 
-                    egui::ScrollArea::horizontal()
-                        .id_salt("source-filters")
-                        .show(ui, |ui| {
+                    ui.scope(|ui| {
+                        ui.spacing_mut().scroll = filter_scroll_style();
+                        egui::ScrollArea::horizontal()
+                            .id_salt("source-filters")
+                            .show(ui, |ui| {
                             ui.horizontal(|ui| {
                                 if ui
                                     .selectable_label(
@@ -2384,12 +2386,15 @@ impl eframe::App for PortableApp {
                                 }
                             });
                         });
+                    });
 
                     self.refresh_browse_view();
                     let systems = self.browse_systems.clone();
-                    egui::ScrollArea::horizontal()
-                        .id_salt("system-filters")
-                        .show(ui, |ui| {
+                    ui.scope(|ui| {
+                        ui.spacing_mut().scroll = filter_scroll_style();
+                        egui::ScrollArea::horizontal()
+                            .id_salt("system-filters")
+                            .show(ui, |ui| {
                             ui.horizontal(|ui| {
                                 ui.label(
                                     egui::RichText::new("SYSTEM")
@@ -2416,6 +2421,7 @@ impl eframe::App for PortableApp {
                                 }
                             });
                         });
+                    });
                     ui.add_space(8.0);
 
                     const BROWSE_PAGE_SIZE: usize = 30;
@@ -3249,6 +3255,40 @@ fn browse_grid_geometry(viewport_width: f32) -> (usize, f32, f32) {
     (columns, card_width, GRID_SPACING)
 }
 
+fn filter_scroll_style() -> egui::style::ScrollStyle {
+    let mut scroll = egui::style::ScrollStyle::solid();
+    scroll.bar_width = 3.0;
+    scroll.bar_inner_margin = 3.0;
+    scroll.bar_outer_margin = 1.0;
+    scroll
+}
+
+fn generated_artwork_title_layout(
+    painter: &egui::Painter,
+    rect: egui::Rect,
+    title: &str,
+    font_id: egui::FontId,
+    color: egui::Color32,
+) -> (Arc<egui::Galley>, egui::Rect) {
+    let title_rect = egui::Rect::from_min_max(
+        rect.left_top() + egui::vec2(12.0, 42.0),
+        rect.right_bottom() - egui::vec2(12.0, 24.0),
+    );
+    let mut job =
+        egui::text::LayoutJob::simple(title.to_owned(), font_id, color, title_rect.width());
+    job.halign = egui::Align::Center;
+    job.wrap.max_rows = 2;
+    job.wrap.break_anywhere = false;
+    (painter.layout_job(job), title_rect)
+}
+
+fn generated_artwork_title_position(title: &egui::Galley, title_rect: egui::Rect) -> egui::Pos2 {
+    egui::pos2(
+        title_rect.center().x,
+        title_rect.center().y - title.rect.height() / 2.0,
+    )
+}
+
 fn paint_generated_artwork(painter: &egui::Painter, rect: egui::Rect, entry: &BrowseEntry) {
     const PALETTES: [(egui::Color32, egui::Color32, egui::Color32); 6] = [
         (
@@ -3308,17 +3348,17 @@ fn paint_generated_artwork(painter: &egui::Painter, rect: egui::Rect, entry: &Br
         egui::FontId::monospace(10.0),
         egui::Color32::WHITE,
     );
-    let mut title = entry.title.chars().take(42).collect::<String>();
-    if entry.title.chars().count() > 42 {
-        title.push('…');
-    }
-    painter.text(
-        rect.center() + egui::vec2(0.0, 8.0),
-        egui::Align2::CENTER_CENTER,
-        title,
+    let (title, title_rect) = generated_artwork_title_layout(
+        painter,
+        rect,
+        &entry.title,
         egui::FontId::proportional((rect.width() / 13.0).clamp(13.0, 20.0)),
         ink,
     );
+    let title_position = generated_artwork_title_position(&title, title_rect);
+    painter
+        .with_clip_rect(title_rect)
+        .galley(title_position, title, ink);
     painter.text(
         rect.left_bottom() + egui::vec2(10.0, -9.0),
         egui::Align2::LEFT_BOTTOM,
@@ -3342,6 +3382,48 @@ mod ui_tests {
             assert!(used <= width);
             assert!(width - used <= columns as f32 + 2.0);
         }
+    }
+
+    #[test]
+    fn filter_scrollbars_reserve_space_and_never_expand_over_labels() {
+        let scroll = filter_scroll_style();
+        assert!(!scroll.floating);
+        assert_eq!(scroll.bar_width, 3.0);
+        assert_eq!(scroll.allocated_width(), 7.0);
+    }
+
+    #[test]
+    fn long_generated_artwork_titles_wrap_inside_the_artwork() {
+        let context = egui::Context::default();
+        let _ = context.run_ui(egui::RawInput::default(), |ui| {
+            let rect = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(180.0, 120.0));
+            for name in [
+                "Adventure (USA) (Atari Flashback)",
+                "Advance Wars (Europe) (GBA) (Virtual Console) (eShop)",
+                "Alone in the Dark (USA, Europe)",
+            ] {
+                let (title, title_rect) = generated_artwork_title_layout(
+                    ui.painter(),
+                    rect,
+                    name,
+                    egui::FontId::proportional(14.0),
+                    egui::Color32::WHITE,
+                );
+
+                assert!(title.rows.len() > 1, "{name}");
+                assert!(title.rows.len() <= 2, "{name}");
+                assert!(title.size().x <= title_rect.width() + 0.5, "{name}");
+                assert!(title.size().y <= title_rect.height() + 0.5, "{name}");
+                assert!(rect.contains_rect(title_rect), "{name}");
+                let painted_title = title
+                    .rect
+                    .translate(generated_artwork_title_position(&title, title_rect).to_vec2());
+                assert!(
+                    title_rect.expand(0.5).contains_rect(painted_title),
+                    "{name} paints at {painted_title:?}, outside {title_rect:?}"
+                );
+            }
+        });
     }
 
     #[test]
